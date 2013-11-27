@@ -96,6 +96,8 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    puma (2.6.0)
+      rack (>= 1.1, < 2.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -174,6 +176,7 @@ DEPENDENCIES
   mongoid (~> 3.0.4)
   mongoid-paperclip
   pry-rails
+  puma
   rails (= 3.2.15)
   rb-readline
   roo

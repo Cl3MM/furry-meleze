@@ -1,13 +1,15 @@
 Meleze::Application.routes.draw do
 
+  devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
+
   get 'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
   get 'ebsdds/template/:id', to: 'ebsdds#template', defaults: { format: :csv }, as: :ebsdd_template
   get 'ebsdds/reset', to: 'ebsdds#reset', as: :reset
   get 'ebsdds/import'
   post 'ebsdds/upload'
   resources :ebsdds
-  root to: 'ebsdds#index'
 
+  root to: 'ebsdds#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

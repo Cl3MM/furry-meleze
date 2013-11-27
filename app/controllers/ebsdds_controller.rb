@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 class EbsddsController < ApplicationController
+  before_filter :authenticate_utilisateur!
   before_filter :set_ebsdd, only: [:download, :template, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]
 

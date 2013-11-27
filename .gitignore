@@ -1,3 +1,5 @@
+*puma*
+config.ru
 *.rbc
 *.sassc
 .sass-cache

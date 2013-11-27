@@ -78,3 +78,33 @@ test:
         # low amounts for fast failures.
         max_retries: 1
         retry_interval: 0
+
+
+production:
+  sessions:
+    default:
+      database: meleze_production
+      hosts:
+        - localhost:27017
+      options:
+        safe: true
+        consistency: :strong
+        max_retries: 10
+  options:
+    allow_dynamic_fields: true
+    protect_sensitive_fields: true
+    raise_not_found_error: true
+
+    # Raise an error when defining a scope with the same name as an
+    # existing method. (default: false)
+    # scope_overwrite_exception: false
+
+    # Skip the database version check, used when connecting to a db without
+    # admin access. (default: false)
+    # skip_version_check: false
+
+    # User Active Support's time zone in conversions. (default: true)
+    # use_activesupport_time_zone: true
+
+    # Ensure all times are UTC in the app side. (default: false)
+    # use_utc: false

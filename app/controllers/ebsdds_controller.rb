@@ -11,7 +11,7 @@ class EbsddsController < ApplicationController
   def reset
     Ebsdd.delete_all
     Attachment.delete_all
-    redirect_to root_path, notice: "Base de donné réinitialisée avec succès."
+    redirect_to root_path, notice: "Base de données réinitialisée avec succès !"
   end
   def download
     respond_to do |format|

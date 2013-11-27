@@ -1,0 +1,6 @@
+<% flach.each do |name, msg| %>
+  <div class="alert alert-<%= name == :notice ? "success" : "danger" %>">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <%= msg %>
+  </div>
+<% end %>

@@ -1,0 +1,12 @@
+<h1>Création d'un nouveau EBSDD</h1>
+
+<%= form_tag ebsdds_upload_path, multipart: true, role: "form" do %>
+  <div class="well">
+    <div class="form-group">
+      <label for="file">Sélectionnez un fichier Excel à importer</label>
+      <%= file_field_tag :file %>
+      <p class="help-block">Le fichier doit être du type Excel ou CSV (.xls, .xlsx ou .csv)</p>
+    </div>
+  </div>
+  <%= submit_tag "Etape suivante", class: "btn btn-warning margin-top-30" %>
+<% end %>

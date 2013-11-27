@@ -1,0 +1,30 @@
+<h1 class="underline">
+  Liste des eBSDD
+  <%= link_to 'Importer un nouveau eBSDD depuis Excel', ebsdds_import_path, class: "btn btn-primary pull-right" %>
+</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th># Bordereau</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ebsdds.each do |ebsdd| %>
+      <tr>
+        <td><%= ebsdd.bid %></td>
+        <td><%= ebsdd.status.titleize %></td>
+        <td>
+          <%= link_to(fa_icon("gears lg", text: "Complèter"), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") %>
+          <%= link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") %>
+          <%#<%= link_to 'Voir', ebsdd %>
+          <%#<%= link_to 'Modifier', edit_ebsdd_path(ebsdd) %>
+          <%#<%= link_to 'Supprimer', ebsdd, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

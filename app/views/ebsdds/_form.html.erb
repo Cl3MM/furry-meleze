@@ -1,0 +1,21 @@
+<%= form_for(@ebsdd) do |f| %>
+  <% if @ebsdd.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@ebsdd.errors.count, "erreur") %> ont été détecté :</h2>
+
+      <ul>
+      <% @ebsdd.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :producteur %><br>
+    <%= f.text_field :producteur %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

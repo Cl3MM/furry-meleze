@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class EbsddsController < ApplicationController
-  before_filter :set_ebsdd, only: [:download, :show, :edit, :update, :destroy]
+  before_filter :set_ebsdd, only: [:download, :template, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]
 
   # GET /ebsdds/import
@@ -13,6 +13,14 @@ class EbsddsController < ApplicationController
     Attachment.delete_all
     redirect_to root_path, notice: "Base de données réinitialisée avec succès !"
   end
+  def template
+    respond_to do |format|
+      format.html
+      format.csv { send_data @ebsdd.to_ebsdd_template, filename: "#{@ebsdd.id}_template.csv" }
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
+  end
+
   def download
     respond_to do |format|
       format.html

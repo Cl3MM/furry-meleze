@@ -1,6 +1,7 @@
 Meleze::Application.routes.draw do
 
   get 'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
+  get 'ebsdds/template/:id', to: 'ebsdds#template', defaults: { format: :csv }, as: :ebsdd_template
   get 'ebsdds/reset', to: 'ebsdds#reset', as: :reset
   get 'ebsdds/import'
   post 'ebsdds/upload'

@@ -4,6 +4,11 @@ gem 'rails', '3.2.15'
 gem 'pry-rails'
 gem 'rb-readline', require: false
 gem 'devise'
+
+group :production do
+  gem 'puma'
+end
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -18,12 +23,12 @@ gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
 
 gem "mongoid-paperclip", :require => "mongoid_paperclip"
 
+gem 'sass-rails',   '~> 3.2.3'
 #gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails',
 #                              :github => 'anjlab/bootstrap-rails'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

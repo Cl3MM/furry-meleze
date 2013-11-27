@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class EbsddsController < ApplicationController
   before_filter :set_ebsdd, only: [:download, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]

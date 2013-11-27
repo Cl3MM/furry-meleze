@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Ebsdd # < ActiveRecord::Base
   include Mongoid::Document
   include Mongoid::Timestamps

@@ -42,21 +42,20 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_responsable, type: String
   field :bordereau_date_transport, type: Date
   field :bordereau_poids, type: Integer
-
-
-
+  field :libelle, type: String
 
   attr_accessible :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
-    :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville,
+    :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
     :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids
-
-
 
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
+  end
+  def is_incomplete?
+    status == "incomplet"
   end
   def bid
     bid = read_attribute(:bordereau_id)
@@ -65,6 +64,9 @@ class Ebsdd # < ActiveRecord::Base
     else
       "#"
     end
+  end
+  def short_bid
+    bid.gsub('1000000', "")
   end
 
   def nommenclature_dechet_code_nomen_c_a

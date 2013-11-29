@@ -1,10 +1,11 @@
-%h1
+%h1.underline
   Fichier
   = @attachment.attachment_file_name
   %span.small
     Nombre d'entrées dans le fichier:
     = @attachment.items
 
-= will_paginate @ebsdds
-= render partial: "dashboard/ebsdds"
+= render partial: "ebsdds"
+.center-block
+  = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
 

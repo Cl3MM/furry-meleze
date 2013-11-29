@@ -170,6 +170,8 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     will_paginate (3.0.5)
+    will_paginate-bootstrap (1.0.0)
+      will_paginate (>= 3.0.3)
 
 PLATFORMS
   ruby
@@ -195,3 +197,4 @@ DEPENDENCIES
   turbolinks
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
+  will_paginate-bootstrap

@@ -67,5 +67,7 @@ module Meleze
     config.assets.version = '1.0'
 
     config.i18n.default_locale = :fr
+    config.generators.template_engine :haml
+    config.generators.orm :mongoid
   end
 end

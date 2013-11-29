@@ -3,14 +3,20 @@ class Attachment
   include Mongoid::Timestamps
   include Mongoid::Paperclip
 
+  def self.per_page
+    2
+  end
+
   has_many :ebsdds
   #before_save :content_type ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
 
   has_mongoid_attached_file :attachment
-  attr_accessible :attachment, :checksum, :attachment_fingerprint
-  #field :attachment_fingerprint, type: String
+  attr_accessible :attachment, :checksum
   field :checksum, type: String
 
+  def items
+    ebsdds.count
+  end
   def custom_save
     if check_content_type
       save

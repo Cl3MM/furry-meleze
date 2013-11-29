@@ -1,6 +1,6 @@
 <h1 class="underline">
   Liste des eBSDD
-  <%= link_to 'Importer un nouveau eBSDD depuis Excel', ebsdds_import_path, class: "btn btn-primary pull-right" %>
+  <%= fa_link_to ebsdds_import_path, "Importer un nouveau eBSDD depuis Excel", "cloud-upload lg", class: "btn btn-primary pull-right"  %>
 </h1>
 
 <table class="table table-striped">
@@ -30,5 +30,4 @@
   </tbody>
 </table>
 
-
-<%= link_to "Réinitialiser", reset_path, class: "btn btn-danger pull-right touletip", title: "Réinitialise l'état de la base pour les tests" %>
+<%= fa_link_to reset_path, "Réinitialiser", "warning lg", class: "btn btn-danger pull-right touletip", title: "Réinitialise l'état de la base pour les tests" %>

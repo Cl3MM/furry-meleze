@@ -4,6 +4,10 @@ class Ebsdd # < ActiveRecord::Base
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  def self.per_page
+    2
+  end
+
   belongs_to :attachment #, :inverse_of => :ebsdds
   attr_accessible :id, :_id
 

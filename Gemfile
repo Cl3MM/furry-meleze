@@ -9,6 +9,7 @@ group :production do
   gem 'puma'
 end
 
+gem 'haml-rails', group: :development
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -18,11 +19,12 @@ gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
 gem 'turbolinks'
-
+gem 'will_paginate', '~> 3.0'
+gem 'will_paginate-bootstrap'
 gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
 
 gem "mongoid-paperclip", :require => "mongoid_paperclip"
-
+gem 'haml'
 gem 'sass-rails',   '~> 3.2.3'
 #gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails',
 #                              :github => 'anjlab/bootstrap-rails'

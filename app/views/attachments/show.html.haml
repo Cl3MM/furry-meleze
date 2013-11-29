@@ -1,0 +1,10 @@
+%h1
+  Fichier
+  = @attachment.attachment_file_name
+  %span.small
+    Nombre d'entrées dans le fichier:
+    = @attachment.items
+
+= will_paginate @ebsdds
+= render partial: "dashboard/ebsdds"
+

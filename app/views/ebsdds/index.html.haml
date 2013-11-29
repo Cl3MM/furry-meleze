@@ -1,0 +1,7 @@
+%h1.underline
+  Liste des eBSDD
+  = fa_link_to ebsdds_import_path, "Importer un nouveau eBSDD depuis Excel", "cloud-upload lg", class: "btn btn-primary pull-right"
+
+= render partial: "ebsdds"
+.center-block
+  = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

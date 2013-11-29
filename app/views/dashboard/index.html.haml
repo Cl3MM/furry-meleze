@@ -18,14 +18,7 @@
       .panel-body
         = render partial: 'latest', object: @complete, as: 'ebsdds', locals: { status: :complet }
   .col-md-4
-    .panel.panel-default
-      .panel-heading
-        %h3.panel-title
-          = fa_icon "file-text ccc"
-          Derniers fichiers importés
-      .panel-body
-        = render partial: 'attachments'
-
+    =# Action box
     .panel.panel-default
       .panel-heading
         %h3.panel-title
@@ -33,4 +26,12 @@
           Actions
       .panel-body
         = render partial: 'actions'
+    =# Last attachments
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "file-text ccc"
+          Derniers fichiers importés
+      .panel-body
+        = render partial: 'attachments'
 

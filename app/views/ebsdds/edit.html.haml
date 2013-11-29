@@ -1,0 +1,131 @@
+= form_for(@ebsdd) do |f|
+  %h1.underline
+    Complèter l'eBSDD
+    .pull-right
+      = f.submit "Enregistrer", class: "btn btn-info"
+  .container
+    - if @ebsdd.errors.any?
+      %div{id: "error_explanation"}
+        %h2
+          = pluralize(@ebsdd.errors.count, "erreur")
+          ont été détecté :
+
+        %ul
+          - @ebsdd.errors.full_messages.each do |msg|
+            %li
+              = msg
+
+  .row
+    =# cadre 1
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Emetteur du bordereau
+        .panel-body
+    =# cadre 2
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "gears ccc"
+            Installation de destination / entreposage / reconditionnement
+        .panel-body
+  =# Cadre 3
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Dénomination du déchet
+        .panel-body
+
+  =# Cadre 4
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+        .panel-body
+
+  =# Cadre 5
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Conditionnement:
+        .panel-body
+
+  =# Cadre 6
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Quantité
+        .panel-body
+
+  =# Cadre 7
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Négociant
+        .panel-body
+
+  =# Cadre 8
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Collecteur-transporteur
+        .panel-body
+
+  =# Cadre 9
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Déclaration générale de l’émetteur du bordereau :
+        .panel-body
+
+  .row
+    =# Cadre 10
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Expédition reçue à l’installation de destination
+        .panel-body
+    =# cadre 11
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "gears ccc"
+            Réalisation de l’opération :
+        .panel-body
+
+  =# Cadre 12
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "tags ccc"
+            Destination ultérieure prévue
+        .panel-body

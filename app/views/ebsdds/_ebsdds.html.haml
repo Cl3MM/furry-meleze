@@ -1,4 +1,4 @@
--if ebsdds.any?
+-if @ebsdds.any?
   %table.table.table-striped
     %thead
       %tr
@@ -10,26 +10,21 @@
         %th Actions
 
     %tbody
-      -ebsdds.each do | ebsdd |
+      -@ebsdds.each do | ebsdd |
         %tr
           %td= ebsdd.short_bid
-          %td= truncate ebsdd.producteur_nom, length: 18
-          %td= truncate ebsdd.destinataire_nom, length: 18
-          %td= truncate ebsdd.libelle, length: 15
+          %td= ebsdd.producteur_nom
+          %td= ebsdd.destinataire_nom
+          %td= ebsdd.libelle
           %td= "#{ebsdd.bordereau_poids} kg"
-          %td.actions
-            = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
+          %td
+            = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter")
             = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV")
             = link_to(fa_icon("bug lg", text: ""), ebsdd_template_path(ebsdd), class: "btn btn-danger touletip btn-xs", role: "button", title: "Télécharger le template pour vérification")
             -#link_to 'Modifier', edit_ebsdd_path(ebsdd)
             -#link_to 'Supprimer', ebsdd, method: :delete, data: { confirm: 'Are you sure?' }
-  - if ebsdds.count > 10
-    = link_to "Voir tous les eBSDDs...", ebsdds_path, class:"pull-right"
 -else
   .center-block
     %p.text-center
       = fa_icon "times-circle pull-left ccc lg"
-      - if status == :incomplet
-        Aucun eBSDD. Veuillez importer un fichier Excel pour commencer
-      - else
-        Aucun eBSDD complet. Merci de compléter les eBSDDs.
+      Aucun eBSDD. Veuillez importer un fichier Excel pour commencer.

@@ -39,7 +39,7 @@ class EbsddsController < ApplicationController
           redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
         end
         @content = validation[:rows]
-        flash.notice = "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
+        redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
       else
         redirect_to ebsdds_import_path, alert: "Le fichier du format est incorrect. Merci d'importer seulement des fichiers Excel ou CSV"
       end
@@ -50,7 +50,7 @@ class EbsddsController < ApplicationController
   # GET /ebsdds
   # GET /ebsdds.json
   def index
-    @ebsdds = Ebsdd.all
+    @ebsdds = Ebsdd.all.paginate(page: params[:page], per_page: 15)
   end
 
   # GET /ebsdds/1

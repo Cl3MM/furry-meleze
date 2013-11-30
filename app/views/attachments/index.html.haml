@@ -19,8 +19,13 @@
           %td= attachment.created_at.strftime("%d/%m/%Y")
           %td= attachment.items
 -else
-  .center-block
-    %p.text-center
-      = fa_icon "times-circle pull-left ccc lg"
-      Aucun fichier importé. Veuillez importer un fichier Excel pour commencer.
-    = fa_link_to ebsdds_import_path, "Importer depuis Excel", "cloud-upload lg", class: "btn btn-primary btn-lg btn-block"
+  .row
+    .col-md-6.col-md-offset-3
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            = fa_icon "warning ccc"
+            Attention !
+        .panel-body
+          Aucun fichier importé. Veuillez importer un fichier Excel pour commencer.
+          = fa_link_to ebsdds_import_path, "Importer depuis Excel", "cloud-upload lg", class: "btn btn-primary btn-lg btn-block"

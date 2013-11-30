@@ -5,7 +5,7 @@
     Nombre d'entrées dans le fichier:
     = @attachment.items
 
-= render partial: "ebsdds"
+= render partial: "ebsdds/ebsdds"
 .center-block
   = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
 

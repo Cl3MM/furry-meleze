@@ -6,6 +6,7 @@
         %th Producteur
         %th Destinataire
         %th Type déchet
+        %th Date création
         %th Poids
         %th Actions
 
@@ -13,9 +14,10 @@
       -@ebsdds.each do | ebsdd |
         %tr
           %td= ebsdd.short_bid
-          %td= ebsdd.producteur_nom
-          %td= ebsdd.destinataire_nom
-          %td= ebsdd.libelle
+          %td= ebsdd.producteur_nom.titleize
+          %td= ebsdd.destinataire_nom.titleize
+          %td= ebsdd.libelle.titleize
+          %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
           %td= "#{ebsdd.bordereau_poids} kg"
           %td
             = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter")

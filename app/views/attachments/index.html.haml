@@ -1,4 +1,6 @@
-%h1 Fichiers importés
+%h1.underline
+  =fa_icon "file-text"
+  Fichiers importés
 
 -if @attachments.any?
   %table.table.table-condensed
@@ -6,14 +8,14 @@
       %tr
         %th Fichier
         %th Créé le
-        %th #
+        %th # Entrées
 
     %tbody
       -@attachments.each do | attachment |
         %tr
           %td
             = link_to attachment_path(attachment) do
-              = truncate attachment.attachment_file_name, length: 20
+              = attachment.attachment_file_name
           %td= attachment.created_at.strftime("%d/%m/%Y")
           %td= attachment.items
 -else
@@ -22,4 +24,3 @@
       = fa_icon "times-circle pull-left ccc lg"
       Aucun fichier importé. Veuillez importer un fichier Excel pour commencer.
     = fa_link_to ebsdds_import_path, "Importer depuis Excel", "cloud-upload lg", class: "btn btn-primary btn-lg btn-block"
-

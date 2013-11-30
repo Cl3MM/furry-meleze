@@ -1,5 +1,7 @@
 %h1.underline
-  Liste des eBSDD
+  Liste des eBSDDs
+  %span.small
+    = "(#{Ebsdd.count})"
   = fa_link_to ebsdds_import_path, "Importer un nouveau eBSDD depuis Excel", "cloud-upload lg", class: "btn btn-primary pull-right"
 
 = render partial: "ebsdds"

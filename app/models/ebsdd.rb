@@ -43,13 +43,15 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_date_transport, type: Date
   field :bordereau_poids, type: Integer
   field :libelle, type: String
+  field :bordereau_date_creation, type: Date
 
   attr_accessible :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
     :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
-    :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids
+    :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
+    :bordereau_date_creation
 
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
@@ -151,25 +153,34 @@ class Ebsdd # < ActiveRecord::Base
         #@document.attachment = file
         if @document.save
           rows = []
-          (2..spreadsheet.last_row).each do | i |
-            column = []
-            ebsdd = Ebsdd.find_or_initialize_by({header[2].to_sym => spreadsheet.cell(i, 3) } )
-            (1..spreadsheet.last_column).each do | j |
-              if header.count > j - 1
-                cur_header = header[ j - 1 ]
-                cur_cell = if spreadsheet.cell(i,j).is_a? Float
-                             spreadsheet.cell(i,j).to_i
-                           else
-                             spreadsheet.cell(i,j)
-                           end
+          bordereau_id_column = header.index("bordereau_id")
+          unless bordereau_id_column.nil?
+            (2..spreadsheet.last_row).each do | i |
+              column = []
+              begin
+                ebsdd = Ebsdd.find_or_initialize_by({bordereau_id: spreadsheet.cell(i, bordereau_id_column+1) } )
+              rescue
+                binding.pry
               end
-              ebsdd[cur_header.to_sym] = cur_cell
-              column << "#{spreadsheet.cell(i,j)}"
+              (1..spreadsheet.last_column).each do | j |
+                if header.count > j - 1
+                  cur_header = header[ j - 1 ]
+                  cur_cell = if spreadsheet.cell(i,j).is_a? Float
+                               spreadsheet.cell(i,j).to_i
+                             else
+                               spreadsheet.cell(i,j)
+                             end
+                end
+                ebsdd[cur_header.to_sym] = cur_cell
+                column << "#{spreadsheet.cell(i,j)}"
+              end
+              ebsdd.line_number = i
+              ebsdd.save
+              @document.ebsdds.push(ebsdd)
+              rows << column
             end
-            ebsdd.line_number = i
-            ebsdd.save
-            @document.ebsdds.push(ebsdd)
-            rows << column
+          else
+            out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
           end
         else
           out[:errors] << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."

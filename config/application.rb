@@ -69,5 +69,9 @@ module Meleze
     config.i18n.default_locale = :fr
     config.generators.template_engine :haml
     config.generators.orm :mongoid
+
+    config.action_view.field_error_proc = Proc.new { |html_tag, instance| 
+      "<div class='has-error'>#{html_tag}</div>".html_safe
+    }
   end
 end

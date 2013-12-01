@@ -1,23 +1,25 @@
 %h1.underline
-  =fa_icon "file-text"
+  = fa_icon "file-text"
   Fichiers importés
 
 -if @attachments.any?
-  %table.table.table-condensed
-    %thead
-      %tr
-        %th Fichier
-        %th Créé le
-        %th # Entrées
+  .panel.panel-default
+    .panel-body
+      %table.table.table-condensed
+        %thead
+          %tr
+            %th Fichier
+            %th Créé le
+            %th # Entrées
 
-    %tbody
-      -@attachments.each do | attachment |
-        %tr
-          %td
-            = link_to attachment_path(attachment) do
-              = attachment.attachment_file_name
-          %td= attachment.created_at.strftime("%d/%m/%Y")
-          %td= attachment.items
+        %tbody
+          -@attachments.each do | attachment |
+            %tr
+              %td
+                = link_to attachment_path(attachment) do
+                  = attachment.attachment_file_name
+              %td= attachment.created_at.strftime("%d/%m/%Y")
+              %td= attachment.items
 -else
   .row
     .col-md-6.col-md-offset-3
@@ -27,5 +29,6 @@
             = fa_icon "warning ccc"
             Attention !
         .panel-body
-          Aucun fichier importé. Veuillez importer un fichier Excel pour commencer.
+          %p
+            Aucun fichier importé. Veuillez importer un fichier Excel pour commencer.
           = fa_link_to ebsdds_import_path, "Importer depuis Excel", "cloud-upload lg", class: "btn btn-primary btn-lg btn-block"

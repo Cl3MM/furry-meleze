@@ -5,7 +5,7 @@ class Ebsdd # < ActiveRecord::Base
   include Mongoid::Timestamps
 
   def self.per_page
-    2
+    15
   end
 
   belongs_to :attachment #, :inverse_of => :ebsdds
@@ -76,7 +76,6 @@ class Ebsdd # < ActiveRecord::Base
   end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
-      #binding.pry
       column_names = attributes.keys
       csv << column_names
       csv << attributes.values_at(*column_names)

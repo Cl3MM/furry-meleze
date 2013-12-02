@@ -15,6 +15,7 @@ class Ebsdd # < ActiveRecord::Base
   field :status, type: String, default: "incomplet"
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
+  field :bordereau_poids, type: Float
   field :producteur_nom, type: String
   field :producteur_adresse, type: String
   field :producteur_cp, type: String
@@ -49,6 +50,9 @@ class Ebsdd # < ActiveRecord::Base
   field :dechet_consistance, type: Integer
   field :dechet_nomenclature, type: String
   field :dechet_conditionnement, type: String
+  field :dechet_nombre_colis, type: Integer
+  field :type_quantite, type: String
+  field :emetteur_nom, type: String
 
   attr_accessible :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -57,7 +61,7 @@ class Ebsdd # < ActiveRecord::Base
     :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
     :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
-    :dechet_conditionnement
+    :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom
 
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"

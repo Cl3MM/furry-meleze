@@ -1,7 +1,10 @@
-.form-group
-  = f.label :dechet_conditionnement_ult, "Type de conditionnement"
-  = f.select :dechet_conditionnement_ult, DechetContenant.to_select
+.row
+  .col-md-8
+    .form-group
+      = f.label :dechet_conditionnement_ult, "Type de conditionnement"
+      = f.select :dechet_conditionnement_ult, DechetContenant.to_select
 
-.form-group
-  = f.label :dechet_nombre_colis_ult, "Nombre de colis"
-  = f.select :dechet_nombre_colis_ult, (1..30).map{|i| [i,i]}
+  .col-md-4
+    .form-group
+      = f.label :dechet_nombre_colis_ult, "Nombre de colis"
+      = f.select :dechet_nombre_colis_ult, (1..30).map{|i| [i,i]}

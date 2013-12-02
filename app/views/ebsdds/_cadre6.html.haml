@@ -1,13 +1,15 @@
-.form-group
-  = f.label :type_quantite, "Type de quantité"
-  %br
-  %label.radio-inline
-    = f.radio_button :type_quantite, "R", checked: true
-    Réelle
-  %label.radio-inline
-    = f.radio_button :type_quantite, "E"
-    Estimée
-
-.form-group
-  = f.label :bordereau_poids, "Poids en kilogrammes"
-  = f.text_field :bordereau_poids, placeholder: "Poids"
+.row
+  .col-md-6
+    .form-group
+      = f.label :bordereau_poids, "Poids en kilogrammes"
+      = f.text_field :bordereau_poids, placeholder: "Poids"
+  .col-md-6
+    .form-group
+      = f.label :type_quantite, "Type de quantité"
+      %br
+      %label.radio-inline
+        = f.radio_button :type_quantite, "R", checked: true
+        Réelle
+      %label.radio-inline
+        = f.radio_button :type_quantite, "E"
+        Estimée

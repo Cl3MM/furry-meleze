@@ -44,6 +44,10 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_poids, type: Integer
   field :libelle, type: String
   field :bordereau_date_creation, type: Date
+  field :num_cap, type: String
+  field :dechet_denomination, type: Integer
+  field :dechet_consistance, type: Integer
+  field :dechet_nomenclature, type: String
 
   attr_accessible :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -51,7 +55,7 @@ class Ebsdd # < ActiveRecord::Base
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
     :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
     :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
-    :bordereau_date_creation
+    :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature
 
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"

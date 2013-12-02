@@ -1,0 +1,126 @@
+%h1.underline
+  eBSDD #
+  = @ebsdd.bordereau_id
+.container
+
+.row
+  =# cadre 1
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          =# fa_icon "tags ccc"
+          %span.badge 1
+          Emetteur du bordereau
+      .panel-body
+  =# cadre 2
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 2
+          =# fa_icon "gears ccc"
+          Installation de destination / entreposage / reconditionnement
+      .panel-body
+=# Cadre 3
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 3
+          Dénomination du déchet
+      .panel-body
+        %label Dénomination usuelle
+        = DechetDenomination[@ebsdd.dechet_denomination]
+        %br
+        %label Consistance
+        = @ebsdd.dechet_consistance
+=# Cadre 4
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 4
+          Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+      .panel-body
+
+=# Cadre 5
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 5
+          Conditionnement:
+      .panel-body
+
+=# Cadre 6
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 6
+          Quantité
+      .panel-body
+
+=# Cadre 7
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 7
+          Négociant
+      .panel-body
+
+=# Cadre 8
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 8
+          Collecteur-transporteur
+      .panel-body
+
+=# Cadre 9
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 9
+          Déclaration générale de l’émetteur du bordereau :
+      .panel-body
+
+.row
+  =# Cadre 10
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 10
+          Expédition reçue à l’installation de destination
+      .panel-body
+  =# cadre 11
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 11
+          Réalisation de l’opération :
+      .panel-body
+
+=# Cadre 12
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 12
+          Destination ultérieure prévue
+      .panel-body
+

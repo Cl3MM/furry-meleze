@@ -29,7 +29,6 @@ module FormsHelper
 
       "method,options={},html_options={}" => %w{date_select datetime_select time_select},
 
-      "method,tag_value,options={}" => %w{ radio_button },
 
       "method,choices,options={},html_options={}" => %w{ select }
     }

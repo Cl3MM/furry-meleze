@@ -1,0 +1,18 @@
+.form-group
+  = f.label :dechet_denomination, "Dénomination usuelle du déchet"
+  = f.select :dechet_denomination, DechetDenomination.to_select
+
+.form-group
+  = f.label :dechet_consistance, "Consistance"
+  %br
+  %label.radio-inline
+    = f.radio_button :dechet_consistance, 0, checked: true
+    Solide
+    =#input type="checkbox" id="inlineCheckbox1" value="option1"> 1
+  %label.radio-inline
+    = f.radio_button :dechet_consistance, 1, checked: true
+    Liquide
+  %label.radio-inline
+    = f.radio_button :dechet_consistance, 2, checked: true
+    Gazeux
+

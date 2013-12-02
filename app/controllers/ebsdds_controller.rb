@@ -86,9 +86,10 @@ class EbsddsController < ApplicationController
   # PATCH/PUT /ebsdds/1
   # PATCH/PUT /ebsdds/1.json
   def update
+    @ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
-      if @ebsdd.update(ebsdd_params)
-        format.html { redirect_to @ebsdd, notice: 'Ebsdd was successfully updated.' }
+      if @ebsdd.update_attributes(params[:ebsdd])
+        format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -115,9 +116,9 @@ class EbsddsController < ApplicationController
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def ebsdd_params
-      params.require(:ebsdd).permit(:producteur)
-    end
+    #def ebsdd_params
+      #params.require(:ebsdd).permit(:num_cap, :dechet_consistance, :dechet_denomination, :dechet_nomenclature, :id)
+    #end
 
     def check_incomplete
       if Ebsdd.has_every_bsd_completed?

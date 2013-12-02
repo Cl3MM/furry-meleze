@@ -35,6 +35,7 @@
             =# fa_icon "gears ccc"
             Installation de destination / entreposage / reconditionnement
         .panel-body
+          = render partial: "cadre2", object: f, as: :f
   =# Cadre 3
   .row
     .col-md-12
@@ -44,6 +45,7 @@
             %span.badge 3
             Dénomination du déchet
         .panel-body
+          = render partial: "cadre3", object: f, as: :f
 
   =# Cadre 4
   .row
@@ -54,6 +56,7 @@
             %span.badge 4
             Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
         .panel-body
+          = render partial: "cadre4", object: f, as: :f
 
   =# Cadre 5
   .row
@@ -64,6 +67,7 @@
             %span.badge 5
             Conditionnement:
         .panel-body
+          = render partial: "cadre5", object: f, as: :f
 
   =# Cadre 6
   .row

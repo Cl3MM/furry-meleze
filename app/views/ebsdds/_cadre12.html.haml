@@ -1,0 +1,39 @@
+.form-group
+  = f.label :traitement_prevu, "Traitement prévu"
+  = f.select :traitement_prevu, DechetNomenclature.to_select
+
+.form-group
+  = f.label :destination_ult_siret, "SIRET"
+  = f.text_field :destination_ult_siret, placeholder: "SIRET"
+
+.form-group
+  = f.label :destination_ult_nom, "Nom"
+  = f.text_field :destination_ult_nom, placeholder: "Nom"
+
+.form-group
+  = f.label :destination_ult_adresse, "Adresse"
+  = f.text_field :destination_ult_adresse, placeholder: "Adresse"
+
+.form-group
+  = f.label :destination_ult_cp, "Code postal"
+  = f.text_field :destination_ult_cp, placeholder: "Code postal"
+
+.form-group
+  = f.label :destination_ult_ville, "Ville"
+  = f.text_field :destination_ult_ville, placeholder: "Ville"
+
+.form-group
+  = f.label :destination_ult_tel, "Téléphone"
+  = f.text_field :destination_ult_tel, placeholder: "Téléphone"
+
+.form-group
+  = f.label :destination_ult_fax, "Fax"
+  = f.text_field :destination_ult_fax, placeholder: "Fax"
+
+.form-group
+  = f.label :destination_ult_mel, "Adresse email"
+  = f.text_field :destination_ult_mel, placeholder: "Adresse email"
+
+.form-group
+  = f.label :destination_ult_contact, "Contact"
+  = f.text_field :destination_ult_contact, placeholder: "Contact"

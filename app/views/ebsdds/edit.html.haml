@@ -1,8 +1,11 @@
 = custom_form(@ebsdd) do |f|
   %h1.underline
+    = fa_icon "tags"
     Complèter l'eBSDD
-    .pull-right
-      = f.submit "Enregistrer", class: "btn btn-info"
+    = content_tag :button, type: :submit, class: "btn btn-info pull-right" do
+      = fa_icon "save lg"
+      &nbsp;Enregistrer les modifications
+    =# f.submit "Enregistrer", class: "btn btn-info"
   .container
     - if @ebsdd.errors.any?
       %div{id: "error_explanation"}
@@ -65,7 +68,7 @@
         .panel-heading
           %h3.panel-title
             %span.badge 5
-            Conditionnement:
+            Conditionnement
         .panel-body
           = render partial: "cadre5", object: f, as: :f
 
@@ -128,6 +131,7 @@
             %span.badge 11
             Réalisation de l’opération :
         .panel-body
+          = render partial: "cadre11", object: f, as: :f
 
   =# Cadre 12
   .row
@@ -138,3 +142,42 @@
             %span.badge 12
             Destination ultérieure prévue
         .panel-body
+          = render partial: "cadre12", object: f, as: :f
+
+  .row
+    .col-md-12
+      %hr
+      %h3.text-center
+        À REMPLIR EN CAS D’ENTREPOSAGE PROVISOIRE OU DE RECONDITONNEMENT
+      %hr
+
+  =# Cadre 15
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 15
+            Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+        .panel-body
+          = render partial: "cadre15", object: f, as: :f
+  =# Cadre 16
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 16
+            Conditionnement
+        .panel-body
+          = render partial: "cadre16", object: f, as: :f
+  =# Cadre 17
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 17
+            Quantité
+        .panel-body
+          = render partial: "cadre17", object: f, as: :f

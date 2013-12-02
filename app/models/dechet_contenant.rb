@@ -13,7 +13,7 @@ class DechetContenant
   end
   def self.to_select
     DechetContenant.contenant.map do | line |
-      [line.last, line.first]
+      ["#{line[1]} #{line.last}", line.first]
     end
   end
   def self.[] key

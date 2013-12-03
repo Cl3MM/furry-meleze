@@ -12,11 +12,17 @@ class Ebsdd # < ActiveRecord::Base
   def normalize
     Rails.logger.debug "*" * 100
     Rails.logger.debug self.inspect
-    producteur_email = nil if producteur_email.blank?
-    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel ].each do | attr |
+    self[:producteur_email] = nil if producteur_email.blank?
+    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
+      self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
       if self[attr].size == 9
         self[attr] = "0#{self[attr]}"
       end unless read_attribute(attr).nil?
+    end
+    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
+      unless read_attribute(attr).nil?
+        self[attr].gsub!(/\s/, "")
+      end
     end
     Rails.logger.debug self.inspect
     Rails.logger.debug "*" * 100
@@ -139,9 +145,6 @@ class Ebsdd # < ActiveRecord::Base
       "0#{tel}"
     end unless tel.nil?
   end
-  def nommenclature_dechet_code_nomen_c_a
-    "#{nomenclature_dechet_code_nomen_c}#{nomenclature_dechet_code_nomen_a}"
-  end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
       column_names = attributes.keys
@@ -152,18 +155,18 @@ class Ebsdd # < ActiveRecord::Base
 
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      binding.pry
+      #binding.pry
       csv << ["00", nil, bordereau_id, nil]
-      csv << ["01", 4, producteur_siret.gsub(" ", ""), producteur_nom, producteur_adresse, producteur_cp, producteur_ville, tel_2_csv(producteur_tel), producteur_fax, producteur_email, producteur_responsable, nil]
-      csv << ["02", 0, destinataire_siret.gsub(" ", ""), destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, tel_2_csv(destinataire_tel), destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
+      csv << ["01", 4, producteur_siret, producteur_nom, producteur_adresse, producteur_cp, producteur_ville, tel_2_csv(producteur_tel), producteur_fax, producteur_email, producteur_responsable, nil]
+      csv << ["02", 0, destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, tel_2_csv(destinataire_tel), destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
       csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
       csv << ["04", DechetNomenclature[dechet_denomination], nil ]
       csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
       csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["08", collecteur_siret.gsub(" ", ""), collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, tel_2_csv(collecteur_tel), collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
+      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, tel_2_csv(collecteur_tel), collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
       csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["10", destinataire_siret.gsub(" ", ""), destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, tel_2_csv(destination_ult_tel), destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
       csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
@@ -235,6 +238,8 @@ class Ebsdd # < ActiveRecord::Base
                   cur_header = header[ j - 1 ]
                   cur_cell = if spreadsheet.cell(i,j).is_a? Float
                                spreadsheet.cell(i,j).to_i
+                             elsif spreadsheet.cell(i,j).is_a? String
+                               spreadsheet.cell(i,j).squish
                              else
                                spreadsheet.cell(i,j)
                              end

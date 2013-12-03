@@ -85,7 +85,7 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
-    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
     :destinataire_email, :colllecteur_email
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,

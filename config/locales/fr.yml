@@ -6,6 +6,7 @@ fr:
         num_cap: Numéro CAP
         bordereau_poids_ult: Poids
         recepisse: Récepissé
+        bordereau_limite_validite: Limite de validité du bordereau
     errors:
       models:
         ebsdd:
@@ -23,4 +24,6 @@ fr:
             bordereau_poids_ult:
               blank: ne peut pas être vide
             recepisse:
+              blank: ne peut pas être vide
+            bordereau_limite_validite:
               blank: ne peut pas être vide

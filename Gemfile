@@ -24,7 +24,6 @@ gem 'will_paginate-bootstrap'
 gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
 #gem 'simple_form'
 #gem 'strong_parameters'
-
 gem "mongoid-paperclip", :require => "mongoid_paperclip"
 gem 'haml'
 gem 'sass-rails',   '~> 3.2.3'
@@ -34,7 +33,7 @@ gem 'sass-rails',   '~> 3.2.3'
 # in production environments by default.
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
-
+  gem 'jquery-ui-rails'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', :platforms => :ruby
 

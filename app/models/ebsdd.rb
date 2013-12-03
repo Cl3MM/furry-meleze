@@ -10,6 +10,7 @@ class Ebsdd # < ActiveRecord::Base
 
   before_save :normalize
   def normalize
+    self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
     [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
       self[attr] = nil if read_attribute(attr).blank?
     end
@@ -91,12 +92,14 @@ class Ebsdd # < ActiveRecord::Base
   field :mention_titre_reglements_ult, type: String
   field :dechet_conditionnement_ult, type: String
   field :entreposage_provisoire, type: Boolean, default: true
+  field :transport_multimodal, type: Boolean, default: false
 
   field :dechet_nombre_colis_ult, type: Integer
   field :type_quantite_ult, type: String
   field :valorisation_prevue, type: String, default: "R13"
   field :recepisse, type: String, default: ->{ id }
   field :mode_transport, type: Integer, default: 1
+  field :bordereau_limite_validite, type: Date
 
   attr_accessible :id, :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -109,7 +112,7 @@ class Ebsdd # < ActiveRecord::Base
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
     :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
-    :mode_transport
+    :mode_transport, :transport_multimodal, :bordereau_limite_validite
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -119,13 +122,13 @@ class Ebsdd # < ActiveRecord::Base
     :collecteur_tel, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
-    :code_operation, :traitement_prevu, :mode_transport
+    :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
 
   validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
     if: -> { self[:entreposage_provisoire] }
 
-  validates_presence_of :recepisse,
+  validates_presence_of :recepisse, :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 
   def is_entreposage_provisoire?
@@ -173,7 +176,7 @@ class Ebsdd # < ActiveRecord::Base
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
       #csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       #csv << ["07", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil ]
-      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
+      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, (mode_transport == 1 ? recepisse : nil), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
@@ -186,6 +189,8 @@ class Ebsdd # < ActiveRecord::Base
         csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
         csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
         csv << ["19", nil, nil, nil ]
+      end
+      if transport_multimodal
         csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
         csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       end

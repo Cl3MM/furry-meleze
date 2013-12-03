@@ -1,11 +1,14 @@
 jQuery ->
   $("a.touletip").tooltip()
-
+  $( "input.datepicker").datepicker
+    dateFormat: 'yy-mm-dd'
   entreposage_visibility = (x) ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
 
   if $("#ebsdd_mode_transport").length > 0
+    if $("#ebsdd_mode_transport").val() != "1"
+      $("#ebsdd_recepisse").prop('disabled', true)
     $("#ebsdd_mode_transport").on 'change', ()->
       if $(this).val() == "1"
         $("#ebsdd_recepisse").prop('disabled', false)

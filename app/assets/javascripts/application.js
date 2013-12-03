@@ -13,5 +13,7 @@
 //= require turbolinks
 //= require jquery
 //= require jquery_ujs
+// = require jquery-ui-1.10.3.custom.min
+//= require jquery.ui.datepicker
 //= require_tree .
 // = require twitter/bootstrap/tooltip

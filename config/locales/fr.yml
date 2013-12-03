@@ -5,6 +5,7 @@ fr:
         bordereau_poids: Poids
         num_cap: Numéro CAP
         bordereau_poids_ult: Poids
+        recepisse: Récepissé
     errors:
       models:
         ebsdd:
@@ -20,4 +21,6 @@ fr:
             emetteur_nom:
               blank: ne peut pas être vide
             bordereau_poids_ult:
+              blank: ne peut pas être vide
+            recepisse:
               blank: ne peut pas être vide

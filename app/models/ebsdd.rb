@@ -10,9 +10,9 @@ class Ebsdd # < ActiveRecord::Base
 
   before_save :normalize
   def normalize
-    Rails.logger.debug "*" * 100
-    Rails.logger.debug self.inspect
-    self[:producteur_email] = nil if producteur_email.blank?
+    [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
+      self[attr] = nil if read_attribute(attr).blank?
+    end
     [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
       self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
       if self[attr].size == 9
@@ -24,8 +24,6 @@ class Ebsdd # < ActiveRecord::Base
         self[attr].gsub!(/\s/, "")
       end
     end
-    Rails.logger.debug self.inspect
-    Rails.logger.debug "*" * 100
   end
 
   belongs_to :attachment #, :inverse_of => :ebsdds
@@ -53,7 +51,7 @@ class Ebsdd # < ActiveRecord::Base
   field :destinataire_ville, type: String
   field :destinataire_tel, type: String
   field :destinataire_fax, type: String
-  field :destinataire_email, type: String
+  field :destinataire_email, type: String, default: nil
   field :destinataire_responsable, type: String
   field :nomenclature_dechet_code_nomen_c, type: Integer
   field :nomenclature_dechet_code_nomen_a, type: Integer
@@ -64,7 +62,7 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_ville, type: String
   field :collecteur_tel, type: String
   field :collecteur_fax, type: String
-  field :collecteur_email, type: String
+  field :collecteur_email, type: String, default: nil
   field :collecteur_responsable, type: String
   field :bordereau_date_transport, type: Date
   field :bordereau_poids, type: Integer
@@ -92,11 +90,13 @@ class Ebsdd # < ActiveRecord::Base
   field :destination_ult_contact, type: String
   field :mention_titre_reglements_ult, type: String
   field :dechet_conditionnement_ult, type: String
-  field :entreposage_provisoire, type: Boolean
+  field :entreposage_provisoire, type: Boolean, default: true
 
   field :dechet_nombre_colis_ult, type: Integer
   field :type_quantite_ult, type: String
   field :valorisation_prevue, type: String, default: "R13"
+  field :recepisse, type: String, default: ->{ id }
+  field :mode_transport, type: Integer, default: 1
 
   attr_accessible :id, :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -108,7 +108,8 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
-    :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire
+    :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
+    :mode_transport
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -118,8 +119,14 @@ class Ebsdd # < ActiveRecord::Base
     :collecteur_tel, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
-    :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
-    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire
+    :code_operation, :traitement_prevu, :mode_transport
+
+  validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
+    if: -> { self[:entreposage_provisoire] }
+
+  validates_presence_of :recepisse,
+    if: -> { self[:mode_transport] == 1 }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false
@@ -144,11 +151,6 @@ class Ebsdd # < ActiveRecord::Base
   def short_bid
     bid.gsub('1000000', "")
   end
-  def tel_2_csv tel
-    if tel.size == 9
-      "0#{tel}"
-    end unless tel.nil?
-  end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
       column_names = attributes.keys
@@ -163,19 +165,19 @@ class Ebsdd # < ActiveRecord::Base
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
       csv << ["00", ecodds_id, bordereau_id, nil]
-      csv << ["01", 4, producteur_siret, producteur_nom, producteur_adresse, producteur_cp, producteur_ville, tel_2_csv(producteur_tel), producteur_fax, producteur_email, producteur_responsable, nil]
-      csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, tel_2_csv(destinataire_tel), destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
+      csv << ["01", 4, producteur_siret, producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, producteur_email, producteur_responsable, nil]
+      csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
       csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
       csv << ["04", DechetNomenclature[dechet_denomination], nil ]
       csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
       #csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      #csv << ["07", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, tel_2_csv(collecteur_tel), collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil ]
-      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, tel_2_csv(collecteur_tel), collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
+      #csv << ["07", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil ]
+      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
       csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, tel_2_csv(destination_ult_tel), destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
+      csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
       if(entreposage_provisoire)
         csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
         csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]

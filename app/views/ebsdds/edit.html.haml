@@ -105,6 +105,7 @@
             %span.badge 8
             Collecteur-transporteur
         .panel-body
+          = render partial: "cadre8", object: f, as: :f
 
   =# Cadre 9
   .row
@@ -162,7 +163,7 @@
           %h3.panel-title
             %span.badge 15
             Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
-        .panel-body
+        .panel-body.entreposage-provisoire
           = render partial: "cadre15", object: f, as: :f
   =# Cadre 16
   .row
@@ -172,7 +173,7 @@
           %h3.panel-title
             %span.badge 16
             Conditionnement
-        .panel-body
+        .panel-body.entreposage-provisoire
           = render partial: "cadre16", object: f, as: :f
   =# Cadre 17
   .row
@@ -182,5 +183,5 @@
           %h3.panel-title
             %span.badge 17
             Quantité
-        .panel-body
+        .panel-body.entreposage-provisoire
           = render partial: "cadre17", object: f, as: :f

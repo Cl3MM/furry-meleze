@@ -6,18 +6,21 @@
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
     =# f.submit "Enregistrer", class: "btn btn-info"
-  .container
-    - if @ebsdd.errors.any?
-      %div{id: "error_explanation"}
-        %h2
-          = pluralize(@ebsdd.errors.count, "erreur")
-          ont été détecté :
-
-        %ul
-          - @ebsdd.errors.full_messages.each do |msg|
-            %li
-              = msg
-
+  - if @ebsdd.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          %div{id: "error_explanation"}
+            %h2
+              Merci de corriger
+              = @ebsdd.errors.count > 1 ? "les" : "le"
+              = pluralize(@ebsdd.errors.count, "erreur")
+              = @ebsdd.errors.count > 1 ? "suivantes :" : "suivante :"
+            %ul
+              - @ebsdd.errors.full_messages.each do |msg|
+                %li
+                  = msg
   .row
     =# cadre 1
     .col-md-6

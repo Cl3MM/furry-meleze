@@ -1,0 +1,15 @@
+fr:
+  mongoid:
+    #models:
+      #ebsdd:
+        #attributes:
+          #bordereau_poids: plop
+          #num_cap: prout
+    errors:
+      models:
+        ebsdd:
+          attributes:
+            bordereau_poids:
+              blank: ne peut pas être vide
+            num_cap:
+              blank: ne peut pas être vide

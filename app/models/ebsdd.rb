@@ -23,6 +23,7 @@ class Ebsdd # < ActiveRecord::Base
   field :producteur_ville, type: String
   field :producteur_tel, type: String
   field :producteur_fax, type: String
+  field :producteur_email, type: String
   field :producteur_responsable, type: String
   field :destinataire_siret, type: String
   field :destinataire_nom, type: String
@@ -31,6 +32,7 @@ class Ebsdd # < ActiveRecord::Base
   field :destinataire_ville, type: String
   field :destinataire_tel, type: String
   field :destinataire_fax, type: String
+  field :destinataire_email, type: String
   field :destinataire_responsable, type: String
   field :nomenclature_dechet_code_nomen_c, type: Integer
   field :nomenclature_dechet_code_nomen_a, type: Integer
@@ -81,6 +83,18 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email,
+    :destinataire_email
+
+  validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
+    :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
+    :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
+    :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
+    :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
+    :collecteur_tel, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
+    :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
+    :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
+    :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult
 
   def poids_en_tonnes
@@ -115,17 +129,17 @@ class Ebsdd # < ActiveRecord::Base
     CSV.generate({:col_sep => ";"}) do |csv|
       #binding.pry
       csv << ["00", nil, bordereau_id, nil]
-      csv << ["01", 4, 'producteur_id', producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, 'producteur_email', producteur_responsable, nil]
-      csv << ["02", 0, destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, 'destinataire_email', destinataire_responsable, 'CAP#', 'R13', nil]
-      csv << ["03", nommenclature_dechet_code_nomen_c_a, 1, 'Dénomination usuelle', 'Consistance', nil ]
-      csv << ["04", "Mention au titre des règlements", nil ]
-      csv << ["05", "AUTRE", "Nombre de colis", nil ]
-      csv << ["06", "E", "Volume en tonne", nil ]
+      csv << ["01", 4, 'producteur_id', producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, producteur_email, producteur_responsable, nil]
+      csv << ["02", 0, destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, 'CAP#', 'R13', nil]
+      csv << ["03", nommenclature_dechet_code_nomen_c_a, 1, dechet_denomination, dechet_consistance, nil ]
+      csv << ["04", dechet_nomenclature, nil ]
+      csv << ["05", "AUTRE", dechet_nombre_colis, nil ]
+      csv << ["06", type_quantite, poids_en_tonnes, nil ]
       csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_cp[0..2], collecteur_responsable, nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil ]
-      csv << ["09", "Nom", bordereau_date_transport.strftime("%Y%m%d")]
+      csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d")]
       csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 0, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d") ]
-      csv << ["11", "Code DR", "Description", destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d")]
+      csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d")]
       csv << ["12", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
@@ -204,7 +218,7 @@ class Ebsdd # < ActiveRecord::Base
                 column << "#{spreadsheet.cell(i,j)}"
               end
               ebsdd.line_number = i
-              ebsdd.save
+              ebsdd.save(validate: false)
               @document.ebsdds.push(ebsdd)
               rows << column
             end

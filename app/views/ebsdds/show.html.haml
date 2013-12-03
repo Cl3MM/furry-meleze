@@ -1,6 +1,9 @@
 %h1.underline
-  eBSDD #
-  = @ebsdd.bordereau_id
+  eBSDD
+  %span.small
+    ="##{@ebsdd.bordereau_id}"
+  = fa_link_to edit_ebsdd_path(@ebsdd), "Modifier cet eBSDD", "edit lg", class: "btn btn-info pull-right"
+
 .container
 
 .row

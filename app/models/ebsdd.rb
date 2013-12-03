@@ -152,7 +152,7 @@ class Ebsdd # < ActiveRecord::Base
       csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
       csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
-      csv << ["17", type_quantite_ult, nil, nil, nil ]
+      csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
       csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
       csv << ["19", nil, nil, nil, nil ]
       csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]

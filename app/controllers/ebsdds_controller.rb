@@ -87,6 +87,7 @@ class EbsddsController < ApplicationController
   # PATCH/PUT /ebsdds/1.json
   def update
     @ebsdd = Ebsdd.find(params[:id])
+    #binding.pry
     respond_to do |format|
       if @ebsdd.update_attributes(params[:ebsdd])
         format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }

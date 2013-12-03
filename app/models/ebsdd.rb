@@ -17,6 +17,7 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
+  field :producteur_siret, type: String
   field :producteur_nom, type: String
   field :producteur_adresse, type: String
   field :producteur_cp, type: String
@@ -83,7 +84,7 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
-    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email,
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret
     :destinataire_email
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
@@ -100,6 +101,9 @@ class Ebsdd # < ActiveRecord::Base
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
   end
+  def poids_en_tonnes_ult
+    "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }"
+  end
   def is_incomplete?
     status == "incomplet"
   end
@@ -114,7 +118,9 @@ class Ebsdd # < ActiveRecord::Base
   def short_bid
     bid.gsub('1000000', "")
   end
-
+  def tel_2_csv tel
+    puts "plop" if tel !=~ /\A0\d{9}/
+  end
   def nommenclature_dechet_code_nomen_c_a
     "#{nomenclature_dechet_code_nomen_c}#{nomenclature_dechet_code_nomen_a}"
   end
@@ -126,30 +132,30 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
   def to_ebsdd
-    CSV.generate({:col_sep => ";"}) do |csv|
+    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
       csv << ["00", nil, bordereau_id, nil]
-      csv << ["01", 4, 'producteur_id', producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, producteur_email, producteur_responsable, nil]
-      csv << ["02", 0, destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, 'CAP#', 'R13', nil]
+      csv << ["01", 4, producteur_siret.gsub(" ", ""), producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, producteur_email, producteur_responsable, nil]
+      csv << ["02", 0, destinataire_siret.gsub(" ", ""), destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, 'CAP#', 'R13', nil]
       csv << ["03", nommenclature_dechet_code_nomen_c_a, 1, dechet_denomination, dechet_consistance, nil ]
       csv << ["04", dechet_nomenclature, nil ]
-      csv << ["05", "AUTRE", dechet_nombre_colis, nil ]
+      csv << ["05", DechetNomenclature[dechet_denomination], dechet_nombre_colis, nil ]
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
       csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_cp[0..2], collecteur_responsable, nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil ]
-      csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d")]
-      csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 0, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d") ]
-      csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d")]
-      csv << ["12", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["15", nil, nil ]
-      csv << ["16", nil, nil ]
-      csv << ["17", nil, nil, nil ]
-      csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["19", nil, nil, nil ]
-      csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["08", collecteur_siret.gsub(" ", ""), collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_cp[0..2], collecteur_responsable, nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
+      csv << ["10", destinataire_siret.gsub(" ", ""), destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 0, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
+      csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
+      csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["15", mention_titre_reglements_ult, nil, nil ]
+      csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
+      csv << ["17", type_quantite_ult, nil, nil, nil ]
+      csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["19", nil, nil, nil, nil ]
+      csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
     end
   end
 

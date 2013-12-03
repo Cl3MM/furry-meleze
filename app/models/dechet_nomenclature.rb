@@ -19,4 +19,8 @@ class DechetNomenclature
       [line.last, line.first]
     end
   end
+  def self.[] key
+    key = key.to_s
+    DechetNomenclature.nomenclature.map{|l| l.first.to_s}.include?(key) ? DechetNomenclature.nomenclature.select { |l| l.last if l.first.to_s == key }.flatten.last : nil
+  end
 end

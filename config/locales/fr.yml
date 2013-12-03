@@ -1,10 +1,10 @@
 fr:
   mongoid:
-    #models:
-      #ebsdd:
-        #attributes:
-          #bordereau_poids: plop
-          #num_cap: prout
+    attributes:
+      ebsdd:
+        bordereau_poids: Poids
+        num_cap: Numéro CAP
+        bordereau_poids_ult: Poids
     errors:
       models:
         ebsdd:
@@ -12,4 +12,12 @@ fr:
             bordereau_poids:
               blank: ne peut pas être vide
             num_cap:
+              blank: ne peut pas être vide
+            producteur_adresse:
+              blank: ne peut pas être vide
+            producteur_ville:
+              blank: ne peut pas être vide
+            emetteur_nom:
+              blank: ne peut pas être vide
+            bordereau_poids_ult:
               blank: ne peut pas être vide

@@ -35,7 +35,7 @@ class CodeDr
   end
   def self.to_select
     CodeDr.codes.map do | line |
-      [line.last, line.first]
+      ["#{line.first} / #{line.last}", line.first]
     end
   end
   def self.[] key

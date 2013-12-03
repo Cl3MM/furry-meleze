@@ -112,7 +112,9 @@ class Ebsdd # < ActiveRecord::Base
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
     :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
-    :mode_transport, :transport_multimodal, :bordereau_limite_validite
+    :mode_transport, :transport_multimodal, :bordereau_limite_validite,
+    :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
+    :destination_ult_ville, :destination_ult_tel
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,

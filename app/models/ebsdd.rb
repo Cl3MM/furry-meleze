@@ -92,12 +92,13 @@ class Ebsdd # < ActiveRecord::Base
   field :destination_ult_contact, type: String
   field :mention_titre_reglements_ult, type: String
   field :dechet_conditionnement_ult, type: String
+  field :entreposage_provisoire, type: Boolean
 
   field :dechet_nombre_colis_ult, type: Integer
   field :type_quantite_ult, type: String
   field :valorisation_prevue, type: String, default: "R13"
 
-  attr_accessible :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
+  attr_accessible :id, :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
@@ -107,7 +108,7 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
-    :destinataire_email, :colllecteur_email, :valorisation_prevue
+    :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -118,8 +119,11 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
-    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire
 
+  def is_entreposage_provisoire?
+    entreposage_provisoire || false
+  end
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
   end
@@ -152,11 +156,13 @@ class Ebsdd # < ActiveRecord::Base
       csv << attributes.values_at(*column_names)
     end
   end
-
+  def ecodds_id
+    "#{Time.now.strftime("%y")}#{id[-6..-1]}"
+  end
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
-      csv << ["00", nil, bordereau_id, nil]
+      csv << ["00", ecodds_id, bordereau_id, nil]
       csv << ["01", 4, producteur_siret, producteur_nom, producteur_adresse, producteur_cp, producteur_ville, tel_2_csv(producteur_tel), producteur_fax, producteur_email, producteur_responsable, nil]
       csv << ["02", 0, destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, tel_2_csv(destinataire_tel), destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
       csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]

@@ -5,3 +5,14 @@
 .form-group
   = f.label :valorisation_prevue, "Valorisation prévue"
   = f.select :valorisation_prevue, CodeDr.to_select
+
+.form-group
+  = f.label :entreposage_provisoire, "Entreposage provisoire ou reconditionnement"
+  %br
+  %label.radio-inline
+    = f.radio_button :entreposage_provisoire, true, checked: true
+    Oui
+  %label.radio-inline
+    = f.radio_button :entreposage_provisoire, false
+    Non
+

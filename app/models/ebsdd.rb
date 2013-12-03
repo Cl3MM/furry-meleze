@@ -44,6 +44,7 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_ville, type: String
   field :collecteur_tel, type: String
   field :collecteur_fax, type: String
+  field :collecteur_email, type: String
   field :collecteur_responsable, type: String
   field :bordereau_date_transport, type: Date
   field :bordereau_poids, type: Integer
@@ -85,7 +86,7 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret
-    :destinataire_email
+    :destinataire_email, :colllecteur_email
 
   validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
@@ -141,8 +142,8 @@ class Ebsdd # < ActiveRecord::Base
       csv << ["04", DechetNomenclature[dechet_denomination], nil ]
       csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
-      csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["08", collecteur_siret.gsub(" ", ""), collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_cp[0..2], collecteur_responsable, nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      csv << ["08", collecteur_siret.gsub(" ", ""), collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil, bordereau_date_transport.strftime("%Y%m%d"), nil, nil ]
       csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", destinataire_siret.gsub(" ", ""), destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 0, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]

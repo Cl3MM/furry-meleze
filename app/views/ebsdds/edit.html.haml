@@ -2,10 +2,12 @@
   %h1.underline
     = fa_icon "tags"
     Complèter l'eBSDD
-    = content_tag :button, type: :submit, class: "btn btn-info pull-right" do
+    = content_tag :button, type: :submit, class: "btn btn-info pull-right mg-l-5" do
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
-    =# f.submit "Enregistrer", class: "btn btn-info"
+    = content_tag :button, type: :submit, class: "btn btn-warning pull-right" do
+      = fa_icon "cloud-download lg"
+      &nbsp;Exporter au format CSV
   - if @ebsdd.errors.any?
     .row
       .col-md-12

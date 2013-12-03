@@ -122,7 +122,9 @@ class Ebsdd # < ActiveRecord::Base
     :collecteur_tel, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
-    :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
+    :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
+    :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
+    :destination_ult_ville, :destination_ult_tel
 
   validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,

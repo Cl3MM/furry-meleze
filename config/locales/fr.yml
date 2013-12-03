@@ -7,6 +7,12 @@ fr:
         bordereau_poids_ult: Poids
         recepisse: Récepissé
         bordereau_limite_validite: Limite de validité du bordereau
+        destination_ult_siret: SIRET
+        destination_ult_nom: Nom
+        destination_ult_adresse: Adresse
+        destination_ult_cp: Code postal
+        destination_ult_ville: Ville
+        destination_ult_tel: Téléphone
     errors:
       models:
         ebsdd:
@@ -26,4 +32,16 @@ fr:
             recepisse:
               blank: ne peut pas être vide
             bordereau_limite_validite:
+              blank: ne peut pas être vide
+            destination_ult_siret:
+              blank: ne peut pas être vide
+            destination_ult_nom:
+              blank: ne peut pas être vide
+            destination_ult_adresse:
+              blank: ne peut pas être vide
+            destination_ult_cp:
+              blank: ne peut pas être vide
+            destination_ult_ville:
+              blank: ne peut pas être vide
+            destination_ult_tel:
               blank: ne peut pas être vide

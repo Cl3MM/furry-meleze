@@ -1,6 +1,6 @@
 jQuery ->
   $("a.touletip").tooltip()
-  $( "input.datepicker").datepicker
+  #$( "input.datepicker").datepicker
     dateFormat: 'yy-mm-dd'
   entreposage_visibility = (x) ->
     $(".entreposage-provisoire :input").each ->

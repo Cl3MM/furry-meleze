@@ -40,7 +40,7 @@ class Producteur
       unless (headers_hash = check_headers(headers)).nil?
         (2..spreadsheet.last_row).each do | i |
           params = headers_hash.reduce({}) do | _h, (k, v) |
-          _h[k] = (c = spreadsheet.cell(i, v).squish).blank? ? c : nil
+          _h[k] = (c = spreadsheet.cell(i, v).squish).blank? ? nil : c
           _h
         end
         create_from_import(params)

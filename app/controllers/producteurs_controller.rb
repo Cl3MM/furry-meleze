@@ -1,3 +1,4 @@
+# encoding: utf-8
 class ProducteursController < ApplicationController
   before_filter :authenticate_utilisateur!
 

@@ -8,7 +8,13 @@ class Ebsdd # < ActiveRecord::Base
     15
   end
 
-  before_save :normalize
+  before_create :normalize
+  after_save :set_complet
+
+  def set_complet
+    self[:status] = :complet if self[:status] == :incomplet
+  end
+  #before_save :normalize
 
   belongs_to :attachment #, :inverse_of => :ebsdds
   attr_accessible :id, :_id
@@ -289,23 +295,20 @@ class Ebsdd # < ActiveRecord::Base
   protected
 
   def normalize
-    if read_attribute(:status) == :incomplet
-      self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
-      [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
-        self[attr] = nil if read_attribute(attr).blank?
+    self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
+    [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
+      self[attr] = nil if read_attribute(attr).blank?
+    end
+    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
+      self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
+      if self[attr].size == 9
+        self[attr] = "0#{self[attr]}"
+      end unless read_attribute(attr).nil?
+    end
+    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
+      unless read_attribute(attr).nil?
+        self[attr].gsub!(/\s/, "")
       end
-      [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
-        self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
-        if self[attr].size == 9
-          self[attr] = "0#{self[attr]}"
-        end unless read_attribute(attr).nil?
-      end
-      [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
-        unless read_attribute(attr).nil?
-          self[attr].gsub!(/\s/, "")
-        end
-      end
-      self[:status] = "complet"
     end
   end
 

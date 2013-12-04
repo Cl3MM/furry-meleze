@@ -8,13 +8,16 @@ class Ebsdd # < ActiveRecord::Base
     15
   end
 
-  before_create :normalize
-  after_save :set_complet
+  before_create :normalize, :set_status
+  before_update :set_status
 
-  def set_complet
-    self[:status] = :complet if self[:status] == :incomplet
+  def set_status
+    if self[:status] == :import
+      self[:status] = :incomplet
+    elsif self[:status] = :incomplet
+      self[:status] = :complet
+    end
   end
-  #before_save :normalize
 
   belongs_to :attachment #, :inverse_of => :ebsdds
   attr_accessible :id, :_id
@@ -190,34 +193,6 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
-  def to_ebsdd_template
-    CSV.generate({:col_sep => ";"}) do |csv|
-      #binding.pry
-      csv << ["00", nil, :bordereau_id, nil]
-      csv << ["01", 4, 'producteur_id', :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville, :producteur_tel, :producteur_fax, 'producteur_email', producteur_responsable, nil]
-      csv << ["02", 0, :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax, ':destinataire_email', :destinataire_responsable, 'CAP#', 'R13', nil]
-      csv << ["03", :nommenclature_dechet_code_nomen_c_a, 1, 'Dénomination usuelle', 'Consistance', nil ]
-      csv << ["04", "Mention au titre des règlements", nil ]
-      csv << ["05", "AUTRE", "Nombre de colis", nil ]
-      csv << ["06", "E", "Volume en tonne", nil ]
-      csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["08", :colllecteur_siret, :colllecteur_nom, :colllecteur_adresse, :colllecteur_cp, :colllecteur_ville, :colllecteur_tel, :colllecteur_fax, :colllecteur_cp[0..2], :colllecteur_responsable, nil, nil, :bordereau_date_transport, nil ]
-      csv << ["09", "Nom", :bordereau_date_transport]
-      csv << ["10", :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_responsable, :poids_en_tonnes, :bordereau_date_transport, 0, nil, :destinataire_responsable, :bordereau_date_transport ]
-      csv << ["11", "Code DR", "Description", :destinataire_responsable, :bordereau_date_transport]
-      csv << ["12", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["15", nil, nil ]
-      csv << ["16", nil, nil ]
-      csv << ["17", nil, nil, nil ]
-      csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["19", nil, nil, nil ]
-      csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-    end
-  end
-
   def self.has_every_bsd_completed?
     Ebsdd.where(status: :incomplet).exists?
   end
@@ -257,6 +232,7 @@ class Ebsdd # < ActiveRecord::Base
                 column << "#{spreadsheet.cell(i,j)}"
               end
               ebsdd.line_number = i
+              ebsdd.status = :import
               ebsdd.save(validate: false)
               @document.ebsdds.push(ebsdd)
               rows << column
@@ -310,9 +286,6 @@ class Ebsdd # < ActiveRecord::Base
         self[attr].gsub!(/\s/, "")
       end
     end
-  end
-
-  def set_status
   end
 
 end

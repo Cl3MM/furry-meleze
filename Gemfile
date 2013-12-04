@@ -19,7 +19,8 @@ gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
 gem 'turbolinks'
-gem 'will_paginate', '~> 3.0'
+#gem 'will_paginate', '~> 3.0'
+gem "will_paginate_mongoid"
 gem 'will_paginate-bootstrap'
 gem 'anjlab-bootstrap-rails', '~> 3.0.2.0', :require => 'bootstrap-rails'
 #gem 'simple_form'

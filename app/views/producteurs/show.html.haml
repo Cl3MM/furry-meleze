@@ -1,0 +1,69 @@
+%h1.underline
+  = fa_icon "user"
+  Producteur
+  %small
+    = @producteur.nom.titleize
+  -#.btn-group.pull-right
+    -#%button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      -#= fa_icon "cogs lg"
+      -#&nbsp;
+      -#Actions
+      -#%span.caret
+    -#%ul.dropdown-menu{role: "menu"}
+      -#%li
+        -#= fa_link_to new_producteur_path, "Créer un nouveau producteur", "user lg"
+      -#%li.divider
+      -#%li
+        -#= fa_link_to new_producteur_path, "Importer une liste de producteurs", "group lg"
+
+.row#edit
+  .col-md-12
+    .panel.panel-default
+      .panel-body
+        .row
+          .col-md-4
+            %label SIRET :
+            = @producteur.siret
+
+          .col-md-4
+            %label Nom :
+            = @producteur.nom
+
+          .col-md-4
+            %label Contact :
+            = @producteur.responsable
+          .col-md-4
+            %label Adresse :
+            = @producteur.adresse
+
+          .col-md-4
+            %label Code postal :
+            = @producteur.cp
+
+          .col-md-4
+            %label Ville :
+            = @producteur.ville
+
+          .col-md-4
+            %label Téléphone :
+            = @producteur.tel
+
+          .col-md-4
+            %label Fax :
+            = @producteur.fax
+
+          .col-md-4
+            %label Adresse email :
+            = @producteur.email
+        .row
+          .col-md-12
+            .actions.margin-top-30
+              = link_to producteurs_path, class: "btn btn-default" do
+                = fa_icon "arrow-circle-left lg"
+                &nbsp;Voir tous les producteurs
+              = link_to edit_producteur_path(@producteur), class: "btn btn-success" do
+                = fa_icon "eye lg"
+                &nbsp;Modifier
+              -#= content_tag :button, type: :submit, class: "btn btn-primary" do
+                -#Enregistrer les modifications&nbsp;
+                -#= fa_icon "save lg"

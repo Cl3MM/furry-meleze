@@ -28,6 +28,7 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
+
   field :producteur_siret, type: String
   field :producteur_nom, type: String
   field :producteur_adresse, type: String
@@ -37,6 +38,7 @@ class Ebsdd # < ActiveRecord::Base
   field :producteur_fax, type: String
   field :producteur_email, type: String, default: nil
   field :producteur_responsable, type: String
+
   field :destinataire_siret, type: String
   field :destinataire_nom, type: String
   field :destinataire_adresse, type: String
@@ -262,7 +264,7 @@ class Ebsdd # < ActiveRecord::Base
 
   def self.search params
     if params.has_key?(:status)
-      Ebsdd.where(status: params[:status].singularize)
+      Ebsdd.where(status: params[:status].singularize).order_by(created_at: :asc)
     else
       Ebsdd.all
     end

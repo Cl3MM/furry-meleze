@@ -1,0 +1,71 @@
+= custom_form@producteur do | f |
+  - if @producteur.errors.any?
+    #error_explanation
+      %h2
+        Merci de corriger
+        - if @producteur.errors.count > 1
+          les #{@producteur.errors.count} erreurs suivantes :
+        - else
+          l'erreur suivante :
+      %ul
+        - @producteur.errors.full_messages.each do |msg|
+          %li= msg
+
+  .row
+    .col-md-12
+      .form-group
+        = f.label :siret, "SIRET"
+        = f.text_field :siret, placeholder: "SIRET"
+
+    .col-md-6
+      .form-group
+        = f.label :nom, "Nom"
+        = f.text_field :nom, placeholder: "Nom"
+
+    .col-md-6
+      .form-group
+        = f.label :responsable, "Responsable"
+        = f.text_field :responsable, placeholder: "Contact"
+    .col-md-12
+      .form-group
+        = f.label :adresse, "Adresse"
+        = f.text_field :adresse, placeholder: "Adresse"
+
+  .row
+    .col-md-3
+      .form-group
+        = f.label :cp, "Code postal"
+        = f.text_field :cp, placeholder: "Code postal"
+
+    .col-md-9
+      .form-group
+        = f.label :ville, "Ville"
+        = f.text_field :ville, placeholder: "Ville"
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :tel, "Téléphone"
+        = f.text_field :tel, placeholder: "Téléphone"
+
+    .col-md-6
+      .form-group
+        = f.label :fax, "Fax"
+        = f.text_field :fax, placeholder: "Fax"
+
+  .row
+    .col-md-12
+      .form-group
+        = f.label :email, "Adresse email"
+        = f.text_field :email, placeholder: "Adresse email"
+
+    .actions
+      = link_to producteurs_path, class: "btn btn-default" do
+        = fa_icon "arrow-circle-left lg"
+        &nbsp;Retour à la liste des producteurs
+      = link_to producteur_path(@producteur), class: "btn btn-success" do
+        = fa_icon "eye lg"
+        &nbsp;Annuler les modifications
+      = content_tag :button, type: :submit, class: "btn btn-primary" do
+        Enregistrer les modifications&nbsp;
+        = fa_icon "save lg"

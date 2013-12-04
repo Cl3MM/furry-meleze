@@ -22,6 +22,6 @@ class DechetContenant
   end
   def self.display(key)
     key = key.to_s
-    DechetContenant.contenant.map{|l| l.first.to_s}.include?(key) ? DechetContenant.contenant.select { |l| l if l.first.to_s == key }.flatten.last(2).join : nil
+    DechetContenant.contenant.map{|l| l.first.to_s}.include?(key) ? DechetContenant.contenant.select { |l| l if l.first.to_s == key }.flatten.last(2).join(" ") : nil
   end
 end

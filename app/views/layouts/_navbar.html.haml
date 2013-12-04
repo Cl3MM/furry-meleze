@@ -1,0 +1,47 @@
+.navbar.navbar-default#main_nav_bar{ role: :navigation }
+  .navbar-header
+    %button.navbar-toggle{ type: "button", "data-toggle" => :collapse, "data-target"=>"#super_menu"}
+      %span.sr-only Toggle navigation
+      %span.icon-bar
+      %span.icon-bar
+      %span.icon-bar
+    = link_to root_path, class: "navbar-brand" do
+      = fa_icon "leaf lg", text: "Mélèze"
+  .navbar-collapse.collapse#super_menu
+    -#%ul.nav.navbar-nav
+      -#%li.dropdown
+        -#= link_to "#", class: "dropdown-toggle", "data-toggle" => :dropdown do
+          -#Menu
+          -#%b.caret
+        -#%ul.dropdown-menu
+    %ul.nav.navbar-nav.navbar-right
+      %li.dropdown
+        = link_to destroy_utilisateur_session_path, class: "dropdown-toggle", "data-toggle" => "dropdown" do
+          = fa_icon "cogs lg"
+          &nbsp;
+          Paramètres
+          %b.caret
+        %ul.dropdown-menu
+          %li
+            = fa_link_to producteurs_path, "Gérer les producteurs", "group lg"
+          %li
+            = fa_link_to ebsdds_path, "Gérer les eBSDDs", "tags"
+          %li
+            = fa_link_to attachments_path, "Gérer les fichiers importés", "file-text"
+          %li.divider
+          - if utilisateur_signed_in?
+            %li.dropdown-header{ role: :presentation }
+              = fa_icon "user lg"
+              Utilisateur :
+              = current_utilisateur.email.split("@").first.titleize
+            %li
+              = link_to destroy_utilisateur_session_path, :method => :delete do
+                = fa_icon "sign-out lg"
+                Déconnexion
+    = form_tag ebsdds_upload_path, class: "navbar-form navbar-right", role: :search do
+      .form-group
+        = text_field_tag :q, nil, class: "form-control", placeholder: "Rechercher"
+      %span.form-group-btn
+        %button.btn.btn-default{ type: :button }
+          = fa_icon "search lg"
+

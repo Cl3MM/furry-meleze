@@ -14,13 +14,6 @@ class EbsddsController < ApplicationController
     Attachment.delete_all
     redirect_to root_path, notice: "Base de données réinitialisée avec succès !"
   end
-  def template
-    respond_to do |format|
-      format.html
-      format.csv { send_data @ebsdd.to_ebsdd_template, filename: "#{@ebsdd.id}_template.csv" }
-      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
-    end
-  end
 
   def download
     respond_to do |format|
@@ -33,7 +26,9 @@ class EbsddsController < ApplicationController
   def upload
     if params.has_key? :file
       file = params[:file]
-      if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"].include? file.content_type
+      if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "application/vnd.ms-excel"
+      ].include? file.content_type
         validation = Ebsdd.import(params[:file])
         if validation[:errors].any?
           redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")

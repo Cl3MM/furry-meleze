@@ -11,7 +11,16 @@ Meleze::Application.routes.draw do
   get 'ebsdds/reset', to: 'ebsdds#reset', as: :reset
   get 'ebsdds/import'
   post 'ebsdds/upload'
+
+  get 'producteurs/import'
+  post 'producteurs/upload'
+
+  get 'destinataires/import'
+  post 'destinataires/upload'
+
   resources :ebsdds
+  resources :destinataires
+  resources :producteurs
 
   root to: 'dashboard#index'
   # The priority is based upon order of creation:

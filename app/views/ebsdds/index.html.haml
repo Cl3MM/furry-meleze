@@ -3,7 +3,25 @@
   Liste des eBSDDs
   %span.small
     = "(#{Ebsdd.count})"
-  = fa_link_to ebsdds_import_path, "Importer un nouveau eBSDD depuis Excel", "cloud-upload lg", class: "btn btn-primary pull-right"
+
+  %span.small
+    = "(#{Producteur.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
+      %li.divider
+      %li
+        = fa_link_to ebsdds_import_path, "Importer une liste de eBSDDs", "cloud-upload lg"
+
+
+
+
 
 %ol.breadcrumb
   %li{ class: "#{@status == :empty ? "active" : ""}" }
@@ -21,7 +39,12 @@
       Complets
     - else
       = link_to "Complets", ebsdd_status_path(status: :complets)
+  %li{ class: "#{@status == :expedies ? "active" : ""}" }
+    - if @status == :expedies
+      Expédiés
+    - else
+      = link_to "Expédiés", ebsdd_status_path(status: :expedies)
 
 = render partial: "ebsdds"
-.center-block
+.center-block.tect-center
   = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

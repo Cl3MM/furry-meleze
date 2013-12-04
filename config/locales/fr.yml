@@ -15,37 +15,41 @@ fr:
         destination_ult_tel: Téléphone
     errors:
       models:
+        producteur:
+          attributes:
+            nom:
+              blank: ne doit pas être vide
         ebsdd:
           attributes:
             bordereau_poids:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             num_cap:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             producteur_adresse:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             producteur_ville:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             emetteur_nom:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             bordereau_poids_ult:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             recepisse:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             bordereau_limite_validite:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_siret:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_nom:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_adresse:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_cp:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_ville:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             destination_ult_tel:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             producteur_tel:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide
             producteur_responsable:
-              blank: ne peut pas être vide
+              blank: ne doit pas être vide

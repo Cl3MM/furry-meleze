@@ -5,7 +5,8 @@
     = content_tag :button, type: :submit, class: "btn btn-info pull-right mg-l-5" do
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
-    = fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right"
+    - unless @ebsdd.is_incomplete?
+      = fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right"
   - if @ebsdd.errors.any?
     .row
       .col-md-12

@@ -10,7 +10,7 @@
             %th Type déchet
             %th Date création
             %th Poids
-            %th Actions
+            %th.actions Actions
 
         %tbody
           -@ebsdds.each do | ebsdd |
@@ -21,12 +21,11 @@
               %td= ebsdd.libelle.titleize
               %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
               %td= "#{ebsdd.bordereau_poids} kg"
-              %td
-                = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter")
-                = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV")
-                = link_to(fa_icon("bug lg", text: ""), ebsdd_template_path(ebsdd), class: "btn btn-danger touletip btn-xs", role: "button", title: "Télécharger le template pour vérification")
-                -#link_to 'Modifier', edit_ebsdd_path(ebsdd)
-                -#link_to 'Supprimer', ebsdd, method: :delete, data: { confirm: 'Are you sure?' }
+              %td.actions
+                .center-block.text-center
+                  = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
+                  = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid})")
+                  = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") unless ebsdd.is_incomplete?
 -else
   .center-block
     %p.text-center

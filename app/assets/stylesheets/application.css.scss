@@ -57,7 +57,8 @@ h1 {
 }
 .fa-margin-right-4 { margin-right: 4px; }
 .actions {
-  min-width: 120px;
+  min-width: 80px;
+  text-align: center;
 }
 .panel-heading {
   @include gradient-vertical(#FAFAFA, #E9E9E9);

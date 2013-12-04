@@ -9,29 +9,12 @@ class Ebsdd # < ActiveRecord::Base
   end
 
   before_save :normalize
-  def normalize
-    self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
-    [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
-      self[attr] = nil if read_attribute(attr).blank?
-    end
-    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
-      self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
-      if self[attr].size == 9
-        self[attr] = "0#{self[attr]}"
-      end unless read_attribute(attr).nil?
-    end
-    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
-      unless read_attribute(attr).nil?
-        self[attr].gsub!(/\s/, "")
-      end
-    end
-  end
 
   belongs_to :attachment #, :inverse_of => :ebsdds
   attr_accessible :id, :_id
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
-  field :status, type: String, default: "incomplet"
+  field :status, type: Symbol, default: :incomplet
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
@@ -145,7 +128,7 @@ class Ebsdd # < ActiveRecord::Base
     "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
   end
   def is_incomplete?
-    status == "incomplet"
+    status == :incomplet
   end
   def bid
     bid = read_attribute(:bordereau_id)
@@ -230,7 +213,7 @@ class Ebsdd # < ActiveRecord::Base
   end
 
   def self.has_every_bsd_completed?
-    Ebsdd.where(status: "incomplet").exists?
+    Ebsdd.where(status: :incomplet).exists?
   end
   def self.import(file)
     out = { rows: nil, errors: [] }
@@ -295,7 +278,38 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
+  def self.search params
+    if params.has_key?(:status)
+      Ebsdd.where(status: params[:status].singularize)
+    else
+      Ebsdd.all
+    end
+  end
+
   protected
+
+  def normalize
+    if read_attribute(:status) == :incomplet
+      self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
+      [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
+        self[attr] = nil if read_attribute(attr).blank?
+      end
+      [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
+        self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
+        if self[attr].size == 9
+          self[attr] = "0#{self[attr]}"
+        end unless read_attribute(attr).nil?
+      end
+      [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
+        unless read_attribute(attr).nil?
+          self[attr].gsub!(/\s/, "")
+        end
+      end
+      self[:status] = "complet"
+    end
+  end
+
   def set_status
   end
+
 end

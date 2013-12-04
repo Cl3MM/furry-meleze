@@ -50,7 +50,8 @@ class EbsddsController < ApplicationController
   # GET /ebsdds
   # GET /ebsdds.json
   def index
-    @ebsdds = Ebsdd.all.paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.search(params).paginate(page: params[:page], per_page: 15)
+    @status = (params.has_key?(:status) ? params[:status].to_sym : :empty)
   end
 
   # GET /ebsdds/1

@@ -5,6 +5,23 @@
     = "(#{Ebsdd.count})"
   = fa_link_to ebsdds_import_path, "Importer un nouveau eBSDD depuis Excel", "cloud-upload lg", class: "btn btn-primary pull-right"
 
+%ol.breadcrumb
+  %li{ class: "#{@status == :empty ? "active" : ""}" }
+    - if @status == :empty
+      Tous
+    - else
+      = link_to "Tous", ebsdds_path
+  %li{ class: "#{@status == :incomplets ? "active" : ""}" }
+    - if @status == :incomplets
+      Incomplets
+    - else
+      = link_to "Incomplets", ebsdd_status_path(status: :incomplets)
+  %li{ class: "#{@status == :complets ? "active" : ""}" }
+    - if @status == :complets
+      Complets
+    - else
+      = link_to "Complets", ebsdd_status_path(status: :complets)
+
 = render partial: "ebsdds"
 .center-block
   = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

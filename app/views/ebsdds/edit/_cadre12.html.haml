@@ -1,0 +1,48 @@
+.form-group
+  = f.label :traitement_prevu, "Traitement prévu"
+  = f.select :traitement_prevu, CodeDr.to_select
+
+.row
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_siret, "SIRET"
+      = f.text_field :destination_ult_siret, placeholder: "SIRET"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_nom, "Nom"
+      = f.text_field :destination_ult_nom, placeholder: "Nom"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_contact, "Contact"
+      = f.text_field :destination_ult_contact, placeholder: "Contact"
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_adresse, "Adresse"
+      = f.text_field :destination_ult_adresse, placeholder: "Adresse"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_cp, "Code postal"
+      = f.text_field :destination_ult_cp, placeholder: "Code postal"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_ville, "Ville"
+      = f.text_field :destination_ult_ville, placeholder: "Ville"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_tel, "Téléphone"
+      = f.text_field :destination_ult_tel, placeholder: "Téléphone"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_fax, "Fax"
+      = f.text_field :destination_ult_fax, placeholder: "Fax"
+
+  .col-md-4
+    .form-group
+      = f.label :destination_ult_mel, "Adresse email"
+      = f.text_field :destination_ult_mel, placeholder: "Adresse email"

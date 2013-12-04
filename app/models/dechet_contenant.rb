@@ -18,6 +18,10 @@ class DechetContenant
   end
   def self.[] key
     key = key.to_s
-    DechetContenant.contenant.map{|l| l.first.to_s}.include?(key) ? DechetContenant.contenant.select { |l| l.last if l.first.to_s == key }.flatten.last : nil
+    DechetContenant.contenant.map{|l| l.first.to_s}.include?(key) ? DechetContenant.contenant.select { |l| "#{l[1]} #{l.last}" if l.first.to_s == key }.flatten.last : nil
+  end
+  def self.display(key)
+    key = key.to_s
+    DechetContenant.contenant.map{|l| l.first.to_s}.include?(key) ? DechetContenant.contenant.select { |l| l if l.first.to_s == key }.flatten.last(2).join : nil
   end
 end

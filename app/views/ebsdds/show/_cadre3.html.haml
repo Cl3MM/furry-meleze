@@ -1,0 +1,16 @@
+.row
+  .col-md-12
+    %label
+      Dénomination usuelle du déchet :
+    = DechetDenomination[ebsdd.dechet_denomination]
+    %br
+
+  .col-md-12
+    %label
+      Consistance :
+    - if ebsdd.dechet_consistance == 0
+      Solide
+    - elsif ebsdd.dechet_consistance == 1
+      Liquide
+    - else
+      Gazeux

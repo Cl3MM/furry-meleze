@@ -1,0 +1,36 @@
+.row
+  .col-md-6
+    .col-md-6
+      %label
+        Mode de transport :
+      %br
+      = fa_icon "#{ ebsdd.mode_transport == 1 ? "dot-circle-o" : "circle-o" } lg", text: "Route"
+      %br
+      = fa_icon "#{ ebsdd.mode_transport == 2 ? "dot-circle-o" : "circle-o" } lg", text: "Aérien"
+      %br
+      = fa_icon "#{ ebsdd.mode_transport == 3 ? "dot-circle-o" : "circle-o" } lg", text: "Ferroviaire"
+    .col-md-6
+      %br
+      = fa_icon "#{ ebsdd.mode_transport == 4 ? "dot-circle-o" : "circle-o" } lg", text: "Fluvial"
+      %br
+      = fa_icon "#{ ebsdd.mode_transport == 5 ? "dot-circle-o" : "circle-o" } lg", text: "Maritime"
+
+  .col-md-6
+    - if ebsdd.mode_transport == 1
+      %label
+        Numéro de recepissé :
+      = ebsdd.recepisse
+      %br
+      %label
+        Limite de validité du bordereau :
+      = ebsdd.recepisse
+      %br
+      %label
+        Numéro de recepissé
+      = ebsdd.bordereau_limite_validite
+      %br
+      %label
+        Transport multimodal :
+      = fa_icon "#{ ebsdd.transport_multimodal ? "dot-circle-o" : "circle-o" } lg", text: "Oui"
+      &nbsp; &nbsp;
+      = fa_icon "#{ !ebsdd.transport_multimodal ? "dot-circle-o" : "circle-o" } lg", text: "Non"

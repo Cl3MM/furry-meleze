@@ -24,7 +24,7 @@
                   = msg
   %div#edit
     .row
-      =# cadre 1
+      =# ebsdds/edit/cadre 1
       .col-md-6
         .panel.panel-default
           .panel-heading
@@ -33,8 +33,8 @@
               %span.badge 1
               Emetteur du bordereau
           .panel-body
-            = render partial: "cadre1", object: f, as: :f
-      =# cadre 2
+            = render partial: "ebsdds/edit/cadre1", object: f, as: :f
+      =# ebsdds/edit/cadre 2
       .col-md-6
         .panel.panel-default
           .panel-heading
@@ -43,8 +43,8 @@
               =# fa_icon "gears ccc"
               Installation de destination / entreposage / reconditionnement
           .panel-body
-            = render partial: "cadre2", object: f, as: :f
-    =# Cadre 3
+            = render partial: "ebsdds/edit/cadre2", object: f, as: :f
+    =# ebsdds/edit/cadre 3
     .row
       .col-md-12
         .panel.panel-default
@@ -53,9 +53,9 @@
               %span.badge 3
               Dénomination du déchet
           .panel-body
-            = render partial: "cadre3", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre3", object: f, as: :f
 
-    =# Cadre 4
+    =# ebsdds/edit/cadre 4
     .row
       .col-md-12
         .panel.panel-default
@@ -64,9 +64,9 @@
               %span.badge 4
               Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
           .panel-body
-            = render partial: "cadre4", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre4", object: f, as: :f
 
-    =# Cadre 5
+    =# ebsdds/edit/cadre 5
     .row
       .col-md-12
         .panel.panel-default
@@ -75,9 +75,9 @@
               %span.badge 5
               Conditionnement
           .panel-body
-            = render partial: "cadre5", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre5", object: f, as: :f
 
-    =# Cadre 6
+    =# ebsdds/edit/cadre 6
     .row
       .col-md-12
         .panel.panel-default
@@ -86,9 +86,9 @@
               %span.badge 6
               Quantité
           .panel-body
-            = render partial: "cadre6", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre6", object: f, as: :f
 
-    =# Cadre 7
+    =# ebsdds/edit/cadre 7
     .row
       .col-md-12
         .panel.panel-default
@@ -98,7 +98,7 @@
               Négociant
           .panel-body
 
-    =# Cadre 8
+    =# ebsdds/edit/cadre 8
     .row
       .col-md-12
         .panel.panel-default
@@ -107,9 +107,9 @@
               %span.badge 8
               Collecteur-transporteur
           .panel-body
-            = render partial: "cadre8", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre8", object: f, as: :f
 
-    =# Cadre 9
+    =# ebsdds/edit/cadre 9
     .row
       .col-md-12
         .panel.panel-default
@@ -118,10 +118,10 @@
               %span.badge 9
               Déclaration générale de l’émetteur du bordereau :
           .panel-body
-            = render partial: "cadre9", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre9", object: f, as: :f
 
     .row
-      =# Cadre 10
+      =# ebsdds/edit/cadre 10
       .col-md-6
         .panel.panel-default
           .panel-heading
@@ -129,7 +129,7 @@
               %span.badge 10
               Expédition reçue à l’installation de destination
           .panel-body
-      =# cadre 11
+      =# ebsdds/edit/cadre 11
       .col-md-6
         .panel.panel-default
           .panel-heading
@@ -137,9 +137,9 @@
               %span.badge 11
               Réalisation de l’opération :
           .panel-body
-            = render partial: "cadre11", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre11", object: f, as: :f
 
-    =# Cadre 12
+    =# ebsdds/edit/cadre 12
     .row
       .col-md-12
         .panel.panel-default
@@ -148,7 +148,7 @@
               %span.badge 12
               Destination ultérieure prévue
           .panel-body
-            = render partial: "cadre12", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre12", object: f, as: :f
 
     .row
       .col-md-12
@@ -157,7 +157,7 @@
           À REMPLIR EN CAS D’ENTREPOSAGE PROVISOIRE OU DE RECONDITONNEMENT
         %hr
 
-    =# Cadre 15
+    =# ebsdds/edit/cadre 15
     .row
       .col-md-12
         .panel.panel-default
@@ -166,8 +166,8 @@
               %span.badge 15
               Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
           .panel-body.entreposage-provisoire
-            = render partial: "cadre15", object: f, as: :f
-    =# Cadre 16
+            = render partial: "ebsdds/edit/cadre15", object: f, as: :f
+    =# ebsdds/edit/cadre 16
     .row
       .col-md-12
         .panel.panel-default
@@ -176,8 +176,8 @@
               %span.badge 16
               Conditionnement
           .panel-body.entreposage-provisoire
-            = render partial: "cadre16", object: f, as: :f
-    =# Cadre 17
+            = render partial: "ebsdds/edit/cadre16", object: f, as: :f
+    =# ebsdds/edit/cadre 17
     .row
       .col-md-12
         .panel.panel-default
@@ -186,4 +186,4 @@
               %span.badge 17
               Quantité
           .panel-body.entreposage-provisoire
-            = render partial: "cadre17", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre17", object: f, as: :f

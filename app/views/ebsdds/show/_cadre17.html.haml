@@ -1,0 +1,10 @@
+.row
+  .col-md-6
+    %label
+      Poids en kilogrammes :
+    = ebsdd.bordereau_poids_ult
+    kg
+  .col-md-6
+    = fa_icon "#{ ebsdd.type_quantite_ult == "R" ? "dot-circle-o" : "circle-o" } lg", text: "Poids réel"
+    %br
+    = fa_icon "#{ ebsdd.type_quantite_ult == "E" ? "dot-circle-o" : "circle-o" } lg", text: "Poids estimé"

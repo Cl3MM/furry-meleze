@@ -30,6 +30,7 @@ class EbsddsController < ApplicationController
           "application/vnd.ms-excel"
       ].include? file.content_type
         validation = Ebsdd.import(params[:file])
+        #binding.pry
         if validation[:errors].any?
           redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
         end
@@ -106,20 +107,20 @@ class EbsddsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_ebsdd
-      #binding.pry
-      @ebsdd = Ebsdd.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_ebsdd
+    #binding.pry
+    @ebsdd = Ebsdd.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    #def ebsdd_params
-      #params.require(:ebsdd).permit(:num_cap, :dechet_consistance, :dechet_denomination, :dechet_nomenclature, :id)
-    #end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  #def ebsdd_params
+  #params.require(:ebsdd).permit(:num_cap, :dechet_consistance, :dechet_denomination, :dechet_nomenclature, :id)
+  #end
 
-    def check_incomplete
-      if Ebsdd.has_every_bsd_completed?
-        redirect_to root_path, alert: "Certains eBSDDs sont encore incomplets. Veuillez d'abord les compléter afin de procéder à un nouvel import."
-      end
+  def check_incomplete
+    if Ebsdd.has_every_bsd_completed?
+      redirect_to root_path, alert: "Certains eBSDDs sont encore incomplets. Veuillez d'abord les compléter afin de procéder à un nouvel import."
     end
+  end
 end

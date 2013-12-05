@@ -2,6 +2,8 @@ class Producteur
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  has_many :ebsdds, inverse_of: :ebsdd
+
   field :siret, type: String
   field :nom, type: String
   field :adresse, type: String

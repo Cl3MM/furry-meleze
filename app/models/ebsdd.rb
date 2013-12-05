@@ -19,6 +19,7 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
+  belongs_to :producteur, inverse_of: :producteur
   belongs_to :attachment #, :inverse_of => :ebsdds
   attr_accessible :id, :_id
 
@@ -28,6 +29,29 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
+
+  field :ligne_flux_siret, type: String
+  field :ligne_flux_nom, type: String
+  field :ligne_flux_adresse, type: String
+  field :ligne_flux_cp, type: String
+  field :ligne_flux_ville, type: String
+  field :ligne_flux_tel, type: String
+  field :ligne_flux_fax, type: String
+  field :ligne_flux_email, type: String, default: nil
+  field :ligne_flux_responsable, type: String
+
+  field :ligne_flux_conditionnement_ult, type: Integer
+  field :ligne_flux_nombre_colis_ult, type: String
+
+  field :emetteur_siret, type: String
+  field :emetteur_sortie_nom, type: String
+  field :emetteur_adresse, type: String
+  field :emetteur_cp, type: String
+  field :emetteur_ville, type: String
+  field :emetteur_tel, type: String
+  field :emetteur_fax, type: String
+  field :emetteur_email, type: String, default: nil
+  field :emetteur_responsable, type: String
 
   field :producteur_siret, type: String
   field :producteur_nom, type: String
@@ -95,6 +119,9 @@ class Ebsdd # < ActiveRecord::Base
   field :mode_transport, type: Integer, default: 1
   field :bordereau_limite_validite, type: Date
 
+
+
+
   attr_accessible :id, :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
@@ -108,9 +135,30 @@ class Ebsdd # < ActiveRecord::Base
     :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
     :mode_transport, :transport_multimodal, :bordereau_limite_validite,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
-    :destination_ult_ville, :destination_ult_tel
+    :destination_ult_ville, :destination_ult_tel,
+    :ligne_flux_siret,
+    :ligne_flux_nom,
+    :ligne_flux_adresse,
+    :ligne_flux_cp,
+    :ligne_flux_ville,
+    :ligne_flux_tel,
+    :ligne_flux_fax,
+    :ligne_flux_email,
+    :ligne_flux_responsable,
+    :ligne_flux_conditionnement_ult,
+    :ligne_flux_nombre_colis_ult,
+    :emetteur_siret,
+    :emetteur_sortie_nom,
+    :emetteur_adresse,
+    :emetteur_cp,
+    :emetteur_ville,
+    :emetteur_tel,
+    :emetteur_fax,
+    :emetteur_email,
+    :emetteur_responsable
 
-  validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
+
+    validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
     :destinataire_responsable,
@@ -121,6 +169,26 @@ class Ebsdd # < ActiveRecord::Base
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     :destination_ult_ville, :destination_ult_tel
+#:ligne_flux_siret,
+#:ligne_flux_nom,
+#:ligne_flux_adresse,
+#:ligne_flux_cp,
+#:ligne_flux_ville,
+#:ligne_flux_tel,
+#:ligne_flux_fax,
+#:ligne_flux_email,
+#:ligne_flux_responsable,
+#:ligne_flux_conditionnement_ult,
+#:ligne_flux_nombre_colis_ult,
+#:emetteur_siret,
+#:emetteur_nom,
+#:emetteur_adresse,
+#:emetteur_cp,
+#:emetteur_ville,
+#:emetteur_tel,
+#:emetteur_fax,
+#:emetteur_email,
+#:emetteur_responsable
 
   validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
@@ -197,6 +265,93 @@ class Ebsdd # < ActiveRecord::Base
 
   def self.has_every_bsd_completed?
     Ebsdd.where(status: :incomplet).exists?
+  end
+  def self.import2(file)
+    attrs = [
+      :producteur_siret, :producteur_nom, :producteur_adresse,
+      :producteur_cp, :producteur_ville, :producteur_tel,
+      :producteur_fax, :producteur_email, :producteur_responsable,
+    ]
+
+    out = { rows: nil, errors: [] }
+    spreadsheet = open_spreadsheet(file)
+    spreadsheet.default_sheet = spreadsheet.sheets.first
+    if spreadsheet.last_row > 1
+      checksum  = Digest::MD5.hexdigest(file.read)
+      unless Attachment.where(checksum: checksum).exists?
+        @document = Attachment.new( { attachment: file, checksum: checksum } )
+        #@document.attachment = file
+        if @document.save
+          created_from_spreadsheet spreadsheet, attrs
+        else
+          out[:errors] << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
+        end
+      else
+        out[:errors] << "Un fichier contenant les mêmes données existe déjà. Veuillez importer un autre fichier."
+      end
+    end
+    binding.pry
+    out[:rows] = rows
+    out
+  end
+
+  def self.producteur_attr_indexes attr, headers
+    h = headers.reduce( {} ) do | h, _i |
+      i = _i.downcase.strip
+      attr.each do | a |
+        h[a] = headers.index(_i) + 1 if a =~ /#{i}/
+      end
+      h
+    end
+    h
+  end
+
+  def self.created_from_spreadsheet spreadsheet, attrs
+    header              = spreadsheet.row(1).map{ |h| h.downcase.strip }
+    bordereau_id_column = header.index("bordereau_id")
+    producteur_attrs = producteur_attr_indexes(attrs, header)
+    failed = []
+    binding.pry
+    unless bordereau_id_column.nil? || producteur_attrs.any?
+      (2..spreadsheet.last_row).each do | i |
+        row = spreadsheet.row(i)
+        bordereau_id = row(bordereau_id_column+1)
+        producteur = if Producteur.where(nom: producteur_attrs[:producteur_nom]).exists?
+          Producteur.where(nom: producteur_attrs[:producteur_nom])
+        else
+          Producteur.new(producteur_attrs.reduce({}){ |h, (k,v)| h[k] = row[v] ; h } )
+        end
+        unless Ebsdd.find_by({bordereau_id: bordereau_id } ).exists?
+          binding.pry
+          ebsdd = Ebsdd.new
+
+          row.each do | j |
+            if header.count > j - 1
+              cur_header = header[ j - 1 ]
+              cur_cell = if spreadsheet.cell(i,j).is_a? Float
+                           spreadsheet.cell(i,j).to_i
+                         elsif spreadsheet.cell(i,j).is_a? String
+                           spreadsheet.cell(i,j).squish
+                         else
+                           spreadsheet.cell(i,j)
+                         end
+            end
+            ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
+            #producteur_attrs.value.each{|i| row.delete_at(i) } #remove prod_attr in row
+          end
+          ebsdd.line_number = i
+          ebsdd.status = :import
+          ebsdd.producteur = producteur
+          ebsdd.save(validate: false)
+          @document.ebsdds.push(ebsdd)
+          rows << column
+        else
+          failed << {id: bordereau_id, line: i }
+        end
+      end
+    #else
+      #out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
+    end
   end
   def self.import(file)
     out = { rows: nil, errors: [] }

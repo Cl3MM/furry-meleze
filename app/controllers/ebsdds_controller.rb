@@ -2,7 +2,7 @@
 
 class EbsddsController < ApplicationController
   before_filter :authenticate_utilisateur!
-  before_filter :set_ebsdd, only: [:download, :template, :show, :edit, :update, :destroy]
+  before_filter :set_ebsdd, only: [:annexe_export, :download, :template, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]
 
   # GET /ebsdds/import
@@ -13,6 +13,13 @@ class EbsddsController < ApplicationController
     Ebsdd.delete_all
     Attachment.delete_all
     redirect_to root_path, notice: "Base de données réinitialisée avec succès !"
+  end
+
+  def annexe_export
+    respond_to do |format|
+      format.html
+      format.csv { send_data @ebsdd.annexe_2_to_csv, filename: "#{@ebsdd.id}_annexe_2.csv" }
+    end
   end
 
   def download

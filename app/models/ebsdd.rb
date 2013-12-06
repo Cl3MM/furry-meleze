@@ -41,7 +41,6 @@ class Ebsdd # < ActiveRecord::Base
   field :ligne_flux_responsable, type: String
   field :ligne_flux_poids, type: String
   field :ligne_flux_date_remise, type: Date
-
   field :ligne_flux_conditionnement_ult, type: Integer
   field :ligne_flux_nombre_colis_ult, type: String
 
@@ -232,6 +231,16 @@ class Ebsdd # < ActiveRecord::Base
   end
   def ecodds_id
     "#{Time.now.strftime("%y")}#{id[-6..-1]}"
+  end
+  def annexe_2_to_csv
+    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do | csv |
+      csv << ["00", ecodds_id, bordereau_id, nil]
+      csv << ["01", 4, emetteur_siret, emetteur_nom, emetteur_adresse, emetteur_cp, emetteur_ville, emetteur_tel, emetteur_fax, emetteur_email, emetteur_responsable, nil]
+      csv << ["02", :code_ligne_flux_original, bordereau_id, ligne_flux_siret, ligne_flux_nom, ligne_flux_adresse, ligne_flux_cp, ligne_flux_ville, ligne_flux_tel,
+              ligne_flux_fax, ligne_flux_email, ligne_flux_responsable, ligne_flux_conditionnement_ult, 1, DechetDenomination[dechet_denomination],
+              type_quantite_ult, poids_en_tonnes_ult, ligne_flux_date_remise ,nil]
+      # TODO: Attention à la dernière ligne qui contient des infos prise dans les autres cadres
+    end
   end
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
@@ -435,13 +444,13 @@ class Ebsdd # < ActiveRecord::Base
     [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
       self[attr] = nil if read_attribute(attr).blank?
     end
-    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax ].each do | attr |
+    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax, :ligne_flux_fax, :ligne_flux_tel, :emetteur_fax, :emetteur_tel ].each do | attr |
       self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
       if self[attr].size == 9
         self[attr] = "0#{self[attr]}"
       end unless read_attribute(attr).nil?
     end
-    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret ].each do | attr |
+    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret, :ligne_flux_siret, :emetteur_siret ].each do | attr |
       unless read_attribute(attr).nil?
         self[attr].gsub!(/\s/, "")
       end

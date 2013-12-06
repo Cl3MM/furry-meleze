@@ -4,7 +4,9 @@
   %span.small
     ="##{@ebsdd.bordereau_id}"
   = fa_link_to edit_ebsdd_path(@ebsdd), "Modifier cet eBSDD", "edit lg", class: "btn btn-info pull-right"
-  = fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right mg-r-5"
+  - unless @ebsdd.is_incomplete?
+    = fa_link_to ebsdd_annexe_path, "Exporter l'Annexe 2", "cloud-download lg", class: "btn btn-warning pull-right mg-r-5"
+    = fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right mg-r-5"
 %ul.nav.nav-tabs
   %li
     %a{"data-toggle" => "tab", href: "#ebsdd_main"} Page principale

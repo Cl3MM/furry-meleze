@@ -1,0 +1,126 @@
+
+.row.margin-top-30
+  =# cadre 1
+  .col-md-7
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          =# fa_icon "tags ccc"
+          %span.badge 1
+          Emetteur du bordereau
+      .panel-body
+        = render partial: "ebsdds/show/cadre1", object: ebsdd, as: :ebsdd
+  =# cadre 2
+  .col-md-5
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 2
+          =# fa_icon "gears ccc"
+          Installation de destination / entreposage / reconditionnement
+      .panel-body
+        = render partial: "ebsdds/show/cadre2", object: ebsdd, as: :ebsdd
+=# Cadre 3
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 3
+          Dénomination du déchet
+      .panel-body
+        = render partial: "ebsdds/show/cadre3", object: ebsdd, as: :ebsdd
+=# Cadre 4
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 4
+          Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+      .panel-body
+        = render partial: "ebsdds/show/cadre4", object: ebsdd, as: :ebsdd
+
+=# Cadre 5
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 5
+          Conditionnement:
+      .panel-body
+        = render partial: "ebsdds/show/cadre5", object: ebsdd, as: :ebsdd
+
+=# Cadre 6
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 6
+          Quantité
+      .panel-body
+        = render partial: "ebsdds/show/cadre6", object: ebsdd, as: :ebsdd
+
+=# Cadre 7
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 7
+          Négociant
+      .panel-body
+
+=# Cadre 8
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 8
+          Collecteur-transporteur
+      .panel-body
+        = render partial: "ebsdds/show/cadre8", object: ebsdd, as: :ebsdd
+
+=# Cadre 9
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 9
+          Déclaration générale de l’émetteur du bordereau :
+      .panel-body
+        = render partial: "ebsdds/show/cadre9", object: ebsdd, as: :ebsdd
+
+.row
+  =# Cadre 10
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 10
+          Expédition reçue à l’installation de destination
+      .panel-body
+  =# cadre 11
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 11
+          Réalisation de l’opération :
+      .panel-body
+        = render partial: "ebsdds/show/cadre11", object: ebsdd, as: :ebsdd
+
+=# Cadre 12
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          %span.badge 12
+          Destination ultérieure prévue
+      .panel-body
+        = render partial: "ebsdds/show/cadre12", object: ebsdd, as: :ebsdd

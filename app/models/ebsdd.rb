@@ -39,6 +39,8 @@ class Ebsdd # < ActiveRecord::Base
   field :ligne_flux_fax, type: String
   field :ligne_flux_email, type: String, default: nil
   field :ligne_flux_responsable, type: String
+  field :ligne_flux_poids, type: String
+  field :ligne_flux_date_remise, type: Date
 
   field :ligne_flux_conditionnement_ult, type: Integer
   field :ligne_flux_nombre_colis_ult, type: String
@@ -155,8 +157,9 @@ class Ebsdd # < ActiveRecord::Base
     :emetteur_tel,
     :emetteur_fax,
     :emetteur_email,
-    :emetteur_responsable
-
+    :emetteur_responsable,
+    :ligne_flux_date_remise,
+    :ligne_flux_poids
 
     validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,

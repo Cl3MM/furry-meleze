@@ -1,0 +1,37 @@
+.row
+  .col-md-12
+    %hr
+    %h3.text-center
+      À REMPLIR EN CAS D’ENTREPOSAGE PROVISOIRE OU DE RECONDITONNEMENT
+    %hr
+- if ebsdd.entreposage_provisoire
+  =# ebsdds/show/cadre 15
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 15
+            Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+        .panel-body.entreposage-provisoire
+          = render partial: "ebsdds/show/cadre15", object: ebsdd, as: :ebsdd
+  =# ebsdds/show/cadre 16
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 16
+            Conditionnement
+        .panel-body.entreposage-provisoire
+          = render partial: "ebsdds/show/cadre16", object: ebsdd, as: :ebsdd
+  =# ebsdds/show/cadre 17
+  .row
+    .col-md-12
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title
+            %span.badge 17
+            Quantité
+        .panel-body.entreposage-provisoire
+          = render partial: "ebsdds/show/cadre17", object: ebsdd, as: :ebsdd

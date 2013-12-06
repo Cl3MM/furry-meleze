@@ -1,0 +1,76 @@
+.row.margin-top-30#edit
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "user ccc"
+          Emetteur du bordereau
+      .panel-body
+
+        %dl.dl-horizontal
+          %dt SIRET :
+          %dd= ebsdd.emetteur_siret
+
+          %dt Nom :
+          %dd= ebsdd.emetteur_nom
+
+          %dt Contact :
+          %dd= ebsdd.emetteur_responsable
+          %dt Adresse :
+          %dd= ebsdd.emetteur_adresse
+
+          %dt Code postal :
+          %dd= ebsdd.emetteur_cp
+
+          %dt Ville :
+          %dd= ebsdd.emetteur_ville
+
+          %dt Téléphone :
+          %dd= ebsdd.emetteur_tel
+
+          %dt Fax :
+          %dd= ebsdd.emetteur_fax
+
+          %dt Adresse email :
+          %dd= ebsdd.emetteur_email
+
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "user ccc"
+          Ligne flux de déchet
+      .panel-body
+
+        %dl.dl-horizontal
+          %dt SIRET :
+          %dd= ebsdd.ligne_flux_siret
+
+          %dt Nom :
+          %dd= ebsdd.ligne_flux_nom
+
+          %dt Contact :
+          %dd= ebsdd.ligne_flux_responsable
+          %dt Adresse :
+          %dd= ebsdd.ligne_flux_adresse
+
+          %dt Code postal :
+          %dd= ebsdd.ligne_flux_cp
+
+          %dt Ville :
+          %dd= ebsdd.ligne_flux_ville
+
+          %dt Téléphone :
+          %dd= ebsdd.ligne_flux_tel
+
+          %dt Fax :
+          %dd= ebsdd.ligne_flux_fax
+
+          %dt Adresse email :
+          %dd= ebsdd.ligne_flux_email
+
+          %dt Adresse email :
+          %dd= ebsdd.ligne_flux_poids
+
+          %dt Adresse email :
+          %dd= ebsdd.ligne_flux_date_remise

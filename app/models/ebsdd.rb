@@ -8,6 +8,77 @@ class Ebsdd # < ActiveRecord::Base
     15
   end
 
+
+#map = %Q{
+  #function() {
+    #emit({nom: this.nom, siret: this.siret}, { count: 1 });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+  #}
+#}
+#map = %Q{
+  #function() {
+    #var count = 1;
+    #if (this.siret == null) {
+      #count = 0;
+    #}
+    #emit(this.nom, { count: count });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = 0;
+    #countObjVals.forEach(function(value) {
+      #result += value.count;
+    #});
+    #return { count: result };
+  #}
+#}
+#map = %Q{
+  #function() {
+    #var count = 1;
+    #if (this.siret == null) {
+      #count = 0;
+    #}
+    #emit(this.nom, { count: count });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = 0;
+    #countObjVals.forEach(function(value) {
+      #result += value.count;
+    #});
+    #return { count: result };
+  #}
+#}
+#c = Producteur.map_reduce(map, reduce).out(inline: true)
+#c.reduce({}){ |h, e| h[e["_id"]] = e["value"]["count"] if e["value"]["count"] > 1 ; h }
+##Producteur.map_reduce(map, reduce).out(inline: true).finalize(func).each{ |d| puts d}.count
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = { count: 0 };
+    #countObjVals.forEach(function(value) {
+      #result.count += value.count;
+    #});
+    #return result;
+  #}
+#}
+
+#func = %Q{
+
+  #function(key, value) {
+    #if(value.count > 1) {
+      #return value;
+    #}
+  #}
+#}
+
   before_create :normalize, :set_status
   before_update :set_status
 
@@ -24,6 +95,7 @@ class Ebsdd # < ActiveRecord::Base
   attr_accessible :id, :_id
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
+  field :ecodds_id, type: Integer, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :incomplet
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
@@ -158,8 +230,8 @@ class Ebsdd # < ActiveRecord::Base
     :emetteur_email,
     :emetteur_responsable,
     :ligne_flux_date_remise,
-    :ligne_flux_poids
-
+    :ligne_flux_poids,
+    :ecodds_id
     validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
@@ -170,7 +242,7 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
-    :destination_ult_ville, :destination_ult_tel
+    :destination_ult_ville, :destination_ult_tel, :ecodds_id
 #:ligne_flux_siret,
 #:ligne_flux_nom,
 #:ligne_flux_adresse,
@@ -229,7 +301,7 @@ class Ebsdd # < ActiveRecord::Base
       csv << attributes.values_at(*column_names)
     end
   end
-  def ecodds_id
+  def default_ecodds_id
     "#{Time.now.strftime("%y")}#{id[-6..-1]}"
   end
   def annexe_2_to_csv
@@ -284,8 +356,7 @@ class Ebsdd # < ActiveRecord::Base
       :producteur_cp, :producteur_ville, :producteur_tel,
       :producteur_fax, :producteur_email, :producteur_responsable,
     ]
-
-    out = { rows: nil, errors: [] }
+    result, errors = [], []
     spreadsheet = open_spreadsheet(file)
     spreadsheet.default_sheet = spreadsheet.sheets.first
     if spreadsheet.last_row > 1
@@ -294,24 +365,24 @@ class Ebsdd # < ActiveRecord::Base
         @document = Attachment.new( { attachment: file, checksum: checksum } )
         #@document.attachment = file
         if @document.save
-          created_from_spreadsheet spreadsheet, attrs
+          result = created_from_spreadsheet spreadsheet, attrs
+          @document[:import_status] = result
+          @document.save
         else
-          out[:errors] << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
+          errors << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
         end
       else
-        out[:errors] << "Un fichier contenant les mêmes données existe déjà. Veuillez importer un autre fichier."
+        errors << "Un fichier contenant les mêmes données existe déjà. Veuillez importer un autre fichier."
       end
     end
-    binding.pry
-    out[:rows] = rows
-    out
+    [result, errors]
   end
 
   def self.producteur_attr_indexes attr, headers
     h = headers.reduce( {} ) do | h, _i |
       i = _i.downcase.strip
       attr.each do | a |
-        h[a] = headers.index(_i) + 1 if a =~ /#{i}/
+        h[a] = headers.index(_i) if a =~ /#{i}/
       end
       h
     end
@@ -322,32 +393,31 @@ class Ebsdd # < ActiveRecord::Base
     header              = spreadsheet.row(1).map{ |h| h.downcase.strip }
     bordereau_id_column = header.index("bordereau_id")
     producteur_attrs = producteur_attr_indexes(attrs, header)
-    failed = []
-    binding.pry
-    unless bordereau_id_column.nil? || producteur_attrs.any?
+    failed, start, total = [], Time.now, 0
+    unless bordereau_id_column.nil? || producteur_attrs.empty?
       (2..spreadsheet.last_row).each do | i |
+        total += 1
         row = spreadsheet.row(i)
-        bordereau_id = row(bordereau_id_column+1)
-        producteur = if Producteur.where(nom: producteur_attrs[:producteur_nom]).exists?
-          Producteur.where(nom: producteur_attrs[:producteur_nom])
+        bordereau_id = row[bordereau_id_column]
+        producteur_nom = row[producteur_attrs[:producteur_nom]].squish
+        producteur = if Producteur.where(nom: producteur_nom).exists?
+          Producteur.find_by(nom: producteur_nom)
         else
-          Producteur.new(producteur_attrs.reduce({}){ |h, (k,v)| h[k] = row[v] ; h } )
-        end
-        unless Ebsdd.find_by({bordereau_id: bordereau_id } ).exists?
           binding.pry
+          Producteur.create(producteur_attrs.reduce({}){ |h, (k,v)| h[k] = row[v].squish ; h } )
+        end
+        unless Ebsdd.where({bordereau_id: bordereau_id } ).exists?
           ebsdd = Ebsdd.new
 
-          row.each do | j |
-            if header.count > j - 1
-              cur_header = header[ j - 1 ]
-              cur_cell = if spreadsheet.cell(i,j).is_a? Float
-                           spreadsheet.cell(i,j).to_i
-                         elsif spreadsheet.cell(i,j).is_a? String
-                           spreadsheet.cell(i,j).squish
+          row.each_with_index do | cell, index |
+              cur_cell = if cell.is_a? Float
+                           cell.to_i
+                         elsif cell.is_a? String
+                           cell.squish
                          else
-                           spreadsheet.cell(i,j)
+                           cell
                          end
-            end
+            cur_header = header[ index ]
             ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
             #producteur_attrs.value.each{|i| row.delete_at(i) } #remove prod_attr in row
           end
@@ -356,7 +426,6 @@ class Ebsdd # < ActiveRecord::Base
           ebsdd.producteur = producteur
           ebsdd.save(validate: false)
           @document.ebsdds.push(ebsdd)
-          rows << column
         else
           failed << {id: bordereau_id, line: i }
         end
@@ -364,6 +433,7 @@ class Ebsdd # < ActiveRecord::Base
     #else
       #out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
     end
+    {failed: failed, exec_time: Time.now - start, total: total}
   end
   def self.import(file)
     out = { rows: nil, errors: [] }

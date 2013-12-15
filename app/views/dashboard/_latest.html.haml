@@ -13,7 +13,7 @@
       -ebsdds.each do | ebsdd |
         %tr
           %td= ebsdd.short_bid
-          %td= truncate ebsdd.producteur_nom.titleize, length: 18
+          %td= truncate ebsdd.producteur.nom.titleize, length: 18
           %td= truncate ebsdd.destinataire_nom.titleize, length: 18
           %td= truncate ebsdd.libelle.titleize, length: 15
           %td= "#{ebsdd.bordereau_poids} kg"

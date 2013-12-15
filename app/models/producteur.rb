@@ -2,7 +2,7 @@ class Producteur
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_many :ebsdds, inverse_of: :ebsdd
+  has_many :ebsdds#, inverse_of: :ebsdds
 
   field :siret, type: String
   field :nom, type: String
@@ -16,7 +16,10 @@ class Producteur
   field :actif, type: Boolean
 
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif
-
+  before_create :normalize
+  def normalize
+    
+  end
   validates_presence_of :nom
   #validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers

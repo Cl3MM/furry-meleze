@@ -36,16 +36,30 @@ class EbsddsController < ApplicationController
       if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "application/vnd.ms-excel"
       ].include? file.content_type
-        validation = Ebsdd.import(params[:file])
-        #binding.pry
-        if validation[:errors].any?
+        result, errors = Ebsdd.import2(params[:file])
+        if errors.any?
           redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
+        else
+          redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
         end
-        @content = validation[:rows]
-        redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
       else
         redirect_to ebsdds_import_path, alert: "Le fichier du format est incorrect. Merci d'importer seulement des fichiers Excel ou CSV"
       end
+
+      #file = params[:file]
+      #if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          #"application/vnd.ms-excel"
+      #].include? file.content_type
+        #validation = Ebsdd.import(params[:file])
+        ##binding.pry
+        #if validation[:errors].any?
+          #redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
+        #end
+        #@content = validation[:rows]
+        #redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
+      #else
+        #redirect_to ebsdds_import_path, alert: "Le fichier du format est incorrect. Merci d'importer seulement des fichiers Excel ou CSV"
+      #end
     else
       redirect_to ebsdds_import_path, alert: "Merci de choisir un fichier pour passer à l'étape suivante."
     end

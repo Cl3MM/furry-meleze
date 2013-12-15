@@ -26,6 +26,19 @@
   %div#edit
     .row
       =# ebsdds/edit/cadre 1
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              =# fa_icon "tags ccc"
+              %span.badge 0
+              Numéro ECODDS
+          .panel-body
+            .form-group
+              = f.label :ecodds_id, "Numéro ECODDS"
+              = f.text_field :ecodds_id, placeholder: "Numéro ECODDS"
+    .row
+      =# ebsdds/edit/cadre 1
       .col-md-6
         .panel.panel-default
           .panel-heading

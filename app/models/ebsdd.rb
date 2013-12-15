@@ -92,6 +92,7 @@ class Ebsdd # < ActiveRecord::Base
 
   belongs_to :producteur, inverse_of: :producteur
   belongs_to :attachment #, :inverse_of => :ebsdds
+  accepts_nested_attributes_for :producteur
   attr_accessible :id, :_id
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
@@ -126,15 +127,15 @@ class Ebsdd # < ActiveRecord::Base
   field :emetteur_email, type: String, default: nil
   field :emetteur_responsable, type: String
 
-  field :producteur_siret, type: String
-  field :producteur_nom, type: String
-  field :producteur_adresse, type: String
-  field :producteur_cp, type: String
-  field :producteur_ville, type: String
-  field :producteur_tel, type: String
-  field :producteur_fax, type: String
-  field :producteur_email, type: String, default: nil
-  field :producteur_responsable, type: String
+  #field :producteur_siret, type: String
+  #field :producteur_nom, type: String
+  #field :producteur_adresse, type: String
+  #field :producteur_cp, type: String
+  #field :producteur_ville, type: String
+  #field :producteur_tel, type: String
+  #field :producteur_fax, type: String
+  #field :producteur_email, type: String, default: nil
+  #field :producteur_responsable, type: String
 
   field :destinataire_siret, type: String
   field :destinataire_nom, type: String
@@ -195,8 +196,10 @@ class Ebsdd # < ActiveRecord::Base
 
 
 
-  attr_accessible :id, :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
-    :producteur_tel, :producteur_fax, :producteur_responsable, :destinataire_siret, :destinataire_nom,
+  attr_accessible :id, :bordereau_id,
+    #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
+    #:producteur_tel, :producteur_fax, :producteur_responsable,
+    :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
     :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
@@ -204,7 +207,8 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
-    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :producteur_email, :producteur_siret,
+    :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult,
+    #:producteur_email, :producteur_siret,
     :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
     :mode_transport, :transport_multimodal, :bordereau_limite_validite,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
@@ -232,8 +236,10 @@ class Ebsdd # < ActiveRecord::Base
     :ligne_flux_date_remise,
     :ligne_flux_poids,
     :ecodds_id
-    validates_presence_of :bordereau_id, :producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
-    :producteur_tel, :producteur_responsable, :destinataire_siret, :destinataire_nom,
+    validates_presence_of :bordereau_id,
+    #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
+    #:producteur_tel, :producteur_responsable, 
+    :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
     :destinataire_responsable,
     :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
@@ -283,6 +289,14 @@ class Ebsdd # < ActiveRecord::Base
   def is_incomplete?
     status == :incomplet
   end
+  def self.normalize_float float
+    str = "%.0f" % float
+    if str.size > 5 && str !=~ /\A0/
+      "0#{str}"
+    else
+      str
+    end
+  end
   def bid
     bid = read_attribute(:bordereau_id)
     unless bid.nil? 
@@ -318,7 +332,7 @@ class Ebsdd # < ActiveRecord::Base
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
       csv << ["00", ecodds_id, bordereau_id, nil]
-      csv << ["01", 4, producteur_siret, producteur_nom, producteur_adresse, producteur_cp, producteur_ville, producteur_tel, producteur_fax, producteur_email, producteur_responsable, nil]
+      csv << ["01", 4, producteur.siret, producteur.nom, producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
       csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
       csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
       csv << ["04", DechetNomenclature[dechet_denomination], nil ]
@@ -403,8 +417,17 @@ class Ebsdd # < ActiveRecord::Base
         producteur = if Producteur.where(nom: producteur_nom).exists?
           Producteur.find_by(nom: producteur_nom)
         else
-          binding.pry
-          Producteur.create(producteur_attrs.reduce({}){ |h, (k,v)| h[k] = row[v].squish ; h } )
+          new_producteur = producteur_attrs.reduce({}) do  | h, (_k,v) |
+            k = _k.to_s.gsub("producteur_","").to_sym
+            if row[v].is_a? Float
+              h[k] = normalize_float(row[v])
+            else
+              h[k] = row[v].squish
+            end
+            h
+          end
+          p = Producteur.create( new_producteur )
+          p
         end
         unless Ebsdd.where({bordereau_id: bordereau_id } ).exists?
           ebsdd = Ebsdd.new

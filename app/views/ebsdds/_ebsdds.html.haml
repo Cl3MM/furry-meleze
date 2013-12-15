@@ -16,7 +16,7 @@
           -@ebsdds.each do | ebsdd |
             %tr
               %td= ebsdd.short_bid
-              %td= ebsdd.producteur_nom.titleize
+              %td= ebsdd.producteur.nom.titleize
               %td= ebsdd.destinataire_nom.titleize
               %td= ebsdd.libelle.titleize
               %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")

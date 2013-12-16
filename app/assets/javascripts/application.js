@@ -19,7 +19,7 @@
 // require twitter/bootstrap/scrollspy
 //= require twitter/bootstrap/tab
 // require_tree .
-// require jquery.ui.datepicker
+//= require jquery.ui.datepicker
 //= require_self
 $(function() {
   if( $("a.touletip").length )

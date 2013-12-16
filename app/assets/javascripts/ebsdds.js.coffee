@@ -1,4 +1,7 @@
 jQuery ->
+  $('#ebsdd_bordereau_limite_validite').datepicker
+    dateFormat: 'yy-mm-dd'
+
   entreposage_visibility = (x) ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
@@ -23,4 +26,3 @@ jQuery ->
     $("#ebsdd_entreposage_provisoire_false").on 'change', ()->
       if $(this).prop('checked') == true
         entreposage_visibility(true)
-  $("a.touletip").tooltip();

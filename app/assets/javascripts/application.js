@@ -10,23 +10,19 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require turbolinks
+// require turbolinks
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.datepicker
-// twitter/bootstrap
-//= require twitter/bootstrap/dropdown
-//= require twitter/bootstrap/scrollspy
-//= require twitter/bootstrap/tab
+// require twitter/bootstrap
 //= require twitter/bootstrap/tooltip
-//= require_tree .
+//= require twitter/bootstrap/dropdown
+// require twitter/bootstrap/scrollspy
+//= require twitter/bootstrap/tab
+// require_tree .
+// require jquery.ui.datepicker
 //= require_self
-
-//jQuery(function($) {
-//});
-//$(function() {
-  //$("a.touletip").tooltip();
-  ////$( "#datepicker").datepicker();
-    ////dateFormat: 'yy-mm-dd'
-//});
-// require jquery-ui-1.10.3.custom.min
+$(function() {
+  if( $("a.touletip").length )
+    $("a.touletip").tooltip();
+  $('.dropdown-toggle').dropdown();
+});

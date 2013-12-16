@@ -10,13 +10,13 @@
   .col-md-3
     .form-group
       = f.label :bordereau_limite_validite, "Limite de validité du bordereau"
-      = f.text_field :bordereau_limite_validite, placeholder: "Limite de validité", value: 10.days.from_now.strftime("%Y-%m-%d"), class: "datepicker"
+      = f.text_field :bordereau_limite_validite, placeholder: "Limite de validité", class: "datepicker"
   .col-md-3
     .form-group
       = f.label :transport_multimodal, "Transport multimodal"
       %br
       %label.radio-inline
-        = f.radio_button :transport_multimodal, true, checked: true
+        = f.radio_button :transport_multimodal, true
         Oui
       %label.radio-inline
         = f.radio_button :transport_multimodal, false

@@ -18,16 +18,16 @@
   .col-md-6
     - if ebsdd.mode_transport == 1
       %label
-        Numéro de recepissé :
-      = ebsdd.recepisse
+        Mode de transport
+      = ebsdd.mode_transport
       %br
       %label
         Limite de validité du bordereau :
-      = ebsdd.recepisse
+      = ebsdd.bordereau_limite_validite.nil? ? "-" : ebsdd.bordereau_limite_validite.strftime("%d/%m/%Y")
       %br
       %label
         Numéro de recepissé
-      = ebsdd.bordereau_limite_validite
+      = ebsdd.recepisse
       %br
       %label
         Transport multimodal :

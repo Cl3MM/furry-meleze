@@ -196,7 +196,7 @@ class Ebsdd # < ActiveRecord::Base
 
 
 
-  attr_accessible :id, :bordereau_id,
+  attr_accessible :id, :bordereau_id, :producteur_attributes,
     #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     #:producteur_tel, :producteur_fax, :producteur_responsable,
     :destinataire_siret, :destinataire_nom,
@@ -213,6 +213,7 @@ class Ebsdd # < ActiveRecord::Base
     :mode_transport, :transport_multimodal, :bordereau_limite_validite,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     :destination_ult_ville, :destination_ult_tel,
+    :destination_ult_contact, :destination_ult_fax, :destination_ult_mel,
     :ligne_flux_siret,
     :ligne_flux_nom,
     :ligne_flux_adresse,
@@ -332,20 +333,18 @@ class Ebsdd # < ActiveRecord::Base
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
       csv << ["00", ecodds_id, bordereau_id, nil]
-      csv << ["01", 4, producteur.siret, producteur.nom, producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
+      csv << ["01", 4, producteur.siret, producteur.nom.truncate(5, omission: ''), producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
       csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
       csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
       csv << ["04", DechetNomenclature[dechet_denomination], nil ]
       csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
       csv << ["06", type_quantite, poids_en_tonnes, nil ]
-      #csv << ["07", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      #csv << ["07", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, nil, collecteur_cp[0..1], nil, nil ]
       csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, (mode_transport == 1 ? recepisse : nil), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
-      if(entreposage_provisoire)
+      if entreposage_provisoire
         csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
         csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
         csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]

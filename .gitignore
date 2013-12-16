@@ -19,9 +19,5 @@ rerun.txt
 pickle-email-*.html
 .project
 config/initializers/secret_token.rb
-public/assets/application.css
-public/assets/application.css.gz
-public/assets/application.js
-public/assets/application.js.gz
-public/assets/manifest.yml
+public/assets/*
 

@@ -18,6 +18,7 @@ gem 'mongoid', '~>3.0.4'
 gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
+
 #gem 'turbolinks'
 #gem 'will_paginate', '~> 3.0'
 gem "will_paginate_mongoid"
@@ -33,6 +34,7 @@ gem 'sass-rails',   '~> 3.2.3'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
+  gem "select2-rails"
   gem 'coffee-rails', '~> 3.2.1'
   gem 'jquery-ui-rails'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

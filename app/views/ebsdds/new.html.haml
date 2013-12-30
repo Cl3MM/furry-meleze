@@ -1,0 +1,205 @@
+= custom_form(@ebsdd) do |f|
+  %h1.underline
+    = fa_icon "tags"
+    Créer un nouveau eBSDD
+    = content_tag :button, type: :submit, class: "btn btn-info pull-right mg-l-5" do
+      = fa_icon "save lg"
+      &nbsp;Enregistrer les modifications
+    -#= fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "eye lg", class: "btn btn-default pull-right"
+    -#- unless @ebsdd.is_incomplete?
+      -#= fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right"
+  - if @ebsdd.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          %div{id: "error_explanation"}
+            %h2
+              Merci de corriger
+              = @ebsdd.errors.count > 1 ? "les" : "le"
+              = pluralize(@ebsdd.errors.count, "erreur")
+              = @ebsdd.errors.count > 1 ? "suivantes :" : "suivante :"
+            %ul
+              - @ebsdd.errors.full_messages.each do |msg|
+                %li
+                  = msg
+  %div#edit
+    .row
+      =# ebsdds/edit/cadre 1
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              =# fa_icon "tags ccc"
+              %span.badge 0
+              Numéro ECODDS
+          .panel-body
+            .form-group
+              = f.label :ecodds_id, "Numéro ECODDS"
+              = f.text_field :ecodds_id, placeholder: "Numéro ECODDS"
+    .row
+      =# ebsdds/edit/cadre 1
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              =# fa_icon "tags ccc"
+              %span.badge 1
+              Emetteur du bordereau
+          .panel-body
+            = render partial: "ebsdds/edit/cadre1", object: f, as: :f
+      =# ebsdds/edit/cadre 2
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 2
+              =# fa_icon "gears ccc"
+              Installation de destination / entreposage / reconditionnement
+          .panel-body
+            = render partial: "ebsdds/edit/cadre2", object: f, as: :f
+    =# ebsdds/edit/cadre 3
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 3
+              Dénomination du déchet
+          .panel-body
+            = render partial: "ebsdds/edit/cadre3", object: f, as: :f
+
+    =# ebsdds/edit/cadre 4
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 4
+              Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+          .panel-body
+            = render partial: "ebsdds/edit/cadre4", object: f, as: :f
+
+    =# ebsdds/edit/cadre 5
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 5
+              Conditionnement
+          .panel-body
+            = render partial: "ebsdds/edit/cadre5", object: f, as: :f
+
+    =# ebsdds/edit/cadre 6
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 6
+              Quantité
+          .panel-body
+            = render partial: "ebsdds/edit/cadre6", object: f, as: :f
+
+    =# ebsdds/edit/cadre 7
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 7
+              Négociant
+          .panel-body
+
+    =# ebsdds/edit/cadre 8
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 8
+              Collecteur-transporteur
+          .panel-body
+            = render partial: "ebsdds/edit/cadre8", object: f, as: :f, locals: { ebsdd: @ebsdd }
+
+    =# ebsdds/edit/cadre 9
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 9
+              Déclaration générale de l’émetteur du bordereau :
+          .panel-body
+            = render partial: "ebsdds/edit/cadre9", object: f, as: :f
+
+    .row
+      =# ebsdds/edit/cadre 10
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 10
+              Expédition reçue à l’installation de destination
+          .panel-body
+      =# ebsdds/edit/cadre 11
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 11
+              Réalisation de l’opération :
+          .panel-body
+            = render partial: "ebsdds/edit/cadre11", object: f, as: :f
+
+    =# ebsdds/edit/cadre 12
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 12
+              Destination ultérieure prévue
+          .panel-body
+            = render partial: "ebsdds/edit/cadre12", object: f, as: :f
+
+    .row
+      .col-md-12
+        %hr
+        %h3.text-center
+          À REMPLIR EN CAS D’ENTREPOSAGE PROVISOIRE OU DE RECONDITONNEMENT
+        %hr
+
+    =# ebsdds/edit/cadre 15
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 15
+              Mentions au titre des règlements ADR, RID, ADNR, IMDG (le cas échéant)
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre15", object: f, as: :f
+    =# ebsdds/edit/cadre 16
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 16
+              Conditionnement
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre16", object: f, as: :f
+    =# ebsdds/edit/cadre 17
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              Quantité
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre17", object: f, as: :f
+
+    = render partial: "ebsdds/edit/annexe_2", object: f, as: :f
+

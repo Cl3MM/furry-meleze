@@ -1,48 +1,50 @@
 = f.fields_for :producteur do | p |
   .row
     .col-md-12
-      .p.rm-group
+      .form-group
+        = f.label :producteur_id, "Producteur"
+        %br
+        = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }
+
+  .row
+    .col-md-12
+      .form-group
         = p.label :siret, "SIRET"
         = p.text_field :siret, placeholder: "SIRET"
 
     .col-md-12
-      .p.rm-group
-        = p.label :nom, "Nom"
-        = p.text_field :nom, placeholder: "Nom"
-
-    .col-md-12
-      .p.rm-group
+      .form-group
         = p.label :responsable, "Contact"
         = p.text_field :responsable, placeholder: "Contact"
     .col-md-12
-      .p.rm-group
+      .form-group
         = p.label :adresse, "Adresse"
         = p.text_field :adresse, placeholder: "Adresse"
 
   .row
     .col-md-6
-      .p.rm-group
+      .form-group
         = p.label :cp, "Code postal"
         = p.text_field :cp, placeholder: "Code postal"
 
     .col-md-6
-      .p.rm-group
+      .form-group
         = p.label :ville, "Ville"
         = p.text_field :ville, placeholder: "Ville"
 
   .row
     .col-md-6
-      .p.rm-group
+      .form-group
         = p.label :tel, "Téléphone"
         = p.text_field :tel, placeholder: "Téléphone"
 
     .col-md-6
-      .p.rm-group
+      .form-group
         = p.label :fax, "Fax"
         = p.text_field :fax, placeholder: "Fax"
 
   .row
     .col-md-12
-      .p.rm-group
+      .form-group
         = p.label :email, "Adresse email"
         = p.text_field :email, placeholder: "Adresse email"

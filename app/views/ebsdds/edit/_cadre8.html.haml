@@ -1,23 +1,47 @@
 .row
+  .col-md-12
+    TODO: Afficher un choix de collecteurs (Mettre Trialp par défaut puis afficher producteur déchet) 
+    Griser le reste du formulaire
+    TODO : Ajouter une partie Collecteur dans le producteur
+    TODO : Afficher la date de Réception (bordereau date transport)
+    -#.form-group
+      -#= f.label :mode_transport, "Mode de transport"
+      -#= f.select :mode_transport, [["Route", 1], ["Aérien", 2], ["Ferroviaire", 3], ["Fluvial", 3], ["Maritime", 5]]
+  -#.col-md-3
+    -#.form-group
+      -#= f.label :recepisse, "Recepissé"
+      -#= f.text_field :recepisse, placeholder: "Numéro de recepissé"
+  -#.col-md-3
+    -#.form-group
+      -#= f.label :bordereau_limite_validite, "Limite de validité du bordereau"
+      -#= f.text_field :bordereau_limite_validite, placeholder: "Limite de validité", class: "datepicker", value: ebsdd.bordereau_limite_validite.strftime("%d-%m-%Y")
+  -#.col-md-3
+    -#.form-group
+      -#= f.label :transport_multimodal, "Transport multimodal"
+      -#%br
+      -#%label.radio-inline
+        -#= f.radio_button :transport_multimodal, true
+        -#Oui
+      -#%label.radio-inline
+        -#= f.radio_button :transport_multimodal, false
+        -#Non
+.row
   .col-md-3
     .form-group
-      = f.label :mode_transport, "Mode de transport"
-      = f.select :mode_transport, [["Route", 1], ["Aérien", 2], ["Ferroviaire", 3], ["Fluvial", 3], ["Maritime", 5]]
+      = f.label :immatriculation, "Sélectionnez l'immatriculation du camion"
+      = f.select :immatriculation, Immatriculation.to_select
+  .col-md-1.text-center
+    ou
   .col-md-3
     .form-group
-      = f.label :recepisse, "Recepissé"
-      = f.text_field :recepisse, placeholder: "Numéro de recepissé"
+      %label Ajoutez une nouvelle plaque d'immatriculation
+      .input-group
+        %input#immatriculation-new.form-control{ type: :text }
+        %span.input-group-btn
+          %button#add-immatriculation.btn.btn-default{ type: :button }
+            = fa_icon :truck
+            Créer
   .col-md-3
     .form-group
-      = f.label :bordereau_limite_validite, "Limite de validité du bordereau"
-      = f.text_field :bordereau_limite_validite, placeholder: "Limite de validité", class: "datepicker"
-  .col-md-3
-    .form-group
-      = f.label :transport_multimodal, "Transport multimodal"
-      %br
-      %label.radio-inline
-        = f.radio_button :transport_multimodal, true
-        Oui
-      %label.radio-inline
-        = f.radio_button :transport_multimodal, false
-        Non
+      = f.label :bordereau_date_transport, "Date de transport :"
+      = f.text_field :bordereau_date_transport, placeholder: "Limite de validité", class: "datepicker", value: ebsdd.bordereau_date_transport.strftime("%d-%m-%Y")

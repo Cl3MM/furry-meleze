@@ -88,7 +88,7 @@ class EbsddsController < ApplicationController
   # POST /ebsdds
   # POST /ebsdds.json
   def create
-    @ebsdd = Ebsdd.new(ebsdd_params)
+    @ebsdd = Ebsdd.new(params[:ebsdd])
 
     respond_to do |format|
       if @ebsdd.save

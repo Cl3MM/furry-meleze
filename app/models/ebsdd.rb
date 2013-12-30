@@ -8,6 +8,15 @@ class Ebsdd # < ActiveRecord::Base
     15
   end
 
+#TODO :
+  #Recherche :
+    #Critères :
+      #Type de déchet (pateux, inflamable)
+      #Date de réception (date du cadre 8 bordereau_date_transport)
+      #Producteur du déchet
+      #Collecteur du déchet
+      #Numéro bordereau_id ou ecodds_id
+      #Intervalle de temps (du 26 Juillet au 31 Septembre)
 
 #map = %Q{
   #function() {
@@ -194,6 +203,7 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_limite_validite, type: Date
 
 
+  field :immatriculation, type: String
 
 
   attr_accessible :id, :bordereau_id, :producteur_attributes,
@@ -236,7 +246,9 @@ class Ebsdd # < ActiveRecord::Base
     :emetteur_responsable,
     :ligne_flux_date_remise,
     :ligne_flux_poids,
-    :ecodds_id
+    :ecodds_id,
+    :immatriculation
+
     validates_presence_of :bordereau_id,
     #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     #:producteur_tel, :producteur_responsable, 
@@ -249,7 +261,7 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
     :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
-    :destination_ult_ville, :destination_ult_tel, :ecodds_id
+    :destination_ult_ville, :destination_ult_tel, :ecodds_id, :immatriculation
 #:ligne_flux_siret,
 #:ligne_flux_nom,
 #:ligne_flux_adresse,
@@ -273,7 +285,7 @@ class Ebsdd # < ActiveRecord::Base
 
   validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
-    if: -> { self[:entreposage_provisoire] }
+    unless: -> { new_record? || entreposage_provisoire == false }
 
   validates_presence_of :recepisse, :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }

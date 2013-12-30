@@ -53,3 +53,39 @@ fr:
               blank: ne doit pas être vide
             producteur_responsable:
               blank: ne doit pas être vide
+            bordereau_id:
+              blank: ne doit pas être vide
+            destinataire_siret:
+              blank: ne doit pas être vide
+            destinataire_nom:
+              blank: ne doit pas être vide
+            destinataire_adresse:
+              blank: ne doit pas être vide
+            destinataire_cp:
+              blank: ne doit pas être vide
+            destinataire_ville:
+              blank: ne doit pas être vide
+            destinataire_tel:
+              blank: ne doit pas être vide
+            destinataire_responsable:
+              blank: ne doit pas être vide
+            collecteur_siret:
+              blank: ne doit pas être vide
+            collecteur_nom:
+              blank: ne doit pas être vide
+            collecteur_adresse:
+              blank: ne doit pas être vide
+            collecteur_cp:
+              blank: ne doit pas être vide
+            collecteur_ville:
+              blank: ne doit pas être vide
+            libelle:
+              blank: ne doit pas être vide
+            collecteur_tel:
+              blank: ne doit pas être vide
+            collecteur_responsable:
+              blank: ne doit pas être vide
+            bordereau_date_transport:
+              blank: ne doit pas être vide
+            bordereau_date_creation:
+              blank: ne doit pas être vide

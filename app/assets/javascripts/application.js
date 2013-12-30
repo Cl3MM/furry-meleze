@@ -10,18 +10,22 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-// require turbolinks
+// require //turbolinks
 //= require jquery
 //= require jquery_ujs
-// require twitter/bootstrap
+// require // twitter/bootstrap
 //= require twitter/bootstrap/tooltip
+//= require twitter/bootstrap/alert
 //= require twitter/bootstrap/dropdown
-// require twitter/bootstrap/scrollspy
+// require // twitter/bootstrap/scrollspy
 //= require twitter/bootstrap/tab
-// require_tree .
 //= require jquery.ui.datepicker
+//= require jquery.ui.datepicker-fr
+//= require select2/select2
+// require select2/select2_locale_fr
 //= require_self
 $(function() {
+
   if( $("a.touletip").length )
     $("a.touletip").tooltip();
   $('.dropdown-toggle').dropdown();

@@ -7,6 +7,7 @@ Meleze::Application.routes.draw do
   devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
 
   get 'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
+  post 'immatriculation/:id', to: 'immatriculation#create', as: :create_immatriculation
   get 'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
   get 'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
   get 'ebsdds/reset', to: 'ebsdds#reset', as: :reset

@@ -7,7 +7,7 @@
       &nbsp;Enregistrer les modifications
     = fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "eye lg", class: "btn btn-default pull-right"
     - unless @ebsdd.is_incomplete?
-      = fa_link_to ebsdd_download_path, "Exporter au format CSV", "cloud-download lg", class: "btn btn-warning pull-right"
+      = fa_link_to ebsdd_download_path, "Exporter au format ECODDS", "cloud-download lg", class: "btn btn-warning pull-right"
   - if @ebsdd.errors.any?
     .row
       .col-md-12
@@ -67,7 +67,7 @@
               %span.badge 3
               Dénomination du déchet
           .panel-body
-            = render partial: "ebsdds/edit/cadre3", object: f, as: :f
+            = render partial: "ebsdds/edit/cadre3", object: f, as: :f, locals: { ebsdd: @ebsdd }
 
     =# ebsdds/edit/cadre 4
     .row

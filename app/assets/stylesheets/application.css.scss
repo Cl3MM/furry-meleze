@@ -9,9 +9,11 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require jquery.ui.core
+ *= require jquery.ui.theme
  *= require jquery.ui.datepicker
  *= require select2
- * = require redmond/jquery-ui-1.10.3.custom.min
+ * require redmond/jquery-ui-1.10.3.custom.min
  */
 
 /*$navbar-default-bg: #afafaf;*/

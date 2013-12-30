@@ -1,0 +1,44 @@
+%div#producteur_info
+  .row
+    .col-md-12
+      .form-group
+        = label_tag :siret, "SIRET"
+        = text_field_tag "ebsdd_producteur_attributes_siret", producteur.siret, class: "disabled form-control", placeholder: "SIRET"
+        -#= text_field_tag :siret, placeholder: "SIRET", class: "disabled"
+
+    .col-md-12
+      .form-group
+        = label_tag :responsable, "Contact"
+        = text_field_tag "ebsdd_producteur_attributes_responsable", producteur.responsable, class: "disabled form-control", placeholder: "Contact"
+    .col-md-12
+      .form-group
+        = label_tag :adresse, "Adresse"
+        = text_field_tag "ebsdd_producteur_attributes_adresse", producteur.adresse, class: "disabled form-control", placeholder: "Adresse"
+
+  .row
+    .col-md-6
+      .form-group
+        = label_tag :cp, "Code postal"
+        = text_field_tag "ebsdd_producteur_attributes_cp", producteur.cp, class: "disabled form-control", placeholder: "Code postal"
+
+    .col-md-6
+      .form-group
+        = label_tag :ville, "Ville"
+        = text_field_tag "ebsdd_producteur_attributes_ville", producteur.ville, class: "disabled form-control", placeholder: "Ville"
+
+  .row
+    .col-md-6
+      .form-group
+        = label_tag :tel, "Téléphone"
+        = text_field_tag "ebsdd_producteur_attributes_tel", producteur.tel, class: "disabled form-control", placeholder: "Téléphone"
+
+    .col-md-6
+      .form-group
+        = label_tag :fax, "Fax"
+        = text_field_tag "ebsdd_producteur_attributes_fax", producteur.fax, class: "disabled form-control", placeholder: "Fax"
+
+  .row
+    .col-md-12
+      .form-group
+        = label_tag :email, "Adresse email"
+        = text_field_tag "ebsdd_producteur_attributes_email", producteur.email, class: "disabled form-control", placeholder: "Adresse email"

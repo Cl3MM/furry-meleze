@@ -2,49 +2,51 @@
   .row
     .col-md-12
       .form-group
-        = f.label :producteur_id, "Producteur"
+        = f.label :producteur_id, "Producteur", class: "disabled"
         %br
         = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }
 
-  .row
-    .col-md-12
-      .form-group
-        = p.label :siret, "SIRET"
-        = p.text_field :siret, placeholder: "SIRET"
+  %div#producteur_info
+    .row
+      .col-md-12
+        .form-group
+          = p.label :siret, "SIRET", class: "disabled"
+          = p.text_field :siret, placeholder: "SIRET", class: "disabled"
 
-    .col-md-12
-      .form-group
-        = p.label :responsable, "Contact"
-        = p.text_field :responsable, placeholder: "Contact"
-    .col-md-12
-      .form-group
-        = p.label :adresse, "Adresse"
-        = p.text_field :adresse, placeholder: "Adresse"
+      .col-md-12
+        .form-group
+          = p.label :responsable, "Contact", class: "disabled"
+          = p.text_field :responsable, placeholder: "Contact", class: "disabled"
+      .col-md-12
+        .form-group
+          = p.label :adresse, "Adresse", class: "disabled"
+          = p.text_field :adresse, placeholder: "Adresse", class: "disabled"
 
-  .row
-    .col-md-6
-      .form-group
-        = p.label :cp, "Code postal"
-        = p.text_field :cp, placeholder: "Code postal"
+    .row
+      .col-md-6
+        .form-group
+          = p.label :cp, "Code postal", class: "disabled"
+          = p.text_field :cp, placeholder: "Code postal", class: "disabled"
 
-    .col-md-6
-      .form-group
-        = p.label :ville, "Ville"
-        = p.text_field :ville, placeholder: "Ville"
+      .col-md-6
+        .form-group
+          = p.label :ville, "Ville", class: "disabled"
+          = p.text_field :ville, placeholder: "Ville", class: "disabled"
 
-  .row
-    .col-md-6
-      .form-group
-        = p.label :tel, "Téléphone"
-        = p.text_field :tel, placeholder: "Téléphone"
+    .row
+      .col-md-6
+        .form-group
+          = p.label :tel, "Téléphone", class: "disabled"
+          = p.text_field :tel, placeholder: "Téléphone", class: "disabled"
 
-    .col-md-6
-      .form-group
-        = p.label :fax, "Fax"
-        = p.text_field :fax, placeholder: "Fax"
+      .col-md-6
+        .form-group
+          = p.label :fax, "Fax", class: "disabled"
+          = p.text_field :fax, placeholder: "Fax", class: "disabled"
 
-  .row
-    .col-md-12
-      .form-group
-        = p.label :email, "Adresse email"
-        = p.text_field :email, placeholder: "Adresse email"
+    .row
+      .col-md-12
+        .form-group
+          = p.label :email, "Adresse email", class: "disabled"
+          = p.text_field :email, placeholder: "Adresse email", class: "disabled"
+

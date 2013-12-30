@@ -3,17 +3,50 @@ jQuery ->
     dateFormat: 'dd-mm-yy',
     $.datepicker.regional[ "fr" ]
 
+  # Enable / Disable $(".disabled")
+  disable = (x) ->
+    $(".disabled").each ->
+      $(this).prop('disabled', x) unless $(this).val() == ""
+  disable( true ) if $('.disabled').length
+
+  # Active / Désactive l'édition du cadre 15
   entreposage_visibility = (x) ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
+
+  # Ajax call
+  remote_call = (url, success, { type, datatype } ) ->
+    type ?= "GET"
+    datatype ?= 'json'
+    $.ajax
+      type: type,
+      url: url,
+      dataType: 'json',
+      success: (data) ->
+        success(data)
 
   if $("#edit").length
 
     #$("#e1").select2()
     $("#ebsdd_producteur_id").select2
       width: 507
+
+    $("#ebsdd_producteur_id").on 'change', (e) ->
+      val =  $(this).val()
+      console.log val
+      url = '/producteurs/' + val + '.js'
+      $.get( url)
+      #remote_call url, (data) ->
+        #console.log data
+        #unless jQuery.isEmptyObject(data)
+            #alert "La plaque d'immatriculation " + data.valeur + " a bien été créée"
+            #option = '<option value="' + data.id + '">' + data.valeur + "</option>"
+            #$('#ebsdd_immatriculation').prepend( option )
+            #$('#ebsdd_immatriculation').val(data.id)
+
+
     $("#ebsdd_producteur_id").on "change", (e) ->
-        alert e.val
+        console.log e.val
 
     # Active le recepisse
     if $("#ebsdd_mode_transport").val() != "1"
@@ -62,7 +95,7 @@ jQuery ->
           url: '/immatriculation/' + plaque,
           dataType: 'json',
           success: (data) ->
-            if !jQuery.isEmptyObject(data)
+            unless !jQuery.isEmptyObject(data)
               alert "La plaque d'immatriculation " + data.valeur + " a bien été créée"
               option = '<option value="' + data.id + '">' + data.valeur + "</option>"
               $('#ebsdd_immatriculation').prepend( option )

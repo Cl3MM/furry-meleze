@@ -16,11 +16,13 @@ class Producteur
   field :actif, type: Boolean
 
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif
-  before_create :normalize
-  def normalize
-    
-  end
+
   validates_presence_of :nom
+
+  def to_js
+    #{id: id, siret: siret, nom: nom, adresse: adresse, cp: cp, tel: tel.to_s, fax: fax.to_s, email: email, responsable: responsable }.to_json
+    attributes.reduce({}){ | h, (k,v) | h[k] = "#{v}"; h }
+  end
   #validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers
     attrs = [

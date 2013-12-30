@@ -46,8 +46,9 @@ class ProducteursController < ApplicationController
   # GET /producteurs/1.json
   def show
     @producteur = Producteur.find(params[:id])
-
+    #gon.push( @producteur)
     respond_to do |format|
+      format.js
       format.html # show.html.erb
       format.json { render json: @producteur }
     end

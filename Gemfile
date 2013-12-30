@@ -18,7 +18,7 @@ gem 'mongoid', '~>3.0.4'
 gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
-
+#gem 'gon', '3.0.5'
 #gem 'turbolinks'
 #gem 'will_paginate', '~> 3.0'
 gem "will_paginate_mongoid"

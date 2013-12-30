@@ -1,7 +1,4 @@
 jQuery ->
-  <% Rails.logger.debug render(partial: 'ebsdds/edit/cadre1_producteur_info', object: @producteur, as: :producteur) %>
-  x = "<%= escape_javascript(render(partial: 'ebsdds/edit/cadre1_producteur_info', object: @producteur, as: :producteur))%>"
-  console.log x
-  $("#producteur_info").html(x)
+  $("#producteur_info").html "<%= escape_javascript(render(partial: 'ebsdds/edit/cadre1_producteur_info', object: @producteur, as: :producteur))%>"
   $(".disabled").each ->
     $(this).prop('disabled', true) unless $(this).val() == ""

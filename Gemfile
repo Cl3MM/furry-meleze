@@ -33,9 +33,10 @@ gem 'sass-rails',   '~> 3.2.3'
 #                              :github => 'anjlab/bootstrap-rails'
 # Gems used only for assets and not required
 # in production environments by default.
+gem 'coffee-rails', '~> 3.2.1'
+
 group :assets do
   gem "select2-rails"
-  gem 'coffee-rails', '~> 3.2.1'
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer', :platforms => :ruby
 

@@ -33,6 +33,7 @@ jQuery ->
 
     $("#ebsdd_producteur_id").on 'change', (e) ->
       val =  $(this).val()
+      $("#ebsdd_producteur_attributes_id").val(val)
       console.log val
       url = '/producteurs/' + val + '.js'
       $.get( url)
@@ -43,10 +44,6 @@ jQuery ->
             #option = '<option value="' + data.id + '">' + data.valeur + "</option>"
             #$('#ebsdd_immatriculation').prepend( option )
             #$('#ebsdd_immatriculation').val(data.id)
-
-
-    $("#ebsdd_producteur_id").on "change", (e) ->
-        console.log e.val
 
     # Active le recepisse
     if $("#ebsdd_mode_transport").val() != "1"

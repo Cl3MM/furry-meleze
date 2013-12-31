@@ -206,7 +206,7 @@ class Ebsdd # < ActiveRecord::Base
   field :immatriculation, type: String
 
 
-  attr_accessible :id, :bordereau_id, :producteur_attributes,
+  attr_accessible :id, :bordereau_id, :producteur_attributes, :producteur_id,
     #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     #:producteur_tel, :producteur_fax, :producteur_responsable,
     :destinataire_siret, :destinataire_nom,

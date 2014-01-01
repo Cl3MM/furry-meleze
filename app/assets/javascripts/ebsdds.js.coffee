@@ -31,19 +31,12 @@ jQuery ->
     $("#ebsdd_producteur_id").select2
       width: 507
 
+    # Envoie une requête au serveur pour afficher les info du producteur choisi
     $("#ebsdd_producteur_id").on 'change', (e) ->
       val =  $(this).val()
       $("#ebsdd_producteur_attributes_id").val(val)
-      console.log val
       url = '/producteurs/' + val + '.js'
       $.get( url)
-      #remote_call url, (data) ->
-        #console.log data
-        #unless jQuery.isEmptyObject(data)
-            #alert "La plaque d'immatriculation " + data.valeur + " a bien été créée"
-            #option = '<option value="' + data.id + '">' + data.valeur + "</option>"
-            #$('#ebsdd_immatriculation').prepend( option )
-            #$('#ebsdd_immatriculation').val(data.id)
 
     # Active le recepisse
     if $("#ebsdd_mode_transport").val() != "1"

@@ -1,5 +1,4 @@
 jQuery ->
-  console.log 'coucou'
   producteur = $.parseJSON '<%= raw( j @producteur.to_json ) %>'
   attributes = $.parseJSON '<%= raw %w( siret responsable adresse ville cp tel fax email ).to_json %>'
 

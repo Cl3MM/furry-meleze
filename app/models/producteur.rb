@@ -20,8 +20,10 @@ class Producteur
   validates_presence_of :nom
 
   def to_js
-    #{id: id, siret: siret, nom: nom, adresse: adresse, cp: cp, tel: tel.to_s, fax: fax.to_s, email: email, responsable: responsable }.to_json
-    attributes.reduce({}){ | h, (k,v) | h[k] = "#{v}"; h }
+    #attributes.reduce({}){ | h, (k,v) | h[k] = "#{v}"; h }
+    #{id: id, siret: siret, nom: nom, adresse: adresse, cp: cp, tel: tel.to_s, fax: fax.to_s, email: email, responsable: responsable }.as_json
+    binding.pry
+    { siret: siret, nom: nom, responsable: responsable }.to_json
   end
   #validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers

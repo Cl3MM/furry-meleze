@@ -202,9 +202,7 @@ class Ebsdd # < ActiveRecord::Base
   field :mode_transport, type: Integer, default: 1
   field :bordereau_limite_validite, type: Date
 
-
   field :immatriculation, type: String
-
 
   attr_accessible :id, :bordereau_id, :producteur_attributes, :producteur_id,
     #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,

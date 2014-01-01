@@ -1,4 +1,22 @@
+- producteur.valid?
 = f.fields_for :producteur do | p |
+
+  -#= binding.pry
+  - if producteur.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          %div{id: "error_explanation"}
+            %p
+              Veuillez corriger
+              = producteur.errors.count > 1 ? "les" : "l'"
+              = pluralize(producteur.errors.count, "erreur")
+              = producteur.errors.count > 1 ? "suivantes :" : "suivante :"
+            %ul
+              - producteur.errors.full_messages.each do |msg|
+                %li
+                  = msg
   .row
     .col-md-12
       .form-group

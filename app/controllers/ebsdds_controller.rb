@@ -91,9 +91,14 @@ class EbsddsController < ApplicationController
     @ebsdd = Ebsdd.new(params[:ebsdd])
 
     respond_to do |format|
-      if @ebsdd.save
-        format.html { redirect_to @ebsdd, notice: 'Ebsdd was successfully created.' }
+      saved = @ebsdd.save
+      valid = @ebsdd.producteur.valid?
+      if saved && valid
+        format.html { redirect_to @ebsdd, notice: 'L\'EBSDD a été crée avec succès ! ' }
         format.json { render action: 'show', status: :created, location: @ebsdd }
+      elsif !saved && valid
+        format.html { render action: 'edit' }
+        format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       else
         format.html { render action: 'new' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
@@ -105,9 +110,11 @@ class EbsddsController < ApplicationController
   # PATCH/PUT /ebsdds/1.json
   def update
     @ebsdd = Ebsdd.find(params[:id])
-    #binding.pry
     respond_to do |format|
-      if @ebsdd.update_attributes(params[:ebsdd])
+      valid = @ebsdd.producteur.valid?
+      #binding.pry
+      if @ebsdd.update_attributes(params[:ebsdd]) && valid
+        @ebsdd.producteur.valid?
         format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }
         format.json { head :no_content }
       else

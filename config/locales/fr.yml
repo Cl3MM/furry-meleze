@@ -89,3 +89,23 @@ fr:
               blank: ne doit pas être vide
             bordereau_date_creation:
               blank: ne doit pas être vide
+        producteur:
+          attributes:
+            siret:
+              blank: ne doit pas être vide
+            nom:
+              blank: ne doit pas être vide
+            fax:
+              blank: ne doit pas être vide
+            tel:
+              blank: ne doit pas être vide
+            adresse:
+              blank: ne doit pas être vide
+            ville:
+              blank: ne doit pas être vide
+            responsable:
+              blank: ne doit pas être vide
+            cp:
+              blank: ne doit pas être vide
+            email:
+              blank: ne doit pas être vide

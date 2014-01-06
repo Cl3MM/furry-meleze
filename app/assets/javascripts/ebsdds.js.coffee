@@ -63,13 +63,13 @@ jQuery ->
       if $(this).prop('checked') == true
         entreposage_visibility(true)
 
-    # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
-    $("#ebsdd_dechet_nomenclature").on 'change', (evt) ->
-      denomination = $(this).val()
-      $("#code_rubrique_dechet").html denomination
-      $("#ebsdd_dechet_denomination").val denomination
-
     # Change le code rubrique dechet et la denomination usuelle en fonction du champ mention au titre des reglnt
+    #$("#ebsdd_dechet_nomenclature").on 'change', (evt) ->
+      #denomination = $(this).val()
+      #$("#code_rubrique_dechet").html denomination
+      #$("#ebsdd_dechet_denomination").val denomination
+
+    # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     $("#ebsdd_dechet_denomination").on 'change', (evt) ->
       denomination = $(this).val()
       $("#code_rubrique_dechet").html denomination

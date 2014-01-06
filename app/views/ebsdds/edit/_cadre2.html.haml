@@ -9,8 +9,10 @@
     Non
 
 .form-group
-  = f.label :num_cap, "Numéro CAP"
-  = f.text_field :num_cap, placeholder: "Numéro CAP"
+  .has-error
+    = f.label :num_cap, "Numéro CAP"
+  .has-error
+    = f.text_field :num_cap, placeholder: "Numéro CAP"
 
 .form-group
   = f.label :valorisation_prevue, "Valorisation prévue"

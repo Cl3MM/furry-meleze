@@ -11,19 +11,23 @@ class Attachment
   #before_save :content_type ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
 
   has_mongoid_attached_file :attachment
-  attr_accessible :attachment, :checksum
+  attr_accessible :attachment, :checksum, :failed, :exec_time, :total, :producteurs
   field :checksum, type: String
+  field :failed, type: Array
+  field :producteurs, type: Array
+  field :exec_time, type: Float
+  field :total, type: Integer
 
   def items
     ebsdds.count
   end
-  def custom_save
-    if check_content_type
-      save
-    else
-      raise "Object invalide"
-    end
-  end
+  #def custom_save
+    #if check_content_type
+      #save
+    #else
+      #raise "Object invalide"
+    #end
+  #end
   protected
   def check_content_type
     content_type ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]

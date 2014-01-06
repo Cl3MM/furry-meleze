@@ -38,7 +38,7 @@ class EbsddsController < ApplicationController
       ].include? file.content_type
         result, errors = Ebsdd.import2(params[:file])
         if errors.any?
-          redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
+          redirect_to ebsdds_import_path, alert: errors.join("<br/>")
         else
           redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
         end

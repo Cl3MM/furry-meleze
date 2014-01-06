@@ -16,7 +16,7 @@
           %div{id: "error_explanation"}
             %h2
               Merci de corriger
-              = @ebsdd.errors.count > 1 ? "les" : "le"
+              = @ebsdd.errors.count > 1 ? "les" : "l'"
               = pluralize(@ebsdd.errors.count, "erreur")
               = @ebsdd.errors.count > 1 ? "suivantes :" : "suivante :"
             %ul

@@ -17,7 +17,7 @@ class Producteur
 
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif
 
-  validates_presence_of :nom, :cp, :email, :siret, :tel, :fax
+  validates_presence_of :nom, :cp #, :email, :siret, :tel, :fax
 
   #validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers
@@ -43,7 +43,12 @@ class Producteur
       unless (headers_hash = check_headers(headers)).nil?
         (2..spreadsheet.last_row).each do | i |
           params = headers_hash.reduce({}) do | _h, (k, v) |
-          _h[k] = (c = spreadsheet.cell(i, v).squish).blank? ? nil : c
+          cell = spreadsheet.cell(i, v)
+          _h[k] = if cell.is_a? Float
+                    cell.to_s
+                  else
+                    (cell.squish).blank? ? nil : cell.squish
+                  end
           _h
         end
         create_from_import(params)

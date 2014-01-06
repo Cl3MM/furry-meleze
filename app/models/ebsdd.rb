@@ -200,11 +200,11 @@ class Ebsdd # < ActiveRecord::Base
   field :valorisation_prevue, type: String, default: "R13"
   field :recepisse, type: String, default: ->{ id }
   field :mode_transport, type: Integer, default: 1
-  field :bordereau_limite_validite, type: Date
+  field :bordereau_limite_validite, type: Date, default: ->{ 10.days.from_now }
 
   field :immatriculation, type: String
 
-  attr_accessible :id, :bordereau_id, :producteur_attributes, :producteur_id,
+  attr_accessible :id, :bordereau_id, :producteur_attributes, :producteur_id, :attachment_id,
     #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
     #:producteur_tel, :producteur_fax, :producteur_responsable,
     :destinataire_siret, :destinataire_nom,
@@ -285,7 +285,7 @@ class Ebsdd # < ActiveRecord::Base
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
     unless: -> { new_record? || entreposage_provisoire == false }
 
-  validates_presence_of :recepisse, :bordereau_limite_validite,
+  validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 
   def is_entreposage_provisoire?
@@ -341,6 +341,35 @@ class Ebsdd # < ActiveRecord::Base
   end
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
+      csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bordereau_id.to_s.truncate(35, omission: ""), nil]
+      csv << ["01", 4, producteur.siret.truncate(14, omission: ""), producteur.nom.truncate(60, omission: ""), producteur.adresse.truncate(100, omission: ""), producteur.cp.truncate(5, omission: ""), producteur.ville.truncate(45, omission: ""), producteur.tel.truncate(35, omission: ""), producteur.fax.truncate(35, omission: ""), producteur.email.truncate(50, omission: ""), producteur.responsable.truncate(35, omission: ""), nil]
+      csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_tel || "").truncate(35, omission: ""), (destinataire_fax || "").truncate(35, omission: ""), (destinataire_email || "").truncate(50, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
+      csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, DechetDenomination[dechet_denomination].truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
+      csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]
+      csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
+      csv << ["06", type_quantite.truncate(1, omission: ""), poids_en_tonnes.truncate(8, omission: ""), nil ]
+      csv << ["08", (collecteur_siret || "").truncate(14, omission: ""), (collecteur_nom || "").truncate(60, omission: ""), (collecteur_adresse || "").truncate(100, omission: ""), (collecteur_cp || "").truncate(5, omission: ""), (collecteur_ville || "").truncate(45, omission: ""), (collecteur_tel || "").truncate(35, omission: ""), (collecteur_fax || "").truncate(35, omission: ""), (collecteur_email || "").truncate(50, omission: ""), (collecteur_responsable || "").truncate(35, omission: ""), (mode_transport == 1 ? recepisse : nil).truncate(35, omission: ""), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
+      csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
+      csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil, (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire_responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
+      csv << ["12", traitement_prevu.truncate(3, omission: ""), destination_ult_siret.truncate(14, omission: ""), destination_ult_nom.truncate(60, omission: ""), destination_ult_adresse.truncate(100, omission: ""), destination_ult_cp.truncate(5, omission: ""), destination_ult_ville.truncate(45, omission: ""), destination_ult_tel.truncate(35, omission: ""), destination_ult_fax.truncate(35, omission: ""), destination_ult_mel.truncate(50, omission: ""), destination_ult_contact.truncate(35, omission: "") , nil]
+      if(entreposage_provisoire)
+        csv << ["13", entreposage_siret.truncate(14, omission: ""), entreposage_nom.truncate(60, omission: ""), entreposage_adresse.truncate(100, omission: ""), treposage_cp.truncate(5, omission: ""), entreposage_ville.truncate(45, omission: ""), entreposage_type_quantite.truncate(1, omission: ""), entreposage_quantite.truncate(8, omission: ""), entreposage_date.strftime("%Y%m%d"), 1, nil, entreposage_date_presentation.strftime("%Y%m%d"), nil ]
+        csv << ["14", dest_prevue_siret.truncate(14, omission: ""), dest_prevue_nom.truncate(60, omission: ""), dest_prevue_adresse.truncate(100, omission: ""), dest_prevue_cp.truncate(5, omission: ""), dest_prevue_ville.truncate(45, omission: ""), dest_prevue_tel.truncate(35, omission: ""), dest_prevue_fax.truncate(35, omission: ""), dest_prevue_mel.truncate(50, omission: ""), dest_prevue_responsable.truncate(35, omission: ""), dest_prevue_numcap.truncate(35, omission: ""), dest_prevue_traitement_prevu.truncate(3, omission: ""), (dest_prevue_rempliepar.truncate(3, omission: "") ? 1 : 2 ), nil ]
+        csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
+        csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
+        csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
+        csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        csv << ["19", nil, nil, nil ]
+      end
+      if transport_multimodal
+        csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      end
+    end
+  end
+  def to_ebsdd_avant_h
+    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       #binding.pry
       csv << ["00", ecodds_id, bordereau_id, nil]
       csv << ["01", 4, producteur.siret, producteur.nom.truncate(5, omission: ''), producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
@@ -389,8 +418,13 @@ class Ebsdd # < ActiveRecord::Base
         #@document.attachment = file
         if @document.save
           result = created_from_spreadsheet spreadsheet, attrs
-          @document[:import_status] = result
-          @document.save
+          @document[:failed] = result[:failed]
+          @document[:total] = result[:total]
+          @document[:exec_time] = result[:exec_time]
+          @document[:producteurs] = result[:producteurs]
+          binding.pry
+
+          @document.save!
         else
           errors << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
         end
@@ -416,7 +450,7 @@ class Ebsdd # < ActiveRecord::Base
     header              = spreadsheet.row(1).map{ |h| h.downcase.strip }
     bordereau_id_column = header.index("bordereau_id")
     producteur_attrs = producteur_attr_indexes(attrs, header)
-    failed, start, total = [], Time.now, 0
+    failed, start, total, new_producteurs = [], Time.now, 0, []
     unless bordereau_id_column.nil? || producteur_attrs.empty?
       (2..spreadsheet.last_row).each do | i |
         total += 1
@@ -428,7 +462,9 @@ class Ebsdd # < ActiveRecord::Base
         else
           new_producteur = producteur_attrs.reduce({}) do  | h, (_k,v) |
             k = _k.to_s.gsub("producteur_","").to_sym
-            if row[v].is_a? Float
+            if row[v].nil?
+              h[k] = nil
+            elsif row[v].is_a? Float
               h[k] = normalize_float(row[v])
             else
               h[k] = row[v].squish
@@ -436,6 +472,7 @@ class Ebsdd # < ActiveRecord::Base
             h
           end
           p = Producteur.create( new_producteur )
+          new_producteurs << p.id
           p
         end
         unless Ebsdd.where({bordereau_id: bordereau_id } ).exists?
@@ -451,13 +488,14 @@ class Ebsdd # < ActiveRecord::Base
                          end
             cur_header = header[ index ]
             ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
+
             #producteur_attrs.value.each{|i| row.delete_at(i) } #remove prod_attr in row
           end
           ebsdd.line_number = i
           ebsdd.status = :import
           ebsdd.producteur = producteur
+          ebsdd.attachment_id =  @document.id
           ebsdd.save(validate: false)
-          @document.ebsdds.push(ebsdd)
         else
           failed << {id: bordereau_id, line: i }
         end
@@ -465,7 +503,7 @@ class Ebsdd # < ActiveRecord::Base
     #else
       #out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
     end
-    {failed: failed, exec_time: Time.now - start, total: total}
+    {failed: failed, exec_time: Time.now - start, total: total, producteurs: new_producteurs}
   end
   def self.import(file)
     out = { rows: nil, errors: [] }

@@ -16,7 +16,7 @@ Meleze::Application.routes.draw do
   get  'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
   get  'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
   get  'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
-  get  'ebsdds/reset', to: 'ebsdds#reset', as: :reset
+  #get  'ebsdds/reset', to: 'ebsdds#reset', as: :reset
   get  'ebsdds/search_form', to: 'ebsdds#search_form', as: :ebsdds_search_form
   get  'ebsdds/search/:q', to: 'ebsdds#search', as: :ebsdds_search
   get  'ebsdds/import'

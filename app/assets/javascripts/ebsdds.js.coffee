@@ -2,8 +2,6 @@ jQuery ->
   $('.datepicker').datepicker
     dateFormat: 'dd-mm-yy',
     $.datepicker.regional[ "fr" ]
-  $("form").submit ->
-    $('input[type=submit]').attr('disabled', 'disabled')
 
   # Enable / Disable $(".disabled")
   disable = (x) ->
@@ -103,7 +101,6 @@ jQuery ->
       #$("#code_rubrique_dechet").html denomination
       #$("#ebsdd_dechet_denomination").val denomination
 
-ebsdd_mention_titre_reglements_ult
     # Set default value for hidden field to avoid errors
     if $("#ebsdd_dechet_denomination").length and $("input#ebsdd_dechet_nomenclature").length
       $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_dechet_denomination").val() )

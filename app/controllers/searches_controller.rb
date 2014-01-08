@@ -1,5 +1,5 @@
 class SearchesController < ApplicationController
-  layout false
+  #layout false
   # GET /searches
   # GET /searches.json
   def index
@@ -44,15 +44,21 @@ class SearchesController < ApplicationController
   def create
     @search = Search.new(params[:search])
 
+    @ebsdds = Ebsdd.between(bordereau_date_creation: @search.date_min..@search.date_max).paginate(page: params[:page], per_page: 15)
+    @status = (params.has_key?(:status) ? params[:status].to_sym : :empty)
     respond_to do |format|
-      if @search.save
-        format.html { redirect_to @search, notice: 'Search was successfully created.' }
-        format.json { render json: @search, status: :created, location: @search }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @search.errors, status: :unprocessable_entity }
-      end
+      format.html { render template: "ebsdds/index" }
+      format.json { render json: @search.errors, status: :unprocessable_entity }
     end
+    #respond_to do |format|
+      #if @search.save
+        #format.html { redirect_to @search, notice: 'Search was successfully created.' }
+        #format.json { render json: @search, status: :created, location: @search }
+      #else
+        #format.html { render action: "new" }
+        #format.json { render json: @search.errors, status: :unprocessable_entity }
+      #end
+    #end
   end
 
   # PUT /searches/1

@@ -15,7 +15,7 @@
         = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
       %li.divider
       %li
-        = fa_link_to new_search_path, "Recherche avancée", "search lg", {"data-target" => "#search", "data-toggle" => "modal"}
+        = fa_link_to new_search_path, "Recherche avancée", "search lg"#, {"data-target" => "#search", "data-toggle" => "modal"}
       %li.divider
       %li
         = fa_link_to ebsdds_import_path, "Importer une liste de eBSDDs", "cloud-upload lg"
@@ -42,7 +42,7 @@
     - else
       = link_to "Expédiés", ebsdd_status_path(status: :expedies)
 
-= render partial: "ebsdds"
+= render partial: "ebsdds/ebsdds"
 #search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
 -#= render partial: "search"
 

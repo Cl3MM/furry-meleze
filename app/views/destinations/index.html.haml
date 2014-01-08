@@ -1,10 +1,10 @@
 %h1.underline
   = fa_icon "tags"
-  Liste des Collecteurs
+  Liste des destinations
   %span.small
-    = "(#{Collecteur.count})"
+    = "(#{Destination.count})"
 
--if @collecteurs.any?
+-if @destinations.any?
   .panel.panel-default
     .panel-body
       %table.table.table-striped
@@ -17,17 +17,17 @@
             %th.actions Actions
 
         %tbody
-          - @collecteurs.each do |collecteur|
+          - @destinations.each do |destination|
             %tr
-              %td= collecteur.nom
-              %td= collecteur.responsable
-              %td= collecteur.cp
-              %td= collecteur.ville
+              %td= destination.nom
+              %td= destination.responsable
+              %td= destination.cp
+              %td= destination.ville
               %td.actions
                 .center-block.text-center
-                  = link_to(fa_icon("eye lg", text: ""), collecteur, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce collecteur")
-                  = link_to(fa_icon("gear lg", text: ""), edit_collecteur_path(collecteur), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
-                  = link_to(fa_icon("times lg", text: ""), collecteur, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le collecteur")
-              -#%td= link_to 'Show', collecteur
-              -#%td= link_to 'Edit', edit_collecteur_path(collecteur)
-              -#%td= link_to 'Destroy', collecteur, :method => :delete, :data => { :confirm => 'Are you sure?' }
+                  = link_to(fa_icon("eye lg", text: ""), destination, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce destination")
+                  = link_to(fa_icon("gear lg", text: ""), edit_destination_path(destination), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
+                  = link_to(fa_icon("times lg", text: ""), destination, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le destination")
+              -#%td= link_to 'Show', destination
+              -#%td= link_to 'Edit', edit_destination_path(destination)
+              -#%td= link_to 'Destroy', destination, :method => :delete, :data => { :confirm => 'Are you sure?' }

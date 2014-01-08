@@ -6,6 +6,7 @@ class Destination
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif, :recepisse,
     :mode_transport, :limite_validite, :nomenclatures
 
+  validates_presence_of :nom, :siret, :adresse, :cp, :ville, :tel, :fax, :email, :responsable
   field :nomenclatures, type: Array
   field :siret, type: String
   field :nom, type: String

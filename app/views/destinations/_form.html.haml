@@ -1,9 +1,9 @@
-= custom_form @collecteur do |f|
-  - if @collecteur.errors.any?
+= custom_form @destination do |f|
+  - if @destination.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@collecteur.errors.count, "error")} prohibited this collecteur from being saved:"
+      %h2= "#{pluralize(@destination.errors.count, "error")} prohibited this destination from being saved:"
       %ul
-        - @collecteur.errors.full_messages.each do |msg|
+        - @destination.errors.full_messages.each do |msg|
           %li= msg
 
   .field
@@ -33,17 +33,8 @@
   .field
     = f.label :email
     = f.text_field :email
-  .field
-    = f.label :recepisse
-    = f.text_field :recepisse
-  .field
-    = f.label :mode_transport
-    = f.text_field :mode_transport
-  .field
-    = f.label :limite_validite
-    = f.text_field :limite_validite
-  .field
-    = f.label :nomenclatures
-    = f.text_field :nomenclatures
+  -#.field
+    -#= f.label :recepisse
+    -#= f.text_field :recepisse
   .actions
     = f.submit 'Save'

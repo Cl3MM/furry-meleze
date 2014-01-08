@@ -1,0 +1,49 @@
+= custom_form @collecteur do |f|
+  - if @collecteur.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@collecteur.errors.count, "error")} prohibited this collecteur from being saved:"
+      %ul
+        - @collecteur.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :nom
+    = f.text_field :nom
+  .field
+    = f.label :siret
+    = f.text_field :siret
+  .field
+    = f.label :adresse
+    = f.text_field :adresse
+  .field
+    = f.label :responsable
+    = f.text_field :responsable
+  .field
+    = f.label :cp
+    = f.text_field :cp
+  .field
+    = f.label :ville
+    = f.text_field :ville
+  .field
+    = f.label :tel
+    = f.text_field :tel
+  .field
+    = f.label :fax
+    = f.text_field :fax
+  .field
+    = f.label :email
+    = f.text_field :email
+  .field
+    = f.label :recepisse
+    = f.text_field :recepisse
+  .field
+    = f.label :mode_transport
+    = f.text_field :mode_transport
+  .field
+    = f.label :limite_validite
+    = f.text_field :limite_validite
+  .field
+    = f.label :nomenclatures
+    = f.text_field :nomenclatures
+  .actions
+    = f.submit 'Save'

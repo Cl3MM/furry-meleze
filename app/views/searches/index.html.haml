@@ -1,0 +1,41 @@
+%h1 Listing searches
+
+%table
+  %tr
+    %th Date min
+    %th Date max
+    %th Date
+    %th Nom
+    %th Siret
+    %th Responsable
+    %th Ville
+    %th Cp
+    %th Status
+    %th Nomenclature
+    %th Poids min
+    %th Poids max
+    %th
+    %th
+    %th
+
+  - @searches.each do |search|
+    %tr
+      %td= search.date_min
+      %td= search.date_max
+      %td= search.date
+      %td= search.nom
+      %td= search.siret
+      %td= search.responsable
+      %td= search.ville
+      %td= search.cp
+      %td= search.status
+      %td= search.nomenclature
+      %td= search.poids_min
+      %td= search.poids_max
+      %td= link_to 'Show', search
+      %td= link_to 'Edit', edit_search_path(search)
+      %td= link_to 'Destroy', search, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Search', new_search_path

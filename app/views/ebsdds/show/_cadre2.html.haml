@@ -4,10 +4,44 @@
       = fa_icon ( ebsdd.entreposage_provisoire ? "check-square" : "square-o" )
       Entreposage provisoire ou reconditionnement
     %br
-    %b
-      Numéro CAP :
-    = ebsdd.num_cap
-    %br
-    %b
-      Valorisation prévue :
-    = ebsdd.valorisation_prevue
+    %dl.dl-horizontal
+      %dt
+        Siret
+      %dd
+        = ebsdd.destinataire_siret
+      %dt
+        Nom
+      %dd
+        = ebsdd.destinataire_nom
+      %dt
+        Adresse
+      %dd
+        = ebsdd.destinataire_adresse
+      %dt
+        Code postal
+      %dd
+        = ebsdd.destinataire_cp
+      %dt
+        Ville
+      %dd
+        = ebsdd.destinataire_ville
+      %dt
+        Téléphone
+      %dd
+        = ebsdd.destinataire_tel
+      %dt
+        Fax
+      %dd
+        = ebsdd.destinataire_fax
+      %dt
+        Responsable
+      %dd
+        = ebsdd.destinataire_responsable
+      %dt
+        Numéro CAP :
+      %dd
+        = ebsdd.num_cap
+      %dt
+        Valorisation prévue :
+      %dd
+        = ebsdd.valorisation_prevue

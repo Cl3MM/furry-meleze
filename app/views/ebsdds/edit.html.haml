@@ -13,7 +13,7 @@
       .col-md-12
         .alert.alert-danger.alert-dismissable
           %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
-          %div{id: "error_explanation"}
+          #error_explanation
             %h2
               Merci de corriger
               = @ebsdd.errors.count > 1 ? "les" : "l'"
@@ -47,7 +47,7 @@
               %span.badge 1
               Emetteur du bordereau
           .panel-body
-            = render partial: "ebsdds/edit/cadre1", object: f, as: :f, locals: {producteur: @ebsdd.producteur}
+            = render partial: "ebsdds/edit/cadre1", object: f, as: :f, locals: {productable: @ebsdd.productable}
       =# ebsdds/edit/cadre 2
       .col-md-6
         .panel.panel-default
@@ -121,7 +121,7 @@
               %span.badge 8
               Collecteur-transporteur
           .panel-body
-            = render partial: "ebsdds/edit/cadre8", object: f, as: :f, locals: { ebsdd: @ebsdd }
+            = render partial: "ebsdds/edit/cadre8", object: f, as: :f, locals: { ebsdd: @ebsdd, collecteur: @collecteur }
 
     =# ebsdds/edit/cadre 9
     .row
@@ -171,6 +171,27 @@
           À REMPLIR EN CAS D’ENTREPOSAGE PROVISOIRE OU DE RECONDITONNEMENT
         %hr
 
+    =# ebsdds/edit/cadre 13
+    .row
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 13
+              Réception dans l’installation d’entreposage ou de reconditionnement
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre13", object: f, as: :f
+
+      / ebsdds/edit/cadre 14
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 14
+              Installation de destination prévue
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre14", object: f, as: :f
+
     =# ebsdds/edit/cadre 15
     .row
       .col-md-12
@@ -197,8 +218,57 @@
         .panel.panel-default
           .panel-heading
             %h3.panel-title
+              %span.badge 17
               Quantité
           .panel-body.entreposage-provisoire
             = render partial: "ebsdds/edit/cadre17", object: f, as: :f
+
+    =# ebsdds/edit/cadre 17
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 18
+              Collecteur-transporteur après reconditionnement
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre18", object: f, as: :f
+
+    =# ebsdds/edit/cadre 17
+    .row
+      .col-md-12
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 19
+              Déclaration de l’exploitant du site d’entreposage ou de reconditionnement 
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre19", object: f, as: :f
+    .row
+      .col-md-12
+        %hr
+        %h3.text-center
+          À REMPLIR EN CAS DE TRANSPORT MULTIMODAL
+        %hr
+
+    =# ebsdds/edit/cadre 17
+    .row
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 20
+              Collecteur-transporteur n°
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre20", object: f, as: :f
+
+      .col-md-6
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title
+              %span.badge 21
+              Collecteur-transporteur n°
+          .panel-body.entreposage-provisoire
+            = render partial: "ebsdds/edit/cadre21", object: f, as: :f
 
     = render partial: "ebsdds/edit/annexe_2", object: f, as: :f

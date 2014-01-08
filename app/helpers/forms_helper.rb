@@ -131,7 +131,6 @@ module FormsHelper
       if object.errors[method].any? && !options[:error_field]
         content << error_field(method)
       end
-      
       content
     end
 

@@ -78,11 +78,16 @@ class EbsddsController < ApplicationController
 
   # GET /ebsdds/new
   def new
+    @productable = Producteur.where(is_collecteur: false).build
     @ebsdd = Ebsdd.new
+    @ebsdd.productable = @productable
+    #@collectable = Producteur.where(is_collecteur: true).build
   end
 
   # GET /ebsdds/1/edit
   def edit
+    @productable = @ebsdd.productable || Producteur.where(is_collecteur: false).build
+    @destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
   end
 
   # POST /ebsdds
@@ -92,7 +97,7 @@ class EbsddsController < ApplicationController
 
     respond_to do |format|
       saved = @ebsdd.save
-      valid = @ebsdd.producteur.valid?
+      valid = @ebsdd.productable.valid?
       if saved && valid
         format.html { redirect_to @ebsdd, notice: 'L\'EBSDD a été crée avec succès ! ' }
         format.json { render action: 'show', status: :created, location: @ebsdd }
@@ -100,9 +105,17 @@ class EbsddsController < ApplicationController
         format.html { render action: 'edit' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       else
+        @productable = Producteur.where(is_collecteur: false).build
         format.html { render action: 'new' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def search_form
+    respond_to do |format|
+        format.html { render :search_form, layout: false }
+        #format.json { head :no_content }
     end
   end
 
@@ -111,13 +124,13 @@ class EbsddsController < ApplicationController
   def update
     @ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
-      valid = @ebsdd.producteur.valid?
-      #binding.pry
+      valid = @ebsdd.productable.valid?
       if @ebsdd.update_attributes(params[:ebsdd]) && valid
-        @ebsdd.producteur.valid?
         format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }
         format.json { head :no_content }
       else
+        @productable = @ebsdd.productable || Producteur.where(is_collecteur: false).build
+        @destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
         format.html { render action: 'edit' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       end

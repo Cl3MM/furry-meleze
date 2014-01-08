@@ -1,27 +1,35 @@
 Meleze::Application.routes.draw do
 
-  get "attachments", to: "attachments#index"
-  get 'attachments/:id', to: 'attachments#show', as: :attachment
-  get "dashboard", to: "dashboard#index"
+  resources :searches
+
+
+  resources :destinations
+  get 'destinations/find_by_nomenclature/:nomenclature', to: 'destinations#find_by_nomenclature', as: :find_by_nomenclature, format: [:js, :json]
+
+  get  "attachments", to: "attachments#index"
+  get  'attachments/:id', to: 'attachments#show', as: :attachment
+  get  "dashboard", to: "dashboard#index"
 
   devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
 
-  get 'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
   post 'immatriculation/:id', to: 'immatriculation#create', as: :create_immatriculation
-  get 'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
-  get 'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
-  get 'ebsdds/reset', to: 'ebsdds#reset', as: :reset
-  get 'ebsdds/import'
+  get  'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
+  get  'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
+  get  'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
+  get  'ebsdds/reset', to: 'ebsdds#reset', as: :reset
+  get  'ebsdds/search_form', to: 'ebsdds#search_form', as: :ebsdds_search_form
+  get  'ebsdds/search/:q', to: 'ebsdds#search', as: :ebsdds_search
+  get  'ebsdds/import'
   post 'ebsdds/upload'
 
-  get 'producteurs/import'
+  get  'producteurs/import'
   post 'producteurs/upload'
 
-  get 'destinataires/import'
-  post 'destinataires/upload'
+  #get 'destinataires/import'
+  #post 'destinataires/upload'
 
   resources :ebsdds
-  resources :destinataires
+  #resources :destinataires
   resources :producteurs
 
   root to: 'dashboard#index'

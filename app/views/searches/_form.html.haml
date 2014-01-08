@@ -1,0 +1,51 @@
+- if @search.errors.any?
+  #error_explanation
+    %h2= "#{pluralize(@search.errors.count, "error")} prohibited this search from being saved:"
+    %ul
+      - @search.errors.full_messages.each do |msg|
+        %li= msg
+
+.row
+  .col-md-4
+    .form-group
+      = f.label :date_min, "Début"
+      = f.text_field :date_min, placeholder: "Date de début"
+  .col-md-4
+    .form-group
+      = f.label :date_max, "Fin"
+      = f.text_field :date_max, placeholder: "Date de fin"
+  .col-md-4
+    .form-group
+      = f.label :date, "Date spécifique"
+      = f.text_field :date, placeholder: "Date spécifique"
+  .col-md-4
+
+.row
+  .col-md-12
+    .form-group
+      = f.label :nom
+      = f.text_field :nom, placeholder: "Producteur"
+    .form-group
+      = f.label :siret
+      = f.text_field :siret, placeholder: "Siret"
+    .form-group
+      = f.label :responsable
+      = f.text_field :responsable, placeholder: "Responsable"
+    .form-group
+      = f.label :ville
+      = f.text_field :ville, placeholder: "Date spécifique"
+    .form-group
+      = f.label :cp
+      = f.text_field :cp, placeholder: "Date spécifique"
+    .form-group
+      = f.label :status
+      = f.text_field :status, placeholder: "Date spécifique"
+    .form-group
+      = f.label :nomenclature
+      = f.text_field :nomenclature, placeholder: "Date spécifique"
+    .form-group
+      = f.label :poids_min
+      = f.text_field :poids_min, placeholder: "Date spécifique"
+    .form-group
+      = f.label :poids_max
+      = f.text_field :poids_max, placeholder: "Date spécifique"

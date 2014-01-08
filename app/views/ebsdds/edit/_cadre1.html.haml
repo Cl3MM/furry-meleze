@@ -1,8 +1,7 @@
-- producteur.valid?
-= f.fields_for :producteur do | p |
+- @productable.valid? unless @ebsdd.new_record?
+= f.fields_for :productable do | p |
 
-  -#= binding.pry
-  - if producteur.errors.any?
+  - if @productable.errors.any?
     .row
       .col-md-12
         .alert.alert-danger.alert-dismissable
@@ -10,21 +9,21 @@
           %div{id: "error_explanation"}
             %p
               Veuillez corriger
-              = producteur.errors.count > 1 ? "les" : "l'"
-              = pluralize(producteur.errors.count, "erreur")
-              = producteur.errors.count > 1 ? "suivantes :" : "suivante :"
+              = @productable.errors.count > 1 ? "les" : "l'"
+              = pluralize(@productable.errors.count, "erreur")
+              = @productable.errors.count > 1 ? "suivantes :" : "suivante :"
             %ul
-              - producteur.errors.full_messages.each do |msg|
+              - @productable.errors.full_messages.each do |msg|
                 %li
                   = msg
   .row
     .col-md-12
       .form-group
-        = f.label :producteur_id, "Producteur", class: "disabled"
+        = f.label :productable_id, "Producteur", class: "disabled"
         %br
-        = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }
+        = f.select :productable_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }
 
-  %div#producteur_info
+  %div#productable_info
     .row
       .col-md-12
         .form-group

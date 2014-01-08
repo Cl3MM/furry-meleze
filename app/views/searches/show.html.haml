@@ -1,0 +1,42 @@
+%p#notice= notice
+
+%p
+  %b Date min:
+  = @search.date_min
+%p
+  %b Date max:
+  = @search.date_max
+%p
+  %b Date:
+  = @search.date
+%p
+  %b Nom:
+  = @search.nom
+%p
+  %b Siret:
+  = @search.siret
+%p
+  %b Responsable:
+  = @search.responsable
+%p
+  %b Ville:
+  = @search.ville
+%p
+  %b Cp:
+  = @search.cp
+%p
+  %b Status:
+  = @search.status
+%p
+  %b Nomenclature:
+  = @search.nomenclature
+%p
+  %b Poids min:
+  = @search.poids_min
+%p
+  %b Poids max:
+  = @search.poids_max
+
+= link_to 'Edit', edit_search_path(@search)
+\|
+= link_to 'Back', searches_path

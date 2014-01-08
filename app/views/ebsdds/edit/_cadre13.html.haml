@@ -1,0 +1,73 @@
+/ Annexe
+.row
+  .col-md-12
+    .form-group
+      = f.label :entreposage_siret, "SIRET"
+      = f.text_field :entreposage_siret, placeholder: "SIRET"
+
+  .col-md-12
+    .form-group
+      = f.label :entreposage_nom, "Nom"
+      = f.text_field :entreposage_nom, placeholder: "Nom"
+
+  .col-md-12
+    .form-group
+      = f.label :entreposage_responsable, "Contact"
+      = f.text_field :entreposage_responsable, placeholder: "Contact"
+  .col-md-12
+    .form-group
+      = f.label :entreposage_adresse, "Adresse"
+      = f.text_field :entreposage_adresse, placeholder: "Adresse"
+
+  .col-md-12
+    .form-group
+      = f.label :entreposage_cp, "Code postal"
+      = f.text_field :entreposage_cp, placeholder: "Code postal"
+
+  .col-md-12
+    .form-group
+      = f.label :entreposage_ville, "Ville"
+      = f.text_field :entreposage_ville, placeholder: "Ville"
+
+.row
+  .col-md-6
+    .form-group
+      = f.label :entreposage_tel, "Téléphone"
+      = f.text_field :entreposage_tel, placeholder: "Téléphone"
+
+  .col-md-6
+    .form-group
+      = f.label :entreposage_fax, "Fax"
+      = f.text_field :entreposage_fax, placeholder: "Fax"
+
+.row
+  .col-md-12
+    .form-group
+      = f.label :entreposage_poids, "Quantité présentée"
+      = f.text_field :entreposage_poids, placeholder: "Quantité présentée"
+.row
+  .col-md-6
+    .form-group
+      = f.label :entreposage_email, "Adresse email"
+      = f.text_field :entreposage_email, placeholder: "Adresse email"
+  .col-md-6
+    .form-group
+      = f.label :entreposage_type_quantite, "Type de quantité"
+      %br
+      %label.radio-inline
+        = f.radio_button :entreposage_type_quantite, "R", checked: true
+        Réelle
+      %label.radio-inline
+        = f.radio_button :entreposage_type_quantite, "E"
+        Estimée
+
+.row
+  .col-md-12
+    .form-group
+      = f.label :entreposage_date_presentation, "Date présentation"
+      = f.text_field :entreposage_date_presentation, placeholder: "Date présentation", class: "datepicker", value: safe_date(:entreposage_date_presentation)
+.row
+  .col-md-12
+    .form-group
+      = f.label :entreposage_date, "Date"
+      = f.text_field :entreposage_date, placeholder: "Date", class: "datepicker", value: safe_date(:entreposage_date)

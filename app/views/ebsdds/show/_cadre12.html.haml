@@ -1,39 +1,48 @@
 .form-group
   %label Traitement prévu :
-  = CodeDr[ebsdd.traitement_prevu]
+  - unless CodeDr[ebsdd.traitement_prevu].nil?
+    = CodeDr[ebsdd.traitement_prevu]
+  - else
+    non renseigné.
 
-.row
-  .col-md-4
-    %label SIRET :
-    = ebsdd.destination_ult_siret
+- unless ebsdd.destination.nil?
+  .row
+    .col-md-4
+      %label SIRET :
+      = ebsdd.destination.siret
 
-  .col-md-4
-    %label Nom :
-    = ebsdd.destination_ult_nom
+    .col-md-4
+      %label Nom :
+      = ebsdd.destination.nom
 
-  .col-md-4
-    %label Contact :
-    = ebsdd.destination_ult_contact
-  .col-md-4
-    %label Adresse :
-    = ebsdd.destination_ult_adresse
+    .col-md-4
+      %label Contact :
+      = ebsdd.destination.responsable
+    .col-md-4
+      %label Adresse :
+      = ebsdd.destination.adresse
 
-  .col-md-4
-    %label Code postal :
-    = ebsdd.destination_ult_cp
+    .col-md-4
+      %label Code postal :
+      = ebsdd.destination.cp
 
-  .col-md-4
-    %label Ville :
-    = ebsdd.destination_ult_ville
+    .col-md-4
+      %label Ville :
+      = ebsdd.destination.ville
 
-  .col-md-4
-    %label Téléphone :
-    = ebsdd.destination_ult_tel
+    .col-md-4
+      %label Téléphone :
+      = ebsdd.destination.tel
 
-  .col-md-4
-    %label Fax :
-    = ebsdd.destination_ult_fax
+    .col-md-4
+      %label Fax :
+      = ebsdd.destination.fax
 
-  .col-md-4
-    %label Adresse email :
-    = ebsdd.destination_ult_mel
+    .col-md-4
+      %label Adresse email :
+      = ebsdd.destination.email
+- else
+  .row
+    .col-md-4
+      %label Destination ultérieure :
+      non renseignée.

@@ -1,73 +1,97 @@
-= custom_form@producteur do | f |
+= custom_form @producteur do | f |
   - if @producteur.errors.any?
-    #error_explanation
-      %h2
-        Merci de corriger
-        - if @producteur.errors.count > 1
-          les #{@producteur.errors.count} erreurs suivantes :
-        - else
-          l'erreur suivante :
-      %ul
-        - @producteur.errors.full_messages.each do |msg|
-          %li= msg
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          #error_explanation
+            %h2
+              Merci de corriger
+              - if @producteur.errors.count > 1
+                les #{@producteur.errors.count} erreurs suivantes :
+              - else
+                l'erreur suivante :
+            %ul
+              - @producteur.errors.full_messages.each do |msg|
+                %li= msg
 
-  .row
-    .col-md-12
-      .form-group
-        = f.label :siret, "SIRET"
-        = f.text_field :siret, placeholder: "SIRET"
+  #edit_producteur
+    .row
+      .col-md-12
+        .form-group
+          = f.label :siret, "SIRET"
+          = f.text_field :siret, placeholder: "SIRET"
 
-  .row
-    .col-md-6
-      .form-group
-        = f.label :nom, "Nom"
-        = f.text_field :nom, placeholder: "Nom"
+    .row
+      .col-md-6
+        .form-group
+          = f.label :nom, "Nom"
+          = f.text_field :nom, placeholder: "Nom"
 
-    .col-md-6
-      .form-group
-        = f.label :responsable, "Responsable"
-        = f.text_field :responsable, placeholder: "Contact"
-  .row
-    .col-md-12
-      .form-group
-        = f.label :adresse, "Adresse"
-        = f.text_field :adresse, placeholder: "Adresse"
+      .col-md-6
+        .form-group
+          = f.label :responsable, "Responsable"
+          = f.text_field :responsable, placeholder: "Contact"
+    .row
+      .col-md-12
+        .form-group
+          = f.label :adresse, "Adresse"
+          = f.text_field :adresse, placeholder: "Adresse"
 
-  .row
-    .col-md-3
-      .form-group
-        = f.label :cp, "Code postal"
-        = f.text_field :cp, placeholder: "Code postal"
+    .row
+      .col-md-3
+        .form-group
+          = f.label :cp, "Code postal"
+          = f.text_field :cp, placeholder: "Code postal"
 
-    .col-md-9
-      .form-group
-        = f.label :ville, "Ville"
-        = f.text_field :ville, placeholder: "Ville"
+      .col-md-9
+        .form-group
+          = f.label :ville, "Ville"
+          = f.text_field :ville, placeholder: "Ville"
 
-  .row
-    .col-md-6
-      .form-group
-        = f.label :tel, "Téléphone"
-        = f.text_field :tel, placeholder: "Téléphone"
+    .row
+      .col-md-6
+        .form-group
+          = f.label :tel, "Téléphone"
+          = f.text_field :tel, placeholder: "Téléphone"
 
-    .col-md-6
-      .form-group
-        = f.label :fax, "Fax"
-        = f.text_field :fax, placeholder: "Fax"
+      .col-md-6
+        .form-group
+          = f.label :fax, "Fax"
+          = f.text_field :fax, placeholder: "Fax"
 
-  .row
-    .col-md-12
-      .form-group
-        = f.label :email, "Adresse email"
-        = f.text_field :email, placeholder: "Adresse email"
+    .row
+      .col-md-12
+        .form-group
+          = f.label :email, "Adresse email"
+          = f.text_field :email, placeholder: "Adresse email"
 
-    .actions
-      = link_to producteurs_path, class: "btn btn-default" do
-        = fa_icon "arrow-circle-left lg"
-        &nbsp;Retour à la liste des producteurs
-      = link_to producteur_path(@producteur), class: "btn btn-success" do
-        = fa_icon "eye lg"
-        &nbsp;Annuler les modifications
-      = content_tag :button, type: :submit, class: "btn btn-primary" do
-        Enregistrer les modifications&nbsp;
-        = fa_icon "save lg"
+    .row
+      .col-md-12
+        .form-group
+          = f.check_box :is_collecteur
+          = f.label :is_collecteur, "Ce producteur peut agir en tant que Collecteur"
+      .col-md-4
+        .form-group
+          = f.label :recepisse, "Recepissé"
+          = f.text_field :recepisse, placeholder: "Recepissé", class: ( @producteur.is_collecteur ? "" :  "disabled" )
+      .col-md-4
+        .form-group
+          = f.label :mode_transport, "Mode de transport"
+          = f.select :mode_transport, [["Route", 1], ["Aérien", 2], ["Ferroviaire", 3], ["Fluvial", 3], ["Maritime", 5]], {}, class: ( @producteur.is_collecteur ? "" :  "disabled")
+      .col-md-4
+        .form-group
+          = f.label :limite_validite, "Limite de validité du bordereau"
+          = f.text_field :limite_validite, placeholder: "Limite de validité", class: "datepicker #{ @producteur.is_collecteur ? "" :  "disabled"}", value: date_limite_de_validite
+
+    .row
+      .actions
+        = link_to producteurs_path, class: "btn btn-default" do
+          = fa_icon "arrow-circle-left lg"
+          &nbsp;Retour à la liste des producteurs
+        = link_to producteur_path(@producteur), class: "btn btn-success" do
+          = fa_icon "eye lg"
+          &nbsp;Annuler les modifications
+        = content_tag :button, type: :submit, class: "btn btn-primary" do
+          Enregistrer les modifications&nbsp;
+          = fa_icon "save lg"

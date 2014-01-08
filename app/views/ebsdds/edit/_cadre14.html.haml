@@ -1,0 +1,65 @@
+/ Annexe
+/ csv << ["14", dest_prevue_siret.truncate(14, omission: ""), dest_prevue_nom.truncate(60, omission: ""), dest_prevue_adresse.truncate(100, omission: ""), dest_prevue_cp.truncate(5, omission: ""), dest_prevue_ville.truncate(45, omission: ""), dest_prevue_tel.truncate(35, omission: ""), dest_prevue_fax.truncate(35, omission: ""), dest_prevue_mel.truncate(50, omission: ""), dest_prevue_responsable.truncate(35, omission: ""), dest_prevue_numcap.truncate(35, omission: ""), dest_prevue_traitement_prevu.truncate(3, omission: ""), (dest_prevue_rempliepar.truncate(3, omission: "") ? 1 : 2 ), nil ]
+.row
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_siret, "SIRET"
+      = f.text_field :dest_prevue_siret, placeholder: "SIRET"
+
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_nom, "Nom"
+      = f.text_field :dest_prevue_nom, placeholder: "Nom"
+
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_responsable, "Contact"
+      = f.text_field :dest_prevue_responsable, placeholder: "Contact"
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_adresse, "Adresse"
+      = f.text_field :dest_prevue_adresse, placeholder: "Adresse"
+
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_cp, "Code postal"
+      = f.text_field :dest_prevue_cp, placeholder: "Code postal"
+
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_ville, "Ville"
+      = f.text_field :dest_prevue_ville, placeholder: "Ville"
+
+.row
+  .col-md-6
+    .form-group
+      = f.label :dest_prevue_tel, "Téléphone"
+      = f.text_field :dest_prevue_tel, placeholder: "Téléphone"
+
+  .col-md-6
+    .form-group
+      = f.label :dest_prevue_fax, "Fax"
+      = f.text_field :dest_prevue_fax, placeholder: "Fax"
+
+.row
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_email, "Adresse email"
+      = f.text_field :dest_prevue_email, placeholder: "Adresse email"
+.row
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_numcap, "N° de CAP (le cas échéant)"
+      = f.text_field :dest_prevue_numcap, placeholder: "Numéro de CAP"
+
+.row
+  .col-md-12
+    .form-group
+      = f.label :dest_prevue_rempliepar, "Entreposage provisoire ou reconditionnement"
+      %br
+      %label.radio-inline
+        = f.radio_button :dest_prevue_rempliepar, 1, checked: true
+        Émetteur du bordereau
+      %label.radio-inline
+        = f.radio_button :dest_prevue_rempliepar, 2
+        Installation d’entreposage ou de reconditionnement

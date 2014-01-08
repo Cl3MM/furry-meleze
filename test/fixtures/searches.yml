@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  date_min: 2014-01-08
+  date_max: 2014-01-08
+  date: 2014-01-08
+  nom: MyString
+  siret: MyString
+  responsable: MyString
+  ville: MyString
+  cp: MyString
+  status: MyString
+  nomenclature: MyString
+  poids_min: 1.5
+  poids_max: 1.5
+
+two:
+  date_min: 2014-01-08
+  date_max: 2014-01-08
+  date: 2014-01-08
+  nom: MyString
+  siret: MyString
+  responsable: MyString
+  ville: MyString
+  cp: MyString
+  status: MyString
+  nomenclature: MyString
+  poids_min: 1.5
+  poids_max: 1.5

@@ -1,0 +1,33 @@
+%h1.underline
+  = fa_icon "tags"
+  Liste des Collecteurs
+  %span.small
+    = "(#{Collecteur.count})"
+
+-if @collecteurs.any?
+  .panel.panel-default
+    .panel-body
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Nom
+            %th Responsable
+            %th Cp
+            %th Ville
+            %th.actions Actions
+
+        %tbody
+          - @collecteurs.each do |collecteur|
+            %tr
+              %td= collecteur.nom
+              %td= collecteur.responsable
+              %td= collecteur.cp
+              %td= collecteur.ville
+              %td.actions
+                .center-block.text-center
+                  = link_to(fa_icon("eye lg", text: ""), collecteur, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce collecteur")
+                  = link_to(fa_icon("gear lg", text: ""), edit_collecteur_path(collecteur), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
+                  = link_to(fa_icon("times lg", text: ""), collecteur, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le collecteur")
+              -#%td= link_to 'Show', collecteur
+              -#%td= link_to 'Edit', edit_collecteur_path(collecteur)
+              -#%td= link_to 'Destroy', collecteur, :method => :delete, :data => { :confirm => 'Are you sure?' }

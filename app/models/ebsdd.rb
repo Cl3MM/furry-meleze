@@ -14,7 +14,7 @@ class Ebsdd # < ActiveRecord::Base
       #Type de déchet (pateux, inflamable)
       #Date de réception (date du cadre 8 bordereau_date_transport)
       #Producteur du déchet
-      #Collecteur du déchet
+      #Destination du déchet
       #Numéro bordereau_id ou ecodds_id
       #Intervalle de temps (du 26 Juillet au 31 Septembre)
 
@@ -99,9 +99,13 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
-  belongs_to :producteur, inverse_of: :producteur
+  belongs_to :productable, polymorphic: true, class_name: "Producteur"#, inverse_of: :producteur
+  belongs_to :collectable, polymorphic: true, class_name: "Producteur"
+  belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds
-  accepts_nested_attributes_for :producteur
+  accepts_nested_attributes_for :productable
+  accepts_nested_attributes_for :collectable
+  accepts_nested_attributes_for :destination
   attr_accessible :id, :_id
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
@@ -136,16 +140,6 @@ class Ebsdd # < ActiveRecord::Base
   field :emetteur_email, type: String, default: nil
   field :emetteur_responsable, type: String
 
-  #field :producteur_siret, type: String
-  #field :producteur_nom, type: String
-  #field :producteur_adresse, type: String
-  #field :producteur_cp, type: String
-  #field :producteur_ville, type: String
-  #field :producteur_tel, type: String
-  #field :producteur_fax, type: String
-  #field :producteur_email, type: String, default: nil
-  #field :producteur_responsable, type: String
-
   field :destinataire_siret, type: String
   field :destinataire_nom, type: String
   field :destinataire_adresse, type: String
@@ -155,17 +149,9 @@ class Ebsdd # < ActiveRecord::Base
   field :destinataire_fax, type: String
   field :destinataire_email, type: String, default: nil
   field :destinataire_responsable, type: String
+
   field :nomenclature_dechet_code_nomen_c, type: Integer
   field :nomenclature_dechet_code_nomen_a, type: Integer
-  field :collecteur_siret, type: String
-  field :collecteur_nom, type: String
-  field :collecteur_adresse, type: String
-  field :collecteur_cp, type: String
-  field :collecteur_ville, type: String
-  field :collecteur_tel, type: String
-  field :collecteur_fax, type: String
-  field :collecteur_email, type: String, default: nil
-  field :collecteur_responsable, type: String
   field :bordereau_date_transport, type: Date
   field :bordereau_poids, type: Integer
   field :libelle, type: String
@@ -181,15 +167,89 @@ class Ebsdd # < ActiveRecord::Base
   field :code_operation, type: String
   field :traitement_prevu, type: String
 
-  field :destination_ult_siret, type: String
-  field :destination_ult_nom, type: String
-  field :destination_ult_adresse, type: String
-  field :destination_ult_cp, type: String
-  field :destination_ult_ville, type: String
-  field :destination_ult_tel, type: String
-  field :destination_ult_fax, type: String
-  field :destination_ult_mel, type: String
-  field :destination_ult_contact, type: String
+  field :entreposage_siret,type: String
+  field :entreposage_nom,type: String
+  field :entreposage_adresse, type: String
+  field :entreposage_cp, type: String
+  field :entreposage_ville, type: String
+  field :entreposage_tel, type: String
+  field :entreposage_fax, type: String
+  field :entreposage_email, type: String
+  field :entreposage_responsable, type: String
+  field :entreposage_poids, type: String
+  field :entreposage_type_quantite, type: String
+  field :entreposage_date, type: Date
+  field :entreposage_date_presentation, type: Date
+
+  field :dest_prevue_siret,type: String
+  field :dest_prevue_nom,type: String
+  field :dest_prevue_adresse, type: String
+  field :dest_prevue_cp, type: String
+  field :dest_prevue_ville, type: String
+  field :dest_prevue_tel, type: String
+  field :dest_prevue_fax, type: String
+  field :dest_prevue_email, type: String
+  field :dest_prevue_responsable, type: String
+  field :dest_prevue_numcap, type: String
+  field :dest_prevue_traitement_prevu, type: String
+  field :dest_prevue_rempliepar, type: Integer, default: 1
+
+  field :collecteur_18_siret,type: String
+  field :collecteur_18_nom,type: String
+  field :collecteur_18_adresse, type: String
+  field :collecteur_18_cp, type: String
+  field :collecteur_18_ville, type: String
+  field :collecteur_18_tel, type: String
+  field :collecteur_18_fax, type: String
+  field :collecteur_18_email, type: String
+  field :collecteur_18_responsable, type: String
+  field :mode_transport_18, type: Integer, default: 1
+  field :bordereau_limite_validite_18, type: Date, default: ->{ 10.days.from_now }
+  field :transport_multimodal_18, type: Boolean, default: false
+  field :recepisse_18, type: String, default: ->{ id }
+  field :date_prise_en_charge_18, type: Date, default: ->{ 10.days.from_now }
+
+  field :collecteur_20_siret,type: String
+  field :collecteur_20_nom,type: String
+  field :collecteur_20_adresse, type: String
+  field :collecteur_20_cp, type: String
+  field :collecteur_20_ville, type: String
+  field :collecteur_20_tel, type: String
+  field :collecteur_20_fax, type: String
+  field :collecteur_20_email, type: String
+  field :collecteur_20_responsable, type: String
+  field :mode_transport_20, type: Integer, default: 1
+  field :bordereau_limite_validite_20, type: Date, default: ->{ 10.days.from_now }
+  field :recepisse_20, type: String, default: ->{ id }
+  field :date_prise_en_charge_20, type: Date, default: ->{ 10.days.from_now }
+
+  field :collecteur_21_siret,type: String
+  field :collecteur_21_nom,type: String
+  field :collecteur_21_adresse, type: String
+  field :collecteur_21_cp, type: String
+  field :collecteur_21_ville, type: String
+  field :collecteur_21_tel, type: String
+  field :collecteur_21_fax, type: String
+  field :collecteur_21_email, type: String
+  field :collecteur_21_responsable, type: String
+  field :mode_transport_21, type: Integer, default: 1
+  field :bordereau_limite_validite_21, type: Date, default: ->{ 10.days.from_now }
+  field :recepisse_21, type: String, default: ->{ id }
+  field :date_prise_en_charge_21, type: Date, default: ->{ 10.days.from_now }
+
+  field :date_19, type: Date, default: ->{ 10.days.from_now }
+  field :nom_19, type: String
+
+  #field :destination_ult_siret, type: String
+  #field :destination_ult_nom, type: String
+  #field :destination_ult_adresse, type: String
+  #field :destination_ult_cp, type: String
+  #field :destination_ult_ville, type: String
+  #field :destination_ult_tel, type: String
+  #field :destination_ult_fax, type: String
+  #field :destination_ult_mel, type: String
+  #field :destination_ult_contact, type: String
+
   field :mention_titre_reglements_ult, type: String
   field :dechet_conditionnement_ult, type: String
   field :entreposage_provisoire, type: Boolean, default: true
@@ -204,62 +264,69 @@ class Ebsdd # < ActiveRecord::Base
 
   field :immatriculation, type: String
 
-  attr_accessible :id, :bordereau_id, :producteur_attributes, :producteur_id, :attachment_id,
-    #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
-    #:producteur_tel, :producteur_fax, :producteur_responsable,
-    :destinataire_siret, :destinataire_nom,
-    :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
+  attr_accessible :id, :bordereau_id, :productable_attributes, :productable_id, :attachment_id,
+    :destination_id, :destination_attributes, :collectable_id, :collectable_attributes,
+    :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
-    :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
-    :collecteur_tel, :collecteur_fax, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
+    :libelle, :bordereau_date_transport,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult,
-    #:producteur_email, :producteur_siret,
+
+    :collecteur_20_siret, :collecteur_20_nom, :collecteur_20_adresse, :collecteur_20_cp, :collecteur_20_ville, :collecteur_20_tel,
+    :collecteur_20_fax, :collecteur_20_email, :collecteur_20_responsable, :mode_transport_20, :bordereau_limite_validite_20,
+    :recepisse_20,
+
+    :collecteur_21_siret, :collecteur_21_nom, :collecteur_21_adresse, :collecteur_21_cp, :collecteur_21_ville, :collecteur_21_tel,
+    :collecteur_21_fax, :collecteur_21_email, :collecteur_21_responsable, :mode_transport_21, :bordereau_limite_validite_21,
+    :recepisse_21,
+
+    :collecteur_18_siret, :collecteur_18_nom, :collecteur_18_adresse, :collecteur_18_cp, :collecteur_18_ville, :collecteur_18_tel,
+    :collecteur_18_fax, :collecteur_18_email, :collecteur_18_responsable, :mode_transport_18, :bordereau_limite_validite_18,
+    :transport_multimodal_18, :recepisse_18,
+
+    :date_prise_en_charge_18, :date_19, :nom_19, :entreposage_poids,
+
+    :dest_prevue_siret, :dest_prevue_nom, :dest_prevue_adresse, :dest_prevue_cp, :dest_prevue_ville, :dest_prevue_tel,
+    :dest_prevue_fax, :dest_prevue_email, :dest_prevue_responsable, :dest_prevue_numcap,
+    :dest_prevue_rempliepar,
+
+    :entreposage_siret, :entreposage_nom, :entreposage_adresse, :entreposage_cp, :entreposage_ville, :entreposage_tel,
+    :entreposage_fax, :entreposage_email, :entreposage_responsable,
+
+  :entreposage_date_presentation, :entreposage_date,
     :destinataire_email, :colllecteur_email, :valorisation_prevue, :entreposage_provisoire, :recepisse,
     :mode_transport, :transport_multimodal, :bordereau_limite_validite,
-    :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
-    :destination_ult_ville, :destination_ult_tel,
-    :destination_ult_contact, :destination_ult_fax, :destination_ult_mel,
-    :ligne_flux_siret,
-    :ligne_flux_nom,
-    :ligne_flux_adresse,
-    :ligne_flux_cp,
-    :ligne_flux_ville,
-    :ligne_flux_tel,
-    :ligne_flux_fax,
-    :ligne_flux_email,
-    :ligne_flux_responsable,
-    :ligne_flux_conditionnement_ult,
-    :ligne_flux_nombre_colis_ult,
-    :emetteur_siret,
-    :emetteur_sortie_nom,
-    :emetteur_adresse,
-    :emetteur_cp,
-    :emetteur_ville,
-    :emetteur_tel,
-    :emetteur_fax,
-    :emetteur_email,
-    :emetteur_responsable,
-    :ligne_flux_date_remise,
-    :ligne_flux_poids,
+    #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
+    #:destination_ult_ville, :destination_ult_tel,
+    #:destination_ult_contact, :destination_ult_fax, :destination_ult_mel,
+
+    :ligne_flux_siret, :ligne_flux_nom, :ligne_flux_adresse, :ligne_flux_cp, :ligne_flux_ville, :ligne_flux_tel,
+    :ligne_flux_fax, :ligne_flux_email, :ligne_flux_responsable, :ligne_flux_conditionnement_ult, :ligne_flux_nombre_colis_ult,
+
+    :emetteur_siret, :emetteur_sortie_nom, :emetteur_adresse, :emetteur_cp, :emetteur_ville, :emetteur_tel,
+    :emetteur_fax, :emetteur_email, :emetteur_responsable,
+
+    :ligne_flux_date_remise, :ligne_flux_poids,
     :ecodds_id,
     :immatriculation
 
-    validates_presence_of :bordereau_id,
-    #:producteur_nom, :producteur_adresse, :producteur_cp, :producteur_ville,
-    #:producteur_tel, :producteur_responsable, 
+    validates_presence_of :bordereau_id, :productable_id,
     :destinataire_siret, :destinataire_nom,
     :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
     :destinataire_responsable,
-    :collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, :libelle,
-    :collecteur_tel, :collecteur_responsable, :bordereau_date_transport, :bordereau_poids,
+    #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
+    #:collecteur_tel, :collecteur_responsable, 
+    :libelle,
+    :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
-    :destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
-    :destination_ult_ville, :destination_ult_tel, :ecodds_id, :immatriculation
+    #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
+    #:destination_ult_ville, :destination_ult_tel,
+    :ecodds_id, :immatriculation
+
 #:ligne_flux_siret,
 #:ligne_flux_nom,
 #:ligne_flux_adresse,
@@ -283,13 +350,46 @@ class Ebsdd # < ActiveRecord::Base
 
   validates_presence_of :mention_titre_reglements_ult, :dechet_conditionnement_ult,
     :dechet_nombre_colis_ult, :type_quantite_ult, :bordereau_poids_ult, :entreposage_provisoire,
+
+    :collecteur_20_siret, :collecteur_20_nom, :collecteur_20_adresse, :collecteur_20_cp, :collecteur_20_ville, :collecteur_20_tel,
+    :collecteur_20_fax, :collecteur_20_email, :collecteur_20_responsable, :mode_transport_20, :bordereau_limite_validite_20,
+    :recepisse_20,
+
+    :collecteur_21_siret, :collecteur_21_nom, :collecteur_21_adresse, :collecteur_21_cp, :collecteur_21_ville, :collecteur_21_tel,
+    :collecteur_21_fax, :collecteur_21_email, :collecteur_21_responsable, :mode_transport_21, :bordereau_limite_validite_21,
+    :recepisse_21,
+
+    :collecteur_18_siret, :collecteur_18_nom, :collecteur_18_adresse, :collecteur_18_cp, :collecteur_18_ville, :collecteur_18_tel,
+    :collecteur_18_fax, :collecteur_18_email, :collecteur_18_responsable, :mode_transport_18, :bordereau_limite_validite_18,
+    :transport_multimodal_18, :recepisse_18,
+
+    :date_prise_en_charge_18, :date_19, :nom_19, :entreposage_poids,
+
+    :dest_prevue_siret, :dest_prevue_nom, :dest_prevue_adresse, :dest_prevue_cp, :dest_prevue_ville, :dest_prevue_tel,
+    :dest_prevue_fax, :dest_prevue_email, :dest_prevue_responsable,
+    :dest_prevue_rempliepar,
+
+    :entreposage_siret, :entreposage_nom, :entreposage_adresse, :entreposage_cp, :entreposage_ville, :entreposage_tel,
+    :entreposage_fax, :entreposage_email, :entreposage_responsable,
+
+  :entreposage_date,
+  :entreposage_date_presentation, 
     unless: -> { new_record? || entreposage_provisoire == false }
 
+  validates :entreposage_poids, numericality: true, unless: -> { new_record? || entreposage_provisoire == false }
+  validates :bordereau_poids, :bordereau_poids_ult, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false
+  end
+  def poids_en_tonnes2 attr
+    unless attr.nil?
+      "#{"%08.3f" % (attr.to_f / 1000.0) }" 
+    else
+      ""
+    end
   end
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
@@ -342,62 +442,68 @@ class Ebsdd # < ActiveRecord::Base
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bordereau_id.to_s.truncate(35, omission: ""), nil]
-      csv << ["01", 4, producteur.siret.truncate(14, omission: ""), producteur.nom.truncate(60, omission: ""), producteur.adresse.truncate(100, omission: ""), producteur.cp.truncate(5, omission: ""), producteur.ville.truncate(45, omission: ""), producteur.tel.truncate(35, omission: ""), producteur.fax.truncate(35, omission: ""), producteur.email.truncate(50, omission: ""), producteur.responsable.truncate(35, omission: ""), nil]
+      csv << ["01", 4, productable.siret.truncate(14, omission: ""), productable.nom.truncate(60, omission: ""), productable.adresse.truncate(100, omission: ""), productable.cp.truncate(5, omission: ""), productable.ville.truncate(45, omission: ""), productable.tel.truncate(35, omission: ""), productable.fax.truncate(35, omission: ""), productable.email.truncate(50, omission: ""), productable.responsable.truncate(35, omission: ""), nil]
       csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_tel || "").truncate(35, omission: ""), (destinataire_fax || "").truncate(35, omission: ""), (destinataire_email || "").truncate(50, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
       csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, DechetDenomination[dechet_denomination].truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
       csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]
       csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
       csv << ["06", type_quantite.truncate(1, omission: ""), poids_en_tonnes.truncate(8, omission: ""), nil ]
-      csv << ["08", (collecteur_siret || "").truncate(14, omission: ""), (collecteur_nom || "").truncate(60, omission: ""), (collecteur_adresse || "").truncate(100, omission: ""), (collecteur_cp || "").truncate(5, omission: ""), (collecteur_ville || "").truncate(45, omission: ""), (collecteur_tel || "").truncate(35, omission: ""), (collecteur_fax || "").truncate(35, omission: ""), (collecteur_email || "").truncate(50, omission: ""), (collecteur_responsable || "").truncate(35, omission: ""), (mode_transport == 1 ? recepisse : nil).truncate(35, omission: ""), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
+      csv << ["08", (collectable.siret || "").truncate(14, omission: ""), (collectable.nom || "").truncate(60, omission: ""), (collectable.adresse || "").truncate(100, omission: ""), (collectable.cp || "").truncate(5, omission: ""), (collectable.ville || "").truncate(45, omission: ""), (collectable.tel || "").truncate(35, omission: ""), (collectable.fax || "").truncate(35, omission: ""), (collectable.email || "").truncate(50, omission: ""), (collectable.responsable || "").truncate(35, omission: ""), (mode_transport == 1 ? recepisse : nil).truncate(35, omission: ""), (mode_transport == 1 ? collectable.cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil, (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire_responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["12", traitement_prevu.truncate(3, omission: ""), destination_ult_siret.truncate(14, omission: ""), destination_ult_nom.truncate(60, omission: ""), destination_ult_adresse.truncate(100, omission: ""), destination_ult_cp.truncate(5, omission: ""), destination_ult_ville.truncate(45, omission: ""), destination_ult_tel.truncate(35, omission: ""), destination_ult_fax.truncate(35, omission: ""), destination_ult_mel.truncate(50, omission: ""), destination_ult_contact.truncate(35, omission: "") , nil]
-      if(entreposage_provisoire)
-        csv << ["13", entreposage_siret.truncate(14, omission: ""), entreposage_nom.truncate(60, omission: ""), entreposage_adresse.truncate(100, omission: ""), treposage_cp.truncate(5, omission: ""), entreposage_ville.truncate(45, omission: ""), entreposage_type_quantite.truncate(1, omission: ""), entreposage_quantite.truncate(8, omission: ""), entreposage_date.strftime("%Y%m%d"), 1, nil, entreposage_date_presentation.strftime("%Y%m%d"), nil ]
-        csv << ["14", dest_prevue_siret.truncate(14, omission: ""), dest_prevue_nom.truncate(60, omission: ""), dest_prevue_adresse.truncate(100, omission: ""), dest_prevue_cp.truncate(5, omission: ""), dest_prevue_ville.truncate(45, omission: ""), dest_prevue_tel.truncate(35, omission: ""), dest_prevue_fax.truncate(35, omission: ""), dest_prevue_mel.truncate(50, omission: ""), dest_prevue_responsable.truncate(35, omission: ""), dest_prevue_numcap.truncate(35, omission: ""), dest_prevue_traitement_prevu.truncate(3, omission: ""), (dest_prevue_rempliepar.truncate(3, omission: "") ? 1 : 2 ), nil ]
-        csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
-        csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
-        csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
-        csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["19", nil, nil, nil ]
-      end
-      if transport_multimodal
-        csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      end
-    end
-  end
-  def to_ebsdd_avant_h
-    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      #binding.pry
-      csv << ["00", ecodds_id, bordereau_id, nil]
-      csv << ["01", 4, producteur.siret, producteur.nom.truncate(5, omission: ''), producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
-      csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
-      csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
-      csv << ["04", DechetNomenclature[dechet_denomination], nil ]
-      csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
-      csv << ["06", type_quantite, poids_en_tonnes, nil ]
-      csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, (mode_transport == 1 ? recepisse : nil), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
-      csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
-      csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
+      csv << ["12", traitement_prevu.truncate(3, omission: ""), destination.siret.truncate(14, omission: ""), destination.nom.truncate(60, omission: ""), destination.adresse.truncate(100, omission: ""), destination.cp.truncate(5, omission: ""), destination.ville.truncate(45, omission: ""), destination.tel.truncate(35, omission: ""), destination.fax.truncate(35, omission: ""), destination.email.truncate(50, omission: ""), destination.responsable.truncate(35, omission: "") , nil]
       if entreposage_provisoire
-        csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
+        csv << ["13", entreposage_siret.truncate(14, omission: ""), entreposage_nom.truncate(60, omission: ""), (entreposage_adresse || "").truncate(100, omission: ""), entreposage_cp.truncate(5, omission: ""), entreposage_ville.truncate(45, omission: ""), (entreposage_type_quantite || "").truncate(1, omission: ""), poids_en_tonnes2(entreposage_poids).truncate(8, omission: ""), entreposage_date.strftime("%Y%m%d"), 1, nil, entreposage_date_presentation.strftime("%Y%m%d"), nil ]
+        csv << ["14", dest_prevue_siret.truncate(14, omission: ""), dest_prevue_nom.truncate(60, omission: ""), 
+                dest_prevue_adresse.truncate(100, omission: ""), dest_prevue_cp.truncate(5, omission: ""),
+                dest_prevue_ville.truncate(45, omission: ""), dest_prevue_tel.truncate(35, omission: ""),
+                dest_prevue_fax.truncate(35, omission: ""), dest_prevue_email.truncate(50, omission: ""),
+                dest_prevue_responsable.truncate(35, omission: ""),
+                (dest_prevue_numcap || "").truncate(35, omission: ""),
+                "R13", dest_prevue_rempliepar, nil ]
+        csv << ["15", DechetNomenclature[mention_titre_reglements_ult],  nil ]
         csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
         csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
-        csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["19", nil, nil, nil ]
+        csv << ["18", collecteur_18_siret, recepisse_18, collecteur_18_cp[0..1], bordereau_limite_validite_18.strftime("%Y%m%d"), collecteur_18_nom, collecteur_18_adresse, collecteur_18_cp, collecteur_18_ville, mode_transport_18, date_prise_en_charge_18.strftime("%Y%m%d"), collecteur_18_tel, collecteur_18_fax, collecteur_18_email, collecteur_18_responsable, transport_multimodal_18, nil ]
+        csv << ["19", nom_19, date_19.strftime("%Y%m%d"), nil ]
       end
-      if transport_multimodal
-        csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      if transport_multimodal || transport_multimodal_18
+        csv << ["20", collecteur_20_siret, recepisse_20, collecteur_20_cp[0..1], bordereau_limite_validite_20.strftime("%Y%m%d"), mode_transport_20, collecteur_20_nom, collecteur_20_adresse, collecteur_20_cp, collecteur_20_ville, date_prise_en_charge_20.strftime("%Y%m%d"), collecteur_20_tel, collecteur_20_fax, collecteur_20_email, collecteur_20_responsable, nil ]
+        csv << ["21", collecteur_21_siret, recepisse_21, collecteur_21_cp[0..1], bordereau_limite_validite_21.strftime("%Y%m%d"), mode_transport_21, collecteur_21_nom, collecteur_21_adresse, collecteur_21_cp, collecteur_21_ville, date_prise_en_charge_21.strftime("%Y%m%d"), collecteur_21_tel, collecteur_21_fax, collecteur_21_email, collecteur_21_responsable, nil ]
       end
     end
   end
+  #def to_ebsdd_avant_h
+    #CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
+      ##binding.pry
+      #csv << ["00", ecodds_id, bordereau_id, nil]
+      #csv << ["01", 4, producteur.siret, producteur.nom.truncate(5, omission: ''), producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
+      #csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
+      #csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
+      #csv << ["04", DechetNomenclature[dechet_denomination], nil ]
+      #csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
+      #csv << ["06", type_quantite, poids_en_tonnes, nil ]
+      #csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, (mode_transport == 1 ? recepisse : nil), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
+      #csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
+      #csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      #csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
+      #csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
+      #if entreposage_provisoire
+        #csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        #csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        #csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
+        #csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
+        #csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
+        #csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        #csv << ["19", nil, nil, nil ]
+      #end
+      #if transport_multimodal
+        #csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+        #csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      #end
+    #end
+  #end
 
   def self.has_every_bsd_completed?
     Ebsdd.where(status: :incomplet).exists?
@@ -488,12 +594,10 @@ class Ebsdd # < ActiveRecord::Base
                          end
             cur_header = header[ index ]
             ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
-
-            #producteur_attrs.value.each{|i| row.delete_at(i) } #remove prod_attr in row
           end
           ebsdd.line_number = i
           ebsdd.status = :import
-          ebsdd.producteur = producteur
+          ebsdd.productable = producteur
           ebsdd.attachment_id =  @document.id
           ebsdd.save(validate: false)
         else
@@ -581,16 +685,23 @@ class Ebsdd # < ActiveRecord::Base
 
   def normalize
     self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
-    [:producteur_email, :collecteur_email, :destinataire_email].each do | attr |
+    [ :destinataire_email].each do | attr |
       self[attr] = nil if read_attribute(attr).blank?
     end
-    [ :producteur_tel, :destinataire_tel, :collecteur_tel, :destination_ult_tel, :destination_ult_fax, :collecteur_fax, :destinataire_fax, :producteur_fax, :ligne_flux_fax, :ligne_flux_tel, :emetteur_fax, :emetteur_tel ].each do | attr |
-      self[attr].gsub!(/ /, "") unless read_attribute(attr).nil?
-      if self[attr].size == 9
-        self[attr] = "0#{self[attr]}"
-      end unless read_attribute(attr).nil?
+    [ :destinataire_tel, :destinataire_fax, :ligne_flux_fax, :ligne_flux_tel, :emetteur_fax, :emetteur_tel ].each do | attr |
+      unless self[attr].nil?
+        if self[attr].is_a? Integer
+          self[attr] = "0#{self[attr]}" if self[attr].size == 9 && self[attr].is_a
+        else
+          begin
+          self[attr].gsub!(/ /, "") 
+          rescue
+            binding.pry
+          end
+        end
+      end
     end
-    [ :producteur_siret, :destination_ult_siret, :destinataire_siret, :collecteur_siret, :ligne_flux_siret, :emetteur_siret ].each do | attr |
+    [ :destinataire_siret, :collecteur_siret, :ligne_flux_siret, :emetteur_siret ].each do | attr |
       unless read_attribute(attr).nil?
         self[attr].gsub!(/\s/, "")
       end

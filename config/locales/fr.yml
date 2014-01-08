@@ -89,6 +89,34 @@ fr:
               blank: ne doit pas être vide
             bordereau_date_creation:
               blank: ne doit pas être vide
+            dechet_denomination:
+              blank: ne doit pas être vide
+            dechet_nomenclature:
+              blank: ne doit pas être vide
+            dechet_conditionnement:
+              blank: ne doit pas être vide
+            dechet_nombre_colis:
+              blank: ne doit pas être vide
+            immatriculation:
+              blank: ne doit pas être vide
+            code_operation:
+              blank: ne doit pas être vide
+            traitement_prevu:
+              blank: ne doit pas être vide
+            mention_titre_reglements_ult:
+              blank: ne doit pas être vide
+            dechet_conditionnement_ult:
+              blank: ne doit pas être vide
+            dechet_nombre_colis_ult:
+              blank: ne doit pas être vide
+            immatriculation:
+              blank: ne doit pas être vide
+            immatriculation:
+              blank: ne doit pas être vide
+            immatriculation:
+              blank: ne doit pas être vide
+            immatriculation:
+              blank: ne doit pas être vide
         producteur:
           attributes:
             siret:
@@ -108,4 +136,8 @@ fr:
             cp:
               blank: ne doit pas être vide
             email:
+              blank: ne doit pas être vide
+            limite_validite:
+              blank: ne doit pas être vide
+            recepisse:
               blank: ne doit pas être vide

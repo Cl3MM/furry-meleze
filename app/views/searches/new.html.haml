@@ -1,0 +1,11 @@
+= custom_form @search, remote: true, format: :js, method: :post do | f |
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+        %h4#myModalLabel.modal-title Recherche avancée
+      .modal-body
+        = render partial: 'form', object: f, as: :f
+      .modal-footer
+        %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Fermer
+        = f.submit 'Rechercher', class: "btn btn-primary", type: "submit"

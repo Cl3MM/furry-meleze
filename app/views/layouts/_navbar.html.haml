@@ -28,6 +28,8 @@
             = fa_link_to ebsdds_path, "Gérer les eBSDDs", "tags"
           %li
             = fa_link_to attachments_path, "Gérer les fichiers importés", "file-text"
+          %li
+            = fa_link_to destinations_path, "Gérer les destinations", "truck lg"
           %li.divider
           - if utilisateur_signed_in?
             %li.dropdown-header{ role: :presentation }
@@ -38,10 +40,10 @@
               = link_to destroy_utilisateur_session_path, :method => :delete do
                 = fa_icon "sign-out lg"
                 Déconnexion
-    = form_tag ebsdds_upload_path, class: "navbar-form navbar-right", role: :search do
-      .form-group
-        = text_field_tag :q, nil, class: "form-control", placeholder: "Rechercher"
-      %span.form-group-btn
-        %button.btn.btn-default{ type: :button }
-          = fa_icon "search lg"
+    -#= form_tag ebsdds_upload_path, class: "navbar-form navbar-right", role: :search do
+      -#.form-group
+        -#= text_field_tag :q, nil, class: "form-control", placeholder: "Rechercher"
+      -#%span.form-group-btn
+        -#%button.btn.btn-default{ type: :button }
+          -#= fa_icon "search lg"
 

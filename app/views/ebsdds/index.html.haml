@@ -4,8 +4,6 @@
   %span.small
     = "(#{Ebsdd.count})"
 
-  %span.small
-    = "(#{Producteur.count})"
   .btn-group.pull-right
     %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
       = fa_icon "cogs lg"
@@ -15,6 +13,9 @@
     %ul.dropdown-menu{role: "menu"}
       %li
         = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
+      %li.divider
+      %li
+        = fa_link_to new_search_path, "Recherche avancée", "search lg", {"data-target" => "#search", "data-toggle" => "modal"}
       %li.divider
       %li
         = fa_link_to ebsdds_import_path, "Importer une liste de eBSDDs", "cloud-upload lg"
@@ -42,5 +43,8 @@
       = link_to "Expédiés", ebsdd_status_path(status: :expedies)
 
 = render partial: "ebsdds"
+#search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
+-#= render partial: "search"
+
 .center-block.tect-center
   = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

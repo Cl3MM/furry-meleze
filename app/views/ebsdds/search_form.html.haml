@@ -1,0 +1,11 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
+      %h4#myModalLabel.modal-title Recherche avancée
+    .modal-body
+      = custom_form( @ebsdd, url: ebsdds_search_path ) do | f |
+
+    .modal-footer
+      %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Close
+      %button.btn.btn-primary{type: "button"} Save changes

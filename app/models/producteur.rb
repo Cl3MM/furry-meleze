@@ -2,7 +2,12 @@ class Producteur
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_many :ebsdds#, inverse_of: :ebsdds
+  #has_many :ebsdds#, inverse_of: :ebsdds
+  has_many :ebsdds, as: :collectable, class_name: "Producteur"
+  has_many :ebsdds, as: :productable, class_name: "Producteur"
+
+  scope :collecteurs, where( is_collecteur: true)
+  scope :producteurs, Producteur.or( { is_collecteur: false}, { :is_collecteur.exists => false } ).asc(:nom)
 
   field :siret, type: String
   field :nom, type: String
@@ -14,8 +19,16 @@ class Producteur
   field :email, type: String, default: nil
   field :responsable, type: String
   field :actif, type: Boolean
+  field :is_collecteur, type: Boolean
 
-  attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif
+  field :recepisse, type: String, default: ->{ id }
+  field :mode_transport, type: Integer, default: 1
+  field :limite_validite, type: Date, default: ->{ 10.days.from_now }
+
+  validates_presence_of :recepisse, :limite_validite, :mode_transport,
+    if: -> { self[:is_collecteur] }
+
+  attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif, :is_collecteur, :recepisse, :mode_transport, :limite_validite
 
   validates_presence_of :nom, :cp #, :email, :siret, :tel, :fax
 

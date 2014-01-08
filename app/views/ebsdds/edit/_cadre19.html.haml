@@ -1,0 +1,10 @@
+Je soussigné certifie que les renseignements portés ci-dessus sont exacts et établis de bonne foi.
+.row
+  .col-md-8
+    .form-group
+      = f.label :nom_19, "Nom :"
+      = f.text_field :nom_19, placeholder: "Nom"
+  .col-md-4
+    .form-group
+      = f.label :date_19, "Date :"
+      = f.text_field :date_19, placeholder: "Date", class: "datepicker", value: safe_date(:date_19)

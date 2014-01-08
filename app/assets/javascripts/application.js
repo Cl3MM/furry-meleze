@@ -17,6 +17,7 @@
 //= require twitter/bootstrap/tooltip
 //= require twitter/bootstrap/alert
 //= require twitter/bootstrap/dropdown
+//= require twitter/bootstrap/modal
 // require // twitter/bootstrap/scrollspy
 //= require twitter/bootstrap/tab
 //= require jquery.ui.datepicker

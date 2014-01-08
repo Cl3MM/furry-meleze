@@ -77,7 +77,7 @@ class ProducteursController < ApplicationController
 
     respond_to do |format|
       if @producteur.save
-        format.html { redirect_to @producteur, notice: 'Producteur was successfully created.' }
+        format.html { redirect_to @producteur, notice: 'Le producteur a été crée avec succès !' }
         format.json { render json: @producteur, status: :created, location: @producteur }
       else
         format.html { render action: "new" }
@@ -93,7 +93,7 @@ class ProducteursController < ApplicationController
 
     respond_to do |format|
       if @producteur.update_attributes(params[:producteur])
-        format.html { redirect_to @producteur, notice: 'Producteur was successfully updated.' }
+        format.html { redirect_to @producteur, notice: 'Le producteur a été modifié avec succès !' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

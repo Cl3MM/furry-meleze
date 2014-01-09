@@ -376,8 +376,8 @@ class Ebsdd # < ActiveRecord::Base
   :entreposage_date_presentation, 
     unless: -> { new_record? || entreposage_provisoire == false }
 
-  validates :entreposage_poids, numericality: true, unless: -> { new_record? || entreposage_provisoire == false }
-  validates :bordereau_poids, :bordereau_poids_ult, numericality: true
+  validates :entreposage_poids, :bordereau_poids_ult, numericality: true, unless: -> { new_record? || entreposage_provisoire == false }
+  validates :bordereau_poids, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 

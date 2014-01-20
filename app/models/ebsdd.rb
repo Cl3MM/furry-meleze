@@ -597,6 +597,7 @@ class Ebsdd # < ActiveRecord::Base
           end
           ebsdd.line_number = i
           ebsdd.status = :import
+          ebsdd.write_attribute :bid, ebsdd.long_bid
           ebsdd.productable = producteur
           ebsdd.attachment_id =  @document.id
           ebsdd.save(validate: false)

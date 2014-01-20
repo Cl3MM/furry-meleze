@@ -20,8 +20,8 @@
           %td.actions
             .center-block.text-center
               = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
-              = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid})")
-              = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") unless ebsdd.is_incomplete?
+              = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.long_bid})")
+              = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.long_bid} au format CSV") unless ebsdd.is_incomplete?
   - if ebsdds.count > 10
     = link_to "Voir tous les eBSDDs #{status.to_s.pluralize}...", ebsdd_status_path(status: status.to_s.pluralize), class:"pull-right"
 -else

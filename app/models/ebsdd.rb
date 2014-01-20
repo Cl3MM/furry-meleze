@@ -408,16 +408,16 @@ class Ebsdd # < ActiveRecord::Base
       str
     end
   end
-  def bid
-    bid = read_attribute(:bordereau_id)
-    unless bid.nil? 
-      "%.0f" % bid
+  def long_bid
+    lbid = read_attribute(:bordereau_id)
+    unless lbid.nil? 
+      "%.0f" % lbid
     else
       "#"
     end
   end
   def short_bid
-    bid.gsub('1000000', "")
+    long_bid.gsub('1000000', "")
   end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|

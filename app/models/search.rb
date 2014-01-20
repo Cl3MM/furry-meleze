@@ -11,6 +11,9 @@ class Search
   field :producteur_cp, type: String
   field :status, type: String
   field :nomenclature, type: String
+  field :bordereau_id, type: String
   field :poids_min, type: Float
   field :poids_max, type: Float
+
+  attr_accessible :bordereau_id
 end

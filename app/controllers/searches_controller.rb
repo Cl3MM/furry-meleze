@@ -44,7 +44,8 @@ class SearchesController < ApplicationController
   def create
     @search = Search.new(params[:search])
 
-    @ebsdds = Ebsdd.between(bordereau_date_creation: @search.date_min..@search.date_max).paginate(page: params[:page], per_page: 15)
+    #@ebsdds = Ebsdd.between(bordereau_date_creation: @search.date_min..@search.date_max).paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.where(bid: /#{@search.bordereau_id}/).paginate(page: params[:page], per_page: 15)
     @status = (params.has_key?(:status) ? params[:status].to_sym : :empty)
     respond_to do |format|
       format.html { render template: "ebsdds/index" }

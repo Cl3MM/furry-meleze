@@ -12,6 +12,6 @@ class Immatriculation
   end
 
   def normalize
-    self[:valeur] = self[:valeur].strip.upcase.gsub(/\s|\W/, '')
+    self[:valeur] = self[:valeur].strip.upcase.gsub(/(\s|\W)+/, ' ')
   end
 end

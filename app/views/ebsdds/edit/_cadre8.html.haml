@@ -105,7 +105,7 @@
   .col-md-8
     .form-group
       = f.label :immatriculation, "Sélectionnez l'immatriculation du camion"
-      = f.select :immatriculation, Immatriculation.to_select
+      = f.select :immatriculation, Immatriculation.to_select, prompt: "Sélectionnez l'immatriculation..."
     ou
     .form-group
       %label Ajoutez une nouvelle plaque d'immatriculation

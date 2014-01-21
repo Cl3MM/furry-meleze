@@ -1,5 +1,55 @@
 # encoding: utf-8
 
+#TODO
+#Documents à recevoir :
+#Séverine : liste produits et liste contenants pour bsd non ecodds
+#Brigitte : tableau correspondance poids / produits et immatriculations trialp
+
+#Producteurs : 
+#- Ajouter une case pour spécifier si ECODDS ou non
+#- Ajouter devant les noms des producteurs de déchets "ECODDS", exemple : ECODDS Chambéry Métropole
+#- Faire une correspondance entre le nom du producteur et le producteur ecodds
+#- tu as écrit : "producteur collecteur : limite de validité = enlever bordereau !" 
+#- Page producteur : le bouton créer producteur ne fonctionne pas
+
+#Nouveaux BSD : Différencier BSD ECODDS ou nont
+
+#Recherche : par numéro de BSD, par producteur
+
+#Edition BSD
+#- Afficher numéro du BSD dans le cadre 0 (il s'affiche pas)
+#- Ajouter une case dans cadre 0 pour remplir numéro ECODDS !
+#- Case plaque d'immatriculation uniquement quand collecteur est TRIALP
+#- Choix de la plaque d'immatriculation : on commence à écrire le numéro et il propose la liste de plaques
+#- Ajouter bouton "enregistrer" à côté du dernier cadre en cours de modification
+#- ou Ajouter bouton (fenêtre qui se lève) en bas pour remonter en haut
+#- Fonction "export ecodds" s'affiche QUE pour les bsd ecodds
+#- Afficher le nombre d'exports du bsd
+#- Afficher produits différents et contenants différents pour bsd non ecodds
+#- Cadre 3 : numéro de déchet à 6 chiffres : mettre une "*"
+
+#Cadre 3 : ne pas mettre de valeur par défaut au type de déchet, si l'opérateur enregistre le bsd sans avoir modifié la valeur, il y a une erreur.
+#Cadre 6 : table de correspondance entre contenant et poids estimé
+#Cadre 6 : bloquer sur "estimé"
+#Cadre 9 : émetteur = cadre 1
+#Cadre 11 : tu as écrit "bloquer R13" mais il faut que tu revois les règles de ECODDS pour les cases D/R !!
+#Cadre 12 : Ajouter une liste pour "non ecodds"
+
+#Récipissé + limite de validité du collecteur à stocker dans le bsd 
+
+#Numéro CAP : créer automatiquement les numéros :
+
+#YYYYPPSSSSSSSSS, exemple : 2014TF247300049
+#YYYY : année
+#PP : type de produit
+#SSSSSSSSS : 9 premiers chiffres du siret du producteur du déchet
+#Pour le type de produit on se réfère aux tables type de déchet et ca donne ça :
+#PP : 01=PE, 02= ES, 03= AE, 04=SO, 05=PH, 06=FH, 07=AC, 08=BA, 09=CO
+
+#- Lors d'une sortie d'un déchet, on remplit l'annexe 2.
+
+#Fichier traduction : "blank" mettre "ne doit pas être vide" en indiquant le numéro de cadre.
+
 class Ebsdd # < ActiveRecord::Base
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -89,7 +139,7 @@ class Ebsdd # < ActiveRecord::Base
 #}
 
   before_create :normalize, :set_status
-  before_update :set_status
+  before_update :set_status, :set_num_cap
 
   def set_status
     if self[:status] == :import
@@ -97,6 +147,12 @@ class Ebsdd # < ActiveRecord::Base
     elsif self[:status] = :incomplet
       self[:status] = :complet
     end
+  end
+
+  def set_num_cap
+    binding.pry
+    self[:num_cap] = num_cap_auto
+    binding.pry
   end
 
   belongs_to :productable, polymorphic: true, class_name: "Producteur"#, inverse_of: :producteur
@@ -320,7 +376,7 @@ class Ebsdd # < ActiveRecord::Base
     #:collecteur_tel, :collecteur_responsable, 
     :libelle,
     :bordereau_date_transport, :bordereau_poids,
-    :bordereau_date_creation, :num_cap, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
+    :bordereau_date_creation, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
@@ -373,7 +429,7 @@ class Ebsdd # < ActiveRecord::Base
     :entreposage_fax, :entreposage_email, :entreposage_responsable,
 
   :entreposage_date,
-  :entreposage_date_presentation, 
+  :entreposage_date_presentation,
     unless: -> { new_record? || entreposage_provisoire == false }
 
   validates :entreposage_poids, :bordereau_poids_ult, numericality: true, unless: -> { new_record? || entreposage_provisoire == false }
@@ -386,7 +442,7 @@ class Ebsdd # < ActiveRecord::Base
   end
   def poids_en_tonnes2 attr
     unless attr.nil?
-      "#{"%08.3f" % (attr.to_f / 1000.0) }" 
+      "#{"%08.3f" % (attr.to_f / 1000.0) }"
     else
       ""
     end
@@ -566,17 +622,7 @@ class Ebsdd # < ActiveRecord::Base
         producteur = if Producteur.where(nom: producteur_nom).exists?
           Producteur.find_by(nom: producteur_nom)
         else
-          new_producteur = producteur_attrs.reduce({}) do  | h, (_k,v) |
-            k = _k.to_s.gsub("producteur_","").to_sym
-            if row[v].nil?
-              h[k] = nil
-            elsif row[v].is_a? Float
-              h[k] = normalize_float(row[v])
-            else
-              h[k] = row[v].squish
-            end
-            h
-          end
+          new_producteur = import_new_producteur producteur_attrs
           p = Producteur.create( new_producteur )
           new_producteurs << p.id
           p
@@ -605,64 +651,23 @@ class Ebsdd # < ActiveRecord::Base
           failed << {id: bordereau_id, line: i }
         end
       end
+      def import_new_producteur producteur_attrs
+        producteur_attrs.reduce({}) do  | h, (_k,v) |
+          k = _k.to_s.gsub("producteur_","").to_sym
+          if row[v].nil?
+            h[k] = nil
+          elsif row[v].is_a? Float
+            h[k] = normalize_float(row[v])
+          else
+            h[k] = row[v].squish
+          end
+          h
+        end
+      end
     #else
       #out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
     end
     {failed: failed, exec_time: Time.now - start, total: total, producteurs: new_producteurs}
-  end
-  def self.import(file)
-    out = { rows: nil, errors: [] }
-    spreadsheet = open_spreadsheet(file)
-    spreadsheet.default_sheet = spreadsheet.sheets.first
-    if spreadsheet.last_row > 1
-      header    = spreadsheet.row(1).map{ |h| h.downcase.strip }
-      checksum  = Digest::MD5.hexdigest(file.read)
-      unless Attachment.where(checksum: checksum).exists?
-        @document = Attachment.new( { attachment: file, checksum: checksum } )
-        #@document.attachment = file
-        if @document.save
-          rows = []
-          bordereau_id_column = header.index("bordereau_id")
-          unless bordereau_id_column.nil?
-            (2..spreadsheet.last_row).each do | i |
-              column = []
-              begin
-                ebsdd = Ebsdd.find_or_initialize_by({bordereau_id: spreadsheet.cell(i, bordereau_id_column+1) } )
-              rescue
-                binding.pry
-              end
-              (1..spreadsheet.last_column).each do | j |
-                if header.count > j - 1
-                  cur_header = header[ j - 1 ]
-                  cur_cell = if spreadsheet.cell(i,j).is_a? Float
-                               spreadsheet.cell(i,j).to_i
-                             elsif spreadsheet.cell(i,j).is_a? String
-                               spreadsheet.cell(i,j).squish
-                             else
-                               spreadsheet.cell(i,j)
-                             end
-                end
-                ebsdd[cur_header.to_sym] = cur_cell
-                column << "#{spreadsheet.cell(i,j)}"
-              end
-              ebsdd.line_number = i
-              ebsdd.status = :import
-              ebsdd.save(validate: false)
-              @document.ebsdds.push(ebsdd)
-              rows << column
-            end
-          else
-            out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
-          end
-        else
-          out[:errors] << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
-        end
-      else
-        out[:errors] << "Un fichier contenant les mêmes données existe déjà. Veuillez importer un autre fichier."
-      end
-    end
-    out[:rows] = rows
-    out
   end
 
   def self.open_spreadsheet(file)
@@ -709,4 +714,12 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
+  def num_cap_auto
+    unless dechet_conditionnement.nil?
+      y = Time.now.strftime("%Y")
+      s = productable.siret[0..8]
+      p = DechetDenomination.num_cap dechet_denomination
+      "#{y}#{p}#{s}"
+    end
+  end
 end

@@ -2,7 +2,7 @@
   .col-md-4
     .form-group
       = f.label :dechet_denomination, "Dénomination usuelle du déchet"
-      = f.select :dechet_denomination, DechetDenomination.to_select
+      = f.select :dechet_denomination, DechetDenomination.to_select, :prompt => "Sélectionnez une dénomination..."
 
   .col-md-3
     .form-group

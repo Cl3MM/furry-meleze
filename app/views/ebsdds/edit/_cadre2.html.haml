@@ -2,19 +2,19 @@
   = f.label :entreposage_provisoire, "Entreposage provisoire ou reconditionnement"
   %br
   %label.radio-inline
-    = f.radio_button :entreposage_provisoire, true, checked: true
+    = f.radio_button :entreposage_provisoire, true
     Oui
   %label.radio-inline
-    = f.radio_button :entreposage_provisoire, false
+    = f.radio_button :entreposage_provisoire, false, checked: true
     Non
 
 .form-group
   = f.label :num_cap, "Numéro CAP"
-  = f.text_field :num_cap, placeholder: "Numéro CAP"
+  = f.text_field :num_cap, placeholder: "Numéro CAP", disabled: true
 
 .form-group
   = f.label :valorisation_prevue, "Valorisation prévue"
-  = f.select :valorisation_prevue, CodeDr.to_select
+  = f.select :valorisation_prevue, CodeDr.to_select, prompt: "Sélectionnez la valorisation..."
 
 .row
   .col-md-12

@@ -17,8 +17,6 @@
 #Recherche : par numéro de BSD, par producteur
 
 #Edition BSD
-#- Afficher numéro du BSD dans le cadre 0 (il s'affiche pas)
-#- Ajouter une case dans cadre 0 pour remplir numéro ECODDS !
 #- Case plaque d'immatriculation uniquement quand collecteur est TRIALP
 #- Choix de la plaque d'immatriculation : on commence à écrire le numéro et il propose la liste de plaques
 #- Ajouter bouton "enregistrer" à côté du dernier cadre en cours de modification
@@ -30,7 +28,6 @@
 
 #Cadre 3 : ne pas mettre de valeur par défaut au type de déchet, si l'opérateur enregistre le bsd sans avoir modifié la valeur, il y a une erreur.
 #Cadre 6 : table de correspondance entre contenant et poids estimé
-#Cadre 6 : bloquer sur "estimé"
 #Cadre 9 : émetteur = cadre 1
 #Cadre 11 : tu as écrit "bloquer R13" mais il faut que tu revois les règles de ECODDS pour les cases D/R !!
 #Cadre 12 : Ajouter une liste pour "non ecodds"

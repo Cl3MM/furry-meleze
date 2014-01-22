@@ -3,9 +3,9 @@ TODO : Lier l'ID du cadre 3 avec l'ID du cadre 5 en Javascript
   .col-md-8
     .form-group
       = f.label :dechet_conditionnement, "Type de conditionnement"
-      = f.select :dechet_conditionnement, DechetContenant.to_select
+      = f.select :dechet_conditionnement, DechetContenant.to_select, prompt: "Sélectionnez le type de conditionnement..."
 
   .col-md-4
     .form-group
       = f.label :dechet_nombre_colis, "Nombre de colis"
-      = f.select :dechet_nombre_colis, (1..30).map{|i| [i,i]}
+      = f.select :dechet_nombre_colis, (1..30).map{|i| [i,i]}, prompt: "Sélectionnez le nombre de colis..."

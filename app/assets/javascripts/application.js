@@ -10,15 +10,12 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-// require //turbolinks
 //= require jquery
 //= require jquery_ujs
-// require // twitter/bootstrap
 //= require twitter/bootstrap/tooltip
 //= require twitter/bootstrap/alert
 //= require twitter/bootstrap/dropdown
 //= require twitter/bootstrap/modal
-// require // twitter/bootstrap/scrollspy
 //= require twitter/bootstrap/tab
 //= require jquery.ui.datepicker
 //= require jquery.ui.datepicker-fr

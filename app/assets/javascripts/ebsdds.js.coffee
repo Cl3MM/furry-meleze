@@ -10,33 +10,32 @@ jQuery ->
   disable( true ) if $('.disabled').length
 
   if $('#search').length
-    true
-  # actions effectuées quand le formulaire de recherche est affiché
-  $('#search').on 'shown.bs.modal', (e) ->
+    # actions effectuées quand le formulaire de recherche est affiché
+    $('#search').on 'shown.bs.modal', (e) ->
 
-    console.log "Content loaded..."
+      console.log "Content loaded..."
 
-    $("#search_date_min").datepicker
-      defaultDate: "+1w"
-      numberOfMonths: 3
-      dateFormat: 'dd-mm-yy'
-      onClose: (selectedDate) ->
-        $("#search_date_max").datepicker "option", "minDate", selectedDate
-      $.datepicker.regional[ "fr" ]
+      $("#search_date_min").datepicker
+        defaultDate: "+1w"
+        numberOfMonths: 3
+        dateFormat: 'dd-mm-yy'
+        onClose: (selectedDate) ->
+          $("#search_date_max").datepicker "option", "minDate", selectedDate
+        $.datepicker.regional[ "fr" ]
 
-    $("#search_date_max").datepicker
-      defaultDate: "+1w"
-      numberOfMonths: 3
-      dateFormat: 'dd-mm-yy'
-      onClose: (selectedDate) ->
-        $("#search_date_min").datepicker "option", "maxDate", selectedDate
-      $.datepicker.regional[ "fr" ]
+      $("#search_date_max").datepicker
+        defaultDate: "+1w"
+        numberOfMonths: 3
+        dateFormat: 'dd-mm-yy'
+        onClose: (selectedDate) ->
+          $("#search_date_min").datepicker "option", "maxDate", selectedDate
+        $.datepicker.regional[ "fr" ]
 
-    $("#search_date").datepicker
-      defaultDate: "+1w"
-      numberOfMonths: 3
-      dateFormat: 'dd-mm-yy'
-      $.datepicker.regional[ "fr" ]
+      $("#search_date").datepicker
+        defaultDate: "+1w"
+        numberOfMonths: 3
+        dateFormat: 'dd-mm-yy'
+        $.datepicker.regional[ "fr" ]
 
   # Active / Désactive l'édition du cadre 15
   entreposage_visibility = (x) ->
@@ -56,6 +55,8 @@ jQuery ->
 
   if $("#edit").length
 
+    $("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
+
     #$("#e1").select2()
     $("#ebsdd_collectable_id").select2
       width: 1076
@@ -63,9 +64,22 @@ jQuery ->
     $("#ebsdd_productable_id").select2
       width: 507
 
+    $("#ebsdd_destination_id").select2
+      width: 339
+
+    $("#ebsdd_immatriculation").select2
+      width: 707
+
+    $("#ebsdd_dechet_denomination").select2
+      width: 339
+
+    #$("#ebsdd_destination_id").select2
+      #width: 507
+
     # Envoie une requête au serveur pour afficher les info du productable choisi
     $("#ebsdd_productable_id").on 'change', (e) ->
       val =  $(this).val()
+      #$("#ebsdd_emetteur_nom").val $(this).text()
       $("#ebsdd_productable_attributes_id").val(val)
       url = '/producteurs/' + val + '.js'
       $.get( url)

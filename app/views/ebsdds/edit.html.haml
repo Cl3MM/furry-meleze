@@ -2,7 +2,7 @@
   %h1.underline
     = fa_icon "tags"
     Complèter l'eBSDD
-    = content_tag :button, type: :submit, class: "btn btn-info pull-right mg-l-5" do
+    = content_tag :button, type: :submit, id: "save_ebsdd_btn", class: "btn btn-info pull-right mg-l-5" do
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
     = fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "eye lg", class: "btn btn-default pull-right"

@@ -136,7 +136,7 @@ class Ebsdd # < ActiveRecord::Base
 #}
 
   before_create :normalize, :set_status
-  before_update :set_status, :set_num_cap
+  before_update :set_status, :set_num_cap, :set_infos_from_productable
 
   def set_status
     if self[:status] == :import
@@ -146,10 +146,13 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
+  def set_infos_from_productable
+    self[:recepisse] = productable.recepisse
+    self[:limite_validite] = productable.limite_validite
+    self[:mode_transport] = productable.mode_transport
+  end
   def set_num_cap
-    binding.pry
     self[:num_cap] = num_cap_auto
-    binding.pry
   end
 
   belongs_to :productable, polymorphic: true, class_name: "Producteur"#, inverse_of: :producteur
@@ -437,7 +440,7 @@ class Ebsdd # < ActiveRecord::Base
     if: -> { self[:mode_transport] == 1 }
 
   validates_presence_of :immatriculation,# :bordereau_limite_validite,
-    if: -> { !self.productable.nil? && self.productable.nom == "TRIALP" }
+    if: -> { !self.productable.nil? && self.collectable.nom == "TRIALP" }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false

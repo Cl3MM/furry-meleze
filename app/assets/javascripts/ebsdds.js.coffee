@@ -55,6 +55,10 @@ jQuery ->
 
   if $("#edit").length
 
+    if $("#ebsdd_collectable_id option:selected").text() == 'TRIALP'
+      $("#immatriculations").show()
+    else
+      $("#immatriculations").hide()
     #$("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
     $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
 
@@ -76,6 +80,13 @@ jQuery ->
 
     #$("#ebsdd_destination_id").select2
       #width: 507
+
+    # On affiche le formulaire des immatriculations quand le collecteur sélectionné est TRIALP
+    $("#ebsdd_collectable_id").on 'change', (e) ->
+      if $("#ebsdd_collectable_id option:selected").text() == 'TRIALP'
+        $("#immatriculations").show()
+      else
+        $("#immatriculations").hide()
 
     # Envoie une requête au serveur pour afficher les info du productable choisi
     $("#ebsdd_productable_id").on 'change', (e) ->

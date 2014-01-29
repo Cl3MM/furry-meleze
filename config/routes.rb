@@ -22,6 +22,7 @@ Meleze::Application.routes.draw do
   get  'ebsdds/import'
   post 'ebsdds/upload'
 
+  post  'producteurs/search', to: "producteurs#search", as: :producteurs_search
   get  'producteurs/import'
   post 'producteurs/upload'
 

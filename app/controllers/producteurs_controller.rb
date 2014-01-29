@@ -86,6 +86,21 @@ class ProducteursController < ApplicationController
     end
   end
 
+  def search
+    if params.has_key?(:query)
+      @producteurs = Producteur.where(nom: /#{params[:query]}/i).paginate(page: params[:page], per_page: 20)
+      #binding.pry
+    end
+    respond_to do |format|
+      if @producteurs
+        format.html { render action: "index" }
+        format.json { render json: @producteurs, status: :created }
+      else
+        format.html { redirect_to :producteurs_path, notice: 'Aucun producteur trouvé :(' }
+        format.json { render json: [], status: :unprocessable_entity }
+      end
+    end
+  end
   # PUT /producteurs/1
   # PUT /producteurs/1.json
   def update

@@ -1,5 +1,26 @@
 # encoding: utf-8
 
+
+#["100000053072",
+ #"100000053074",
+ #"100000053078",
+ #"100000053080",
+ #"100000053075",
+ #"100000053077",
+ #"100000053106",
+ #"100000053108",
+ #"100000053095",
+ #"100000053096",
+ #"100000053097",
+ #"100000053098",
+ #"100000053102",
+ #"100000053103",
+ #"100000053104",
+ #"100000053110",
+ #"100000053112",
+ #"100000053114"]
+
+
 #TODO
 #Documents à recevoir :
 #Séverine : liste produits et liste contenants pour bsd non ecodds
@@ -136,7 +157,7 @@ class Ebsdd # < ActiveRecord::Base
 #}
 
   before_create :normalize, :set_status
-  before_update :set_status, :set_num_cap, :set_infos_from_productable
+  before_update :set_status, :set_num_cap, :set_infos_from_productable, :set_is_ecodds
 
   def set_status
     if self[:status] == :import
@@ -150,6 +171,9 @@ class Ebsdd # < ActiveRecord::Base
     self[:recepisse] = productable.recepisse
     self[:limite_validite] = productable.limite_validite
     self[:mode_transport] = productable.mode_transport
+  end
+  def set_is_ecodds
+    self[:is_ecodds] = productable.nom =~ /eco dds/i
   end
   def set_num_cap
     self[:num_cap] = num_cap_auto
@@ -569,6 +593,26 @@ class Ebsdd # < ActiveRecord::Base
   def self.has_every_bsd_completed?
     Ebsdd.where(status: :incomplet).exists?
   end
+  def ecoDDS
+    ["100000053072",
+     "100000053074",
+     "100000053078",
+     "100000053080",
+     "100000053075",
+     "100000053077",
+     "100000053106",
+     "100000053108",
+     "100000053095",
+     "100000053096",
+     "100000053097",
+     "100000053098",
+     "100000053102",
+     "100000053103",
+     "100000053104",
+     "100000053110",
+     "100000053112",
+     "100000053114"]
+  end
   def self.import2(file)
     attrs = [
       :producteur_siret, :producteur_nom, :producteur_adresse,
@@ -589,8 +633,6 @@ class Ebsdd # < ActiveRecord::Base
           @document[:total] = result[:total]
           @document[:exec_time] = result[:exec_time]
           @document[:producteurs] = result[:producteurs]
-          binding.pry
-
           @document.save!
         else
           errors << "Impossible de sauvegarder le document. Veuillez transmettre ce document à votre administrateur pour analyse."
@@ -624,10 +666,11 @@ class Ebsdd # < ActiveRecord::Base
         row = spreadsheet.row(i)
         bordereau_id = row[bordereau_id_column]
         producteur_nom = row[producteur_attrs[:producteur_nom]].squish
+        next unless producteur_nom =~ /ECO DDS/i
         producteur = if Producteur.where(nom: producteur_nom).exists?
           Producteur.find_by(nom: producteur_nom)
         else
-          new_producteur = import_new_producteur producteur_attrs
+          new_producteur = import_new_producteur row, producteur_attrs
           p = Producteur.create( new_producteur )
           new_producteurs << p.id
           p
@@ -656,23 +699,23 @@ class Ebsdd # < ActiveRecord::Base
           failed << {id: bordereau_id, line: i }
         end
       end
-      def import_new_producteur producteur_attrs
-        producteur_attrs.reduce({}) do  | h, (_k,v) |
-          k = _k.to_s.gsub("producteur_","").to_sym
-          if row[v].nil?
-            h[k] = nil
-          elsif row[v].is_a? Float
-            h[k] = normalize_float(row[v])
-          else
-            h[k] = row[v].squish
-          end
-          h
-        end
-      end
     #else
       #out[:errors] << "Impossible de trouver le numéro de bordereau dans le document. Veuillez transmettre ce document à votre administrateur pour analyse."
     end
     {failed: failed, exec_time: Time.now - start, total: total, producteurs: new_producteurs}
+  end
+  def self.import_new_producteur row, producteur_attrs
+    producteur_attrs.reduce({}) do  | h, (_k,v) |
+      k = _k.to_s.gsub("producteur_","").to_sym
+      if row[v].nil?
+        h[k] = nil
+      elsif row[v].is_a? Float
+        h[k] = normalize_float(row[v])
+      else
+        h[k] = row[v].squish
+      end
+      h
+    end
   end
 
   def self.open_spreadsheet(file)

@@ -40,13 +40,16 @@
               = link_to destroy_utilisateur_session_path, :method => :delete do
                 = fa_icon "sign-out lg"
                 Déconnexion
-    = custom_form Search.new , html: { class: "navbar-form navbar-right", role: :search } do | f |
-      .form-group
-        = f.text_field :bordereau_id, placeholder: "Numéro de bordereau", class: "form-control"
-        -#= text_field_tag :q, nil, class: "form-control", placeholder: "Rechercher"
-      %span.form-group-btn
-        -#= f.submit 'Rechercher', class: "btn btn-primary", type: "submit"
-        %button.btn.btn-default{ type: :submit }
-          = fa_icon "search lg"
+    - if content_for? :search
+      = yield :search
+    - else
+      = custom_form Search.new , html: { class: "navbar-form navbar-right", role: :search } do | f |
+        .form-group
+          = f.text_field :bordereau_id, placeholder: "Numéro de bordereau", class: "form-control"
+          -#= text_field_tag :q, nil, class: "form-control", placeholder: "Rechercher"
+        %span.form-group-btn
+          -#= f.submit 'Rechercher', class: "btn btn-primary", type: "submit"
+          %button.btn.btn-default{ type: :submit }
+            = fa_icon "search lg"
     / = form_tag ebsdds_upload_path, class: "navbar-form navbar-right", role: :search do
 

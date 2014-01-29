@@ -169,6 +169,8 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
 
+  field :is_ecodds, type: Boolean, default: false
+
   field :ligne_flux_siret, type: String
   field :ligne_flux_nom, type: String
   field :ligne_flux_adresse, type: String
@@ -257,10 +259,10 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_18_email, type: String
   field :collecteur_18_responsable, type: String
   field :mode_transport_18, type: Integer, default: 1
-  field :bordereau_limite_validite_18, type: Date, default: ->{ 10.days.from_now }
+  field :bordereau_limite_validite_18, type: Date #, default: ->{ 10.days.from_now }
   field :transport_multimodal_18, type: Boolean, default: false
   field :recepisse_18, type: String, default: ->{ id }
-  field :date_prise_en_charge_18, type: Date, default: ->{ 10.days.from_now }
+  field :date_prise_en_charge_18, type: Date #, default: ->{ 10.days.from_now }
 
   field :collecteur_20_siret,type: String
   field :collecteur_20_nom,type: String
@@ -272,9 +274,9 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_20_email, type: String
   field :collecteur_20_responsable, type: String
   field :mode_transport_20, type: Integer, default: 1
-  field :bordereau_limite_validite_20, type: Date, default: ->{ 10.days.from_now }
+  field :bordereau_limite_validite_20, type: Date #, default: ->{ 10.days.from_now }
   field :recepisse_20, type: String, default: ->{ id }
-  field :date_prise_en_charge_20, type: Date, default: ->{ 10.days.from_now }
+  field :date_prise_en_charge_20, type: Date #, default: ->{ 10.days.from_now }
 
   field :collecteur_21_siret,type: String
   field :collecteur_21_nom,type: String
@@ -286,11 +288,11 @@ class Ebsdd # < ActiveRecord::Base
   field :collecteur_21_email, type: String
   field :collecteur_21_responsable, type: String
   field :mode_transport_21, type: Integer, default: 1
-  field :bordereau_limite_validite_21, type: Date, default: ->{ 10.days.from_now }
-  field :recepisse_21, type: String, default: ->{ id }
-  field :date_prise_en_charge_21, type: Date, default: ->{ 10.days.from_now }
+  field :bordereau_limite_validite_21, type: Date #, default: ->{ 10.days.from_now }
+  field :recepisse_21, type: String #, default: ->{ id }
+  field :date_prise_en_charge_21, type: Date#, default: ->{ 10.days.from_now }
 
-  field :date_19, type: Date, default: ->{ 10.days.from_now }
+  field :date_19, type: Date #, default: ->{ 10.days.from_now }
   field :nom_19, type: String
 
   #field :destination_ult_siret, type: String
@@ -378,7 +380,7 @@ class Ebsdd # < ActiveRecord::Base
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     #:destination_ult_ville, :destination_ult_tel,
-    :ecodds_id, :immatriculation
+    :ecodds_id
 
 #:ligne_flux_siret,
 #:ligne_flux_nom,
@@ -433,6 +435,9 @@ class Ebsdd # < ActiveRecord::Base
   validates :bordereau_poids, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
+
+  validates_presence_of :immatriculation,# :bordereau_limite_validite,
+    if: -> { !self.productable.nil? && self.productable.nom == "TRIALP" }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false

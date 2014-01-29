@@ -24,6 +24,9 @@
                 %li
                   = msg
   %div#edit
+
+    = f.check_box :is_ecodds, placeholder: "Bordereau ECODDS"
+    = f.label :bordereau_id, "Bordereau ECODDS"
     .row
       =# ebsdds/edit/cadre 1
       .col-md-12

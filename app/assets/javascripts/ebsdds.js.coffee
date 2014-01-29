@@ -55,7 +55,8 @@ jQuery ->
 
   if $("#edit").length
 
-    $("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
+    #$("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
+    $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
 
     #$("#e1").select2()
     $("#ebsdd_collectable_id").select2
@@ -79,8 +80,8 @@ jQuery ->
     # Envoie une requête au serveur pour afficher les info du productable choisi
     $("#ebsdd_productable_id").on 'change', (e) ->
       val =  $(this).val()
-      #$("#ebsdd_emetteur_nom").val $(this).text()
-      $("#ebsdd_productable_attributes_id").val(val)
+      #$("#ebsdd_productable_attributes_id").val(val)
+      $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
       url = '/producteurs/' + val + '.js'
       $.get( url)
 
@@ -127,12 +128,12 @@ jQuery ->
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     $("#ebsdd_dechet_denomination").on 'change', (evt) ->
       denomination = $(this).val()
-      $("#code_rubrique_dechet").html denomination
+      $("#code_rubrique_dechet").html("#{ denomination }*")
       $("select#ebsdd_dechet_nomenclature").val(denomination)
       # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
       $("input#ebsdd_dechet_nomenclature").val(denomination)
-      # Ajax pour trouver le destination associée à la sélection
-      $("#ebsdd_productable_attributes_id").val(denomination)
+      # Ajax pour trouver la destination associée à la sélection
+      #$("#ebsdd_productable_attributes_id").val(denomination)
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'
       $.get( url)
 

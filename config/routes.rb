@@ -2,7 +2,6 @@ Meleze::Application.routes.draw do
 
   resources :searches
 
-
   resources :destinations
   get 'destinations/find_by_nomenclature/:nomenclature', to: 'destinations#find_by_nomenclature', as: :find_by_nomenclature, format: [:js, :json]
 
@@ -21,6 +20,8 @@ Meleze::Application.routes.draw do
   get  'ebsdds/search/:q', to: 'ebsdds#search', as: :ebsdds_search
   get  'ebsdds/import'
   post 'ebsdds/upload'
+  match  'ebsdds/selection', to: 'ebsdds#selection', as: :ebsdds_selection, via: [:get, :post]
+  post  'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
 
   post  'producteurs/search', to: "producteurs#search", as: :producteurs_search
   get  'producteurs/import'

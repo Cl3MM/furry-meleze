@@ -1,7 +1,11 @@
 jQuery ->
   $('.datepicker').datepicker
-    dateFormat: 'dd-mm-yy',
+    defaultDate: "+1w"
+    numberOfMonths: 3
+    dateFormat: 'dd-mm-yy'
     $.datepicker.regional[ "fr" ]
+  $("td.touletip").tooltip(container: "body")
+  $("th.touletip").tooltip(container: "body")
 
   # Enable / Disable $(".disabled")
   disable = (x) ->
@@ -10,7 +14,36 @@ jQuery ->
   disable( true ) if $('.disabled').length
 
   if $('#search').length
+    # multiebsdd export / search
+    #
+
+    $("#selectall").click (e) ->
+      val = $(this).prop("checked")
+      $(".multiebsdd").each (td) ->
+        $(this).prop("checked", val)
+
+    $("#export_ebsdd_btn").click (e) ->
+      $("form#to_export").submit()
     # actions effectuées quand le formulaire de recherche est affiché
+    $("#date_min").datepicker
+      defaultDate: "+1w"
+      numberOfMonths: 3
+      dateFormat: 'dd-mm-yy'
+      onClose: (selectedDate) ->
+        $("#date_max").datepicker "option", "minDate", selectedDate
+      $.datepicker.regional[ "fr" ]
+
+    $("#date_max").datepicker
+      defaultDate: "+1w"
+      numberOfMonths: 3
+      dateFormat: 'dd-mm-yy'
+      onClose: (selectedDate) ->
+        $("#date_min").datepicker "option", "maxDate", selectedDate
+      $.datepicker.regional[ "fr" ]
+
+
+
+
     $('#search').on 'shown.bs.modal', (e) ->
 
       console.log "Content loaded..."

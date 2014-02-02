@@ -38,14 +38,21 @@
               Numéro ECODDS
           .panel-body
             .row
-              .col-md-6
+              .col-md-4
                 .form-group
                   = f.label :ecodds_id, "Numéro ECODDS"
                   = f.text_field :ecodds_id, placeholder: "Numéro ECODDS"
-              .col-md-6
+              .col-md-4
                 .form-group
                   = f.label :bordereau_id, "Numéro de Bordereau"
                   = f.text_field :bordereau_id, placeholder: "Numéro de bordereau", disabled: true
+              - unless @ebsdd[:libelle].nil?
+                .col-md-4
+                  .form-group
+                    %label
+                      Libellé EPICEA :
+                    %br
+                    = @ebsdd.libelle
     .row
       =# ebsdds/edit/cadre 1
       .col-md-6

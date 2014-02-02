@@ -345,6 +345,7 @@ class Ebsdd # < ActiveRecord::Base
   field :bordereau_limite_validite, type: Date, default: ->{ 10.days.from_now }
 
   field :immatriculation, type: String
+  field :exported, type: Integer, default: 0
 
   attr_accessible :id, :bordereau_id, :productable_attributes, :productable_id, :attachment_id,
     :destination_id, :destination_attributes, :collectable_id, :collectable_attributes,
@@ -514,6 +515,9 @@ class Ebsdd # < ActiveRecord::Base
   def default_ecodds_id
     "#{Time.now.strftime("%y")}#{id[-6..-1]}"
   end
+  def inc_export by = 1
+    inc(:exported, by)
+  end
   def annexe_2_to_csv
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do | csv |
       csv << ["00", ecodds_id, bordereau_id, nil]
@@ -522,6 +526,15 @@ class Ebsdd # < ActiveRecord::Base
               ligne_flux_fax, ligne_flux_email, ligne_flux_responsable, ligne_flux_conditionnement_ult, 1, DechetDenomination[dechet_denomination],
               type_quantite_ult, poids_en_tonnes_ult, ligne_flux_date_remise ,nil]
       # TODO: Attention à la dernière ligne qui contient des infos prise dans les autres cadres
+    end
+  end
+  def self.to_multi params
+    if params.has_key?(:ebsdds) && params[:ebsdds].class == Array && params[:ebsdds].any?
+      ebsdds = Ebsdd.in(ecodds_id: params[:ebsdds])
+      ebsdds.map do | ebsdd |
+        ebsdd.to_ebsdd
+        ebsdd.inc_export
+      end.join
     end
   end
   def to_ebsdd
@@ -559,41 +572,11 @@ class Ebsdd # < ActiveRecord::Base
       end
     end
   end
-  #def to_ebsdd_avant_h
-    #CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      ##binding.pry
-      #csv << ["00", ecodds_id, bordereau_id, nil]
-      #csv << ["01", 4, producteur.siret, producteur.nom.truncate(5, omission: ''), producteur.adresse, producteur.cp, producteur.ville, producteur.tel, producteur.fax, producteur.email, producteur.responsable, nil]
-      #csv << ["02", (entreposage_provisoire ? 1 : 0), destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_tel, destinataire_fax, destinataire_email, destinataire_responsable, num_cap, "R13", nil]
-      #csv << ["03", dechet_denomination, 1, DechetDenomination[dechet_denomination], dechet_consistance, nil ]
-      #csv << ["04", DechetNomenclature[dechet_denomination], nil ]
-      #csv << ["05", dechet_conditionnement, dechet_nombre_colis, nil ]
-      #csv << ["06", type_quantite, poids_en_tonnes, nil ]
-      #csv << ["08", collecteur_siret, collecteur_nom, collecteur_adresse, collecteur_cp, collecteur_ville, collecteur_tel, collecteur_fax, collecteur_email, collecteur_responsable, (mode_transport == 1 ? recepisse : nil), (mode_transport == 1 ? collecteur_cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%Y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
-      #csv << ["09", emetteur_nom, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      #csv << ["10", destinataire_siret, destinataire_nom, destinataire_adresse, destinataire_cp, destinataire_ville, destinataire_responsable, poids_en_tonnes, bordereau_date_transport.strftime("%Y%m%d"), 1, nil, destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil ]
-      #csv << ["11", code_operation, CodeDr[code_operation], destinataire_responsable, bordereau_date_transport.strftime("%Y%m%d"), nil]
-      #csv << ["12", traitement_prevu, destination_ult_siret, destination_ult_nom, destination_ult_adresse, destination_ult_cp, destination_ult_ville, destination_ult_tel, destination_ult_fax, destination_ult_mel, destination_ult_contact , nil]
-      #if entreposage_provisoire
-        #csv << ["13", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        #csv << ["14", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        #csv << ["15", DechetNomenclature[mention_titre_reglements_ult], nil, nil ]
-        #csv << ["16", dechet_conditionnement_ult, dechet_nombre_colis_ult, nil ]
-        #csv << ["17", type_quantite_ult, poids_en_tonnes_ult, nil ]
-        #csv << ["18", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        #csv << ["19", nil, nil, nil ]
-      #end
-      #if transport_multimodal
-        #csv << ["20", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-        #csv << ["21", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil ]
-      #end
-    #end
-  #end
 
   def self.has_every_bsd_completed?
     Ebsdd.where(status: :incomplet).exists?
   end
-  def ecoDDS
+  def ecodds_old_nb
     ["100000053072",
      "100000053074",
      "100000053078",
@@ -641,7 +624,7 @@ class Ebsdd # < ActiveRecord::Base
         errors << "Un fichier contenant les mêmes données existe déjà. Veuillez importer un autre fichier."
       end
     end
-    [result, errors]
+    errors
   end
 
   def self.producteur_attr_indexes attr, headers
@@ -691,6 +674,7 @@ class Ebsdd # < ActiveRecord::Base
           end
           ebsdd.line_number = i
           ebsdd.status = :import
+          ebsdd.exported = 0
           ebsdd.write_attribute :bid, ebsdd.long_bid
           ebsdd.productable = producteur
           ebsdd.attachment_id =  @document.id
@@ -726,12 +710,14 @@ class Ebsdd # < ActiveRecord::Base
     else raise "Unknown file type: #{file.original_filename}"
     end
   end
-
+  def self.multiebsdd_search min, max
+    @ebsdds = Ebsdd.between(bordereau_date_creation: min..max).and(status: :complet)#.order_by(:bordereau_date_creation)#.paginate(page: params[:page], per_page: 15)
+  end
   def self.search params
     if params.has_key?(:status)
-      Ebsdd.where(status: params[:status].singularize).order_by(created_at: :asc)
+      Ebsdd.where(status: params[:status].singularize).order_by(bordereau_id: :asc)
     else
-      Ebsdd.all
+      Ebsdd.all.order_by(bordereau_id: :asc)
     end
   end
 

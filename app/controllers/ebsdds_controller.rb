@@ -21,8 +21,19 @@ class EbsddsController < ApplicationController
       format.csv { send_data @ebsdd.annexe_2_to_csv, filename: "#{@ebsdd.id}_annexe_2.csv" }
     end
   end
-
+  def selection
+    @min = (params.has_key?(:date_min) ? Date.strptime(params[:date_min], "%d-%m-%Y") : Time.now.beginning_of_month)
+    @max = (params.has_key?(:date_max) ? Date.strptime(params[:date_max], "%d-%m-%Y") : Time.now.end_of_month)
+    @ebsdds = Ebsdd.multiebsdd_search(@min, @max).asc(:bordereau_id) #.paginate(page: params[:page], per_page: 15)
+    #else
+      #@ebsdds = Ebsdd.between(bordereau_date_creation: @min..@max)#.order_by(:bordereau_date_creation)#.paginate(page: params[:page], per_page: 15)
+    #end
+  end
+  def export
+    send_data Ebsdd.to_multi(params), filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
+  end
   def download
+    @ebsdd.inc_export
     respond_to do |format|
       format.html
       format.csv { send_data @ebsdd.to_ebsdd, filename: "#{@ebsdd.id}.csv" }
@@ -36,7 +47,7 @@ class EbsddsController < ApplicationController
       if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "application/vnd.ms-excel"
       ].include? file.content_type
-        result, errors = Ebsdd.import2(params[:file])
+        errors = Ebsdd.import2(params[:file])
         if errors.any?
           redirect_to ebsdds_import_path, alert: errors.join("<br/>")
         else
@@ -45,21 +56,6 @@ class EbsddsController < ApplicationController
       else
         redirect_to ebsdds_import_path, alert: "Le fichier du format est incorrect. Merci d'importer seulement des fichiers Excel ou CSV"
       end
-
-      #file = params[:file]
-      #if ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          #"application/vnd.ms-excel"
-      #].include? file.content_type
-        #validation = Ebsdd.import(params[:file])
-        ##binding.pry
-        #if validation[:errors].any?
-          #redirect_to ebsdds_import_path, alert: validation[:errors].join("<br/>")
-        #end
-        #@content = validation[:rows]
-        #redirect_to root_path, notice: "Fichier importé avec succès. Veuillez maintenant compléter les eBSDD nouvellement créés."
-      #else
-        #redirect_to ebsdds_import_path, alert: "Le fichier du format est incorrect. Merci d'importer seulement des fichiers Excel ou CSV"
-      #end
     else
       redirect_to ebsdds_import_path, alert: "Merci de choisir un fichier pour passer à l'étape suivante."
     end

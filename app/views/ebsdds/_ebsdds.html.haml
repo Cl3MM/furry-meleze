@@ -5,8 +5,9 @@
         %thead
           %tr
             %th #
+            %th #EcoDDS
             %th Producteur
-            %th Destinataire
+            -#%th Destinataire
             %th Type déchet
             %th Date création
             %th Poids
@@ -16,8 +17,9 @@
           -@ebsdds.each do | ebsdd |
             %tr
               %td= ebsdd.short_bid
-              %td= ebsdd.productable.nom.titleize
-              %td= ebsdd.destinataire_nom.titleize
+              %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
+              %td= truncate ebsdd.productable.nom.titleize, length: 50
+              -#%td= ebsdd.destinataire_nom.titleize
               %td= ebsdd.libelle.titleize
               %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
               %td= "#{ebsdd.bordereau_poids} kg"

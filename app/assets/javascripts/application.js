@@ -23,7 +23,7 @@
 // require select2/select2_locale_fr
 //= require_self
 $(function() {
-
+  $('.dropdown-toggle').dropdown();
   if( $("a.touletip").length )
     $("a.touletip").tooltip();
   $('.dropdown-toggle').dropdown();

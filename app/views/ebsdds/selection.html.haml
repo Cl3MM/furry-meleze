@@ -1,0 +1,74 @@
+%h1.underline
+  = fa_icon "tags"
+  Multi-Ebsdds
+  = content_tag :button, type: :submit, id: "export_ebsdd_btn", class: "btn btn-info pull-right mg-l-5" do
+    = fa_icon "save lg"
+    &nbsp;Exporter la sélection
+
+.panel.panel-default#search
+  .panel-heading
+    Rechercher les eBSDDs à exporter
+  .panel-body
+    = form_tag ebsdds_selection_path, class: "form-inline", role: :form do 
+      %b
+        Date de début
+      .form-group
+        = label_tag :date_min, nil, class: "sr-only"
+        = text_field_tag :date_min, @min.strftime("%d-%m-%Y"), class: "form-control ", placeholder: "Date de début"
+      %b
+        Date de fin
+      .form-group
+        = label_tag :date_max, nil, class: "sr-only"
+        = text_field_tag :date_max, @max.strftime("%d-%m-%Y"), class: "form-control ", placeholder: "Date de fin"
+      %button.btn.btn-default{type: :submit}
+        Rechercher
+
+- if @ebsdds.any?
+  .alert.alert-info
+    = @ebsdds.count
+    eBSDD trouvés pour la période du
+    = @min.strftime("%d/%m/%Y")
+    au
+    = @max.strftime("%d/%m/%Y")
+  %table.table.table-striped
+    %thead
+      %tr
+        %th
+          = check_box_tag "selectall"
+        %th #
+        %th #EcoDDS
+        %th.touletip{title: "Nombre d'exports déjà effectués"} #Ex.
+        %th Producteur
+        %th Type déchet
+        %th Date création
+        %th Poids
+        %th.actions Actions
+
+    %tbody
+      = form_tag ebsdds_export_path, id: "to_export", role: :form do 
+        -@ebsdds.each do | ebsdd |
+          %tr
+            %td= check_box_tag "ebsdds[]", ebsdd.ecodds_id, false, class: "multiebsdd"
+            %td= ebsdd.short_bid
+            %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
+            %td.touletip{title: "Nombre d'export effectués pour l'ebsdd #{ebsdd.short_bid} : #{ebsdd.exported}"}
+              = ebsdd.exported
+            %td= truncate ebsdd.productable.nom.titleize, length: 50
+            -#%td= ebsdd.destinataire_nom.titleize
+            %td= ebsdd.libelle.titleize
+            %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+            %td= "#{ebsdd.bordereau_poids} kg"
+
+            %td.actions
+              .center-block.text-center
+                = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
+                = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid})")
+                = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") unless ebsdd.is_incomplete?
+- else
+  .alert.alert-info
+    Aucun eBSDD pour la période du
+    = @min.strftime("%d/%m/%Y")
+    au
+    = @max.strftime("%d/%m/%Y")
+
+-#= will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

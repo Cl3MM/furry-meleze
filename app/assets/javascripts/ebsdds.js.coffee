@@ -13,8 +13,12 @@ jQuery ->
       $(this).prop('disabled', x) unless $(this).val() == ""
   disable( true ) if $('.disabled').length
   if $("#import_btn").length
-    $('#import_btn').button()
-    
+    #$("button#import_btn").button()
+    $('#import_btn').click (e) ->
+      btn = $(this)
+      btn.button('loading')
+      $("form#ebsdd_import").submit()
+
   if $('#search').length
     # multiebsdd export / search
     #
@@ -168,6 +172,18 @@ jQuery ->
     if $("input#ebsdd_dechet_nomenclature").prev().prop('class') == " text-danger" and $("input#ebsdd_dechet_nomenclature").next().prop('class') == " text-danger"
       $("input#ebsdd_dechet_nomenclature").next().hide()
 
+
+    prout =
+      200114: ["R12", "SARPI"]
+      200115: ["R12", "SARPI"]
+      160904: ["R12", "SARPI"]
+      200119: ["R12", "SARPI"]
+      160504: ["R12", "SARPI"]
+      200113: ["R12", "SARPI"]
+      200127: ["D10", "TREDI"]
+      150110: ["D10", "TREDI"]
+      160107: ["R13", "CHIMIREC"]
+    window.toto = prout
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     $("#ebsdd_dechet_denomination").on 'change', (evt) ->
       denomination = $(this).val()
@@ -175,6 +191,16 @@ jQuery ->
       $("select#ebsdd_dechet_nomenclature").val(denomination)
       # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
       $("input#ebsdd_dechet_nomenclature").val(denomination)
+      console.log prout
+      console.log denomination
+      for k, v of prout
+        if k == denomination
+          console.log v
+          console.log v[0]
+          console.log v[1]
+          $("#ebsdd_code_operation").val(v[0])
+          $("#ebsdd_destination_id").val(v[1])
+          
       # Ajax pour trouver la destination associée à la sélection
       #$("#ebsdd_productable_attributes_id").val(denomination)
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'

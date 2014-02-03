@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require twitter/bootstrap/tooltip
 //= require twitter/bootstrap/alert
+//= require twitter/bootstrap/button
 //= require twitter/bootstrap/dropdown
 //= require twitter/bootstrap/modal
 //= require twitter/bootstrap/tab

@@ -198,11 +198,11 @@ jQuery ->
           console.log v
           console.log v[0]
           console.log v[1]
-          $("#ebsdd_code_operation").val(v[0])
+          #$("#ebsdd_code_operation").val(v[0])
           $("#ebsdd_destination_id option").each (e) ->
             if $(this).text() == v[1]
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
-              #$("#ebsdd_destination_id").text($(this).val())
+              $("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
               #$("#ebsdd_destination_id option:selected").text() == v[0]
             #console.log $(this).val()
             #console.log $(this).text()

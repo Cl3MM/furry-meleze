@@ -548,7 +548,15 @@ class Ebsdd # < ActiveRecord::Base
       csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]
       csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
       csv << ["06", type_quantite.truncate(1, omission: ""), poids_en_tonnes.truncate(8, omission: ""), nil ]
-      csv << ["08", (collectable.siret || "").truncate(14, omission: ""), (collectable.nom || "").truncate(60, omission: ""), (collectable.adresse || "").truncate(100, omission: ""), (collectable.cp || "").truncate(5, omission: ""), (collectable.ville || "").truncate(45, omission: ""), (collectable.tel || "").truncate(35, omission: ""), (collectable.fax || "").truncate(35, omission: ""), (collectable.email || "").truncate(50, omission: ""), (collectable.responsable || "").truncate(35, omission: ""), (mode_transport == 1 ? recepisse : nil).truncate(35, omission: ""), (mode_transport == 1 ? collectable.cp : nil), (mode_transport == 1 ? bordereau_limite_validite.strftime("%y%m%d") : nil), (mode_transport ? 1 : 0), bordereau_date_transport.strftime("%y%m%d"), (transport_multimodal ? 1 : 0), nil ]
+      csv << ["08", (collectable.siret || "").truncate(14, omission: ""), (collectable.nom || "").truncate(60, omission: ""),
+             (collectable.adresse || "").truncate(100, omission: ""), (collectable.cp || "").truncate(5, omission: ""),
+             (collectable.ville || "").truncate(45, omission: ""),
+             (collectable.tel || "").truncate(35, omission: ""), (collectable.fax || "").truncate(35, omission: ""),
+             (collectable.email || "").truncate(50, omission: ""), (collectable.responsable || "").truncate(35, omission: ""),
+             (collectable.mode_transport == 1 ? collectable.recepisse : nil).truncate(35, omission: ""),
+             (collectable.mode_transport == 1 ? collectable.cp : nil),
+             (collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
+             bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil, (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire_responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]

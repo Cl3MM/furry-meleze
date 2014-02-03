@@ -189,7 +189,7 @@ class Ebsdd # < ActiveRecord::Base
   attr_accessible :id, :_id
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
-  field :ecodds_id, type: Integer, default: ->{ default_ecodds_id }
+  field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :incomplet
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
@@ -392,8 +392,7 @@ class Ebsdd # < ActiveRecord::Base
     :emetteur_fax, :emetteur_email, :emetteur_responsable,
 
     :ligne_flux_date_remise, :ligne_flux_poids,
-    :ecodds_id,
-    :immatriculation
+    :immatriculation, :exported
 
     validates_presence_of :bordereau_id, :productable_id,
     :destinataire_siret, :destinataire_nom,
@@ -405,10 +404,9 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_date_transport, :bordereau_poids,
     :bordereau_date_creation, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
-    :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal,
+    :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     #:destination_ult_ville, :destination_ult_tel,
-    :ecodds_id
 
 #:ligne_flux_siret,
 #:ligne_flux_nom,
@@ -455,11 +453,15 @@ class Ebsdd # < ActiveRecord::Base
     :entreposage_siret, :entreposage_nom, :entreposage_adresse, :entreposage_cp, :entreposage_ville, :entreposage_tel,
     :entreposage_fax, :entreposage_email, :entreposage_responsable,
 
-  :entreposage_date,
-  :entreposage_date_presentation,
+    :entreposage_date,
+    :entreposage_date_presentation,
+    :entreposage_poids,
+    :bordereau_poids_ult, numericality: true,
     unless: -> { new_record? || entreposage_provisoire == false }
 
-  validates :entreposage_poids, :bordereau_poids_ult, numericality: true, unless: -> { new_record? || entreposage_provisoire == false }
+  validates_presence_of :ecodds_id,
+    if: -> { productable.nom =~ /eco dds/i }
+
   validates :bordereau_poids, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }

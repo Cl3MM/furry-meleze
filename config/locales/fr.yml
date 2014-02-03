@@ -117,6 +117,8 @@ fr:
               blank: ne doit pas être vide
             immatriculation:
               blank: ne doit pas être vide
+            ecodds_id:
+              blank: ne doit pas être vide
         producteur:
           attributes:
             siret:

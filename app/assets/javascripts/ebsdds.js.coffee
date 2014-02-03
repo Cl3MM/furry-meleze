@@ -172,8 +172,10 @@ jQuery ->
     if $("input#ebsdd_dechet_nomenclature").prev().prop('class') == " text-danger" and $("input#ebsdd_dechet_nomenclature").next().prop('class') == " text-danger"
       $("input#ebsdd_dechet_nomenclature").next().hide()
 
+    # Code D/R Cadre 11 = Code D/R Cadre 2 (Valespace, R13)
+    $("#ebsdd_code_operation").val( $("#ebsdd_valorisation_prevue").val())
 
-    prout =
+    destination_configuration =
       200114: ["R12", "SARPI"]
       200115: ["R12", "SARPI"]
       160904: ["R12", "SARPI"]
@@ -183,7 +185,6 @@ jQuery ->
       200127: ["D10", "TREDI"]
       150110: ["D10", "TREDI"]
       160107: ["R13", "CHIMIREC"]
-    window.toto = prout
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     $("#ebsdd_dechet_denomination").on 'change', (evt) ->
       denomination = $(this).val()
@@ -191,23 +192,13 @@ jQuery ->
       $("select#ebsdd_dechet_nomenclature").val(denomination)
       # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
       $("input#ebsdd_dechet_nomenclature").val(denomination)
-      console.log prout
-      console.log denomination
-      for k, v of prout
+      for k, v of destination_configuration
         if k == denomination
-          console.log v
-          console.log v[0]
-          console.log v[1]
-          #$("#ebsdd_code_operation").val(v[0])
           $("#ebsdd_destination_id option").each (e) ->
             if $(this).text() == v[1]
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
               $("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
-              #$("#ebsdd_destination_id option:selected").text() == v[0]
-            #console.log $(this).val()
-            #console.log $(this).text()
-            #console.log $(this).prop("selected")
-          
+
       # Ajax pour trouver la destination associée à la sélection
       #$("#ebsdd_productable_attributes_id").val(denomination)
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Immatriculation
   include Mongoid::Document
   include Mongoid::Timestamps

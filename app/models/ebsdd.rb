@@ -532,8 +532,8 @@ class Ebsdd # < ActiveRecord::Base
     if params.has_key?(:ebsdds) && params[:ebsdds].class == Array && params[:ebsdds].any?
       ebsdds = Ebsdd.in(ecodds_id: params[:ebsdds])
       ebsdds.map do | ebsdd |
-        ebsdd.to_ebsdd
         ebsdd.inc_export
+        ebsdd.to_ebsdd
       end.join
     end
   end

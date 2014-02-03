@@ -41,9 +41,6 @@ jQuery ->
         $("#date_min").datepicker "option", "maxDate", selectedDate
       $.datepicker.regional[ "fr" ]
 
-
-
-
     $('#search').on 'shown.bs.modal', (e) ->
 
       console.log "Content loaded..."
@@ -195,8 +192,8 @@ jQuery ->
               option = '<option value="' + data.id + '">' + data.valeur + "</option>"
               $('#ebsdd_immatriculation').prepend( option )
               $('#ebsdd_immatriculation').val(data.id)
-$( document).ajaxComplete ->
-  console.log "AjaxCompleted!!!"
+#$( document).ajaxComplete ->
+  #console.log "AjaxCompleted!!!"
   #$("input#search_date_min").addClass("hasDatepicker")
   #$("#search_date_max").addClass("hasDatepicker")
   #$("#search_date").addClass("hasDatepicker")

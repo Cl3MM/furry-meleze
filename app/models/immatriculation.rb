@@ -12,6 +12,7 @@ class Immatriculation
   end
 
   def normalize
-    self[:valeur] = self[:valeur].strip.upcase.gsub(/(\s|\W)+/, ' ')
+    #self[:valeur] = self[:valeur].strip.upcase#.gsub(/(\s|[&~"#'\(-\\\/:;\.,\?\*%\$£~“\)\[\]`\^@<>=\+!\/])+/, ' ').squish
+    self[:valeur] = self[:valeur].strip.upcase.gsub(/(\s|["'\("#'\(&~,;:<>!\/\\\)\[\]\{\}\+=\-^\$\*@%§œ“Œ])+/, ' ').squish
   end
 end

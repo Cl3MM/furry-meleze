@@ -12,7 +12,9 @@ jQuery ->
     $(".disabled").each ->
       $(this).prop('disabled', x) unless $(this).val() == ""
   disable( true ) if $('.disabled').length
-
+  if $("#import_btn").length
+    $('#import_btn').button()
+    
   if $('#search').length
     # multiebsdd export / search
     #

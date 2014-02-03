@@ -392,7 +392,7 @@ class Ebsdd # < ActiveRecord::Base
     :emetteur_fax, :emetteur_email, :emetteur_responsable,
 
     :ligne_flux_date_remise, :ligne_flux_poids,
-    :immatriculation, :exported
+    :immatriculation, :exported, :ecodds_id
 
     validates_presence_of :bordereau_id, :productable_id,
     :destinataire_siret, :destinataire_nom,

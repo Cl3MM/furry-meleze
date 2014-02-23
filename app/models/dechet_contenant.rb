@@ -3,12 +3,12 @@ class DechetContenant
 
   def self.contenant
     [
-      ["CA0609", "Caisse", "60 - 90 L	1"],
-      ["OT1222", "Fût OT", "120 - 220 L	2"],
-      ["AD6090", "Bac ADR", "600 - 900 L	3"],
-      ["AD1000", "Bac ADR", "> 1000 L	4"],
-      ["BA6090", "Bac", "600 - 900 L	5"],
-      ["BA1000", "Bac", "> 1000 L	6"]
+      ["CA0609", "Caisse", "60 - 90 L"],
+      ["OT1222", "Fût OT", "120 - 220 L"],
+      ["AD6090", "Bac ADR", "600 - 900 L"],
+      ["AD1000", "Bac ADR", "> 1000 L"],
+      ["BA6090", "Bac", "600 - 900 L"],
+      ["BA1000", "Bac", "> 1000 L"]
     ]
   end
   def self.to_select

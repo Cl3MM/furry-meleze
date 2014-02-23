@@ -7,3 +7,4 @@ class DashboardController < ApplicationController
     @attachments = Attachment.all.limit(5)
   end
 end
+

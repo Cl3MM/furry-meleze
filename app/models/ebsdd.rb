@@ -555,7 +555,8 @@ class Ebsdd # < ActiveRecord::Base
              (collectable.email || "").truncate(50, omission: ""), (collectable.responsable || "").truncate(35, omission: ""),
              (collectable.mode_transport == 1 ? collectable.recepisse : nil).truncate(35, omission: ""),
              (collectable.mode_transport == 1 ? collectable.cp : nil),
-             (collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
+             (collectable.mode_transport == 1 ? bordereau_date_transport.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
+             #(collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
              bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil, (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]

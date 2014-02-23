@@ -114,6 +114,10 @@ jQuery ->
     $("#ebsdd_dechet_denomination").select2
       width: 339
 
+    # Select2 pour le champ Contenants
+    $("#ebsdd_dechet_conditionnement").select2
+      width: 707
+
     #$("#ebsdd_destination_id").select2
       #width: 507
 
@@ -185,6 +189,18 @@ jQuery ->
       200127: ["D10", "TREDI"]
       150110: ["D10", "TREDI"]
       160107: ["R13", "CHIMIREC"]
+
+    contenants = 
+      200127: "BA6090"
+      150110: "BA6090"
+      160504: "CA0609"
+      200113: "CA0609"
+      200119: "CA0609"
+      160107: "OT1222"
+      200114: "CA0609"
+      200115: "CA0609"
+      160904: "CA0609"
+
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     $("#ebsdd_dechet_denomination").on 'change', (evt) ->
       denomination = $(this).val()
@@ -198,6 +214,12 @@ jQuery ->
             if $(this).text() == v[1]
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
               $("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
+      # Remplis le champ contenant en fonction du code déchet
+      console.log "contenants: #{ contenants }"
+      console.log "denomination: #{ denomination }"
+      console.log "contenant: #{ contenants[denomination] }"
+
+      $("#ebsdd_dechet_conditionnement").val(contenants[denomination]).trigger('change')
 
       # Ajax pour trouver la destination associée à la sélection
       #$("#ebsdd_productable_attributes_id").val(denomination)

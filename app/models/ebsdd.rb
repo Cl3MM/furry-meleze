@@ -568,7 +568,7 @@ class Ebsdd # < ActiveRecord::Base
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bordereau_id.to_s.truncate(35, omission: ""), nil]
       csv << ["01", 4, productable.siret.truncate(14, omission: ""), productable.nom.truncate(60, omission: ""), productable.adresse.truncate(100, omission: ""), productable.cp.truncate(5, omission: ""), productable.ville.truncate(45, omission: ""), productable.tel.truncate(35, omission: ""), productable.fax.truncate(35, omission: ""), productable.email.truncate(50, omission: ""), productable.responsable.truncate(35, omission: ""), nil]
-      csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_tel || "").truncate(35, omission: ""), (destinataire_fax || "").truncate(35, omission: ""), (destinataire_email || "").truncate(50, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
+      csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire.siret || "").truncate(14, omission: ""), (destinataire.nom || "").truncate(60, omission: ""), (destinataire.adresse || "").truncate(100, omission: ""), (destinataire.cp || "").truncate(5, omission: ""), (destinataire.ville || "").truncate(45, omission: ""), (destinataire.tel || "").truncate(35, omission: ""), (destinataire.fax || "").truncate(35, omission: ""), (destinataire.email || "").truncate(50, omission: ""), (destinataire.responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
       csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, DechetDenomination[dechet_denomination].truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
       csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]
       csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
@@ -583,12 +583,12 @@ class Ebsdd # < ActiveRecord::Base
              (collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
              bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), 
-              (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""),
-              (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""),
+      csv << ["10", (destinataire.siret || "").truncate(14, omission: ""), (destinataire.nom || "").truncate(60, omission: ""), 
+              (destinataire.adresse || "").truncate(100, omission: ""), (destinataire.cp || "").truncate(5, omission: ""),
+              (destinataire.ville || "").truncate(45, omission: ""), (destinataire.responsable || "").truncate(35, omission: ""),
               poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil,
-              (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
-      csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire_responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
+              (destinataire.responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire.responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["12", traitement_prevu.truncate(3, omission: ""), destination.siret.truncate(14, omission: ""), destination.nom.truncate(60, omission: ""), destination.adresse.truncate(100, omission: ""), destination.cp.truncate(5, omission: ""), destination.ville.truncate(45, omission: ""), destination.tel.truncate(35, omission: ""), destination.fax.truncate(35, omission: ""), destination.email.truncate(50, omission: ""), destination.responsable.truncate(35, omission: "") , nil]
       if entreposage_provisoire
         csv << ["13", entreposage_siret.truncate(14, omission: ""), entreposage_nom.truncate(60, omission: ""), (entreposage_adresse || "").truncate(100, omission: ""), entreposage_cp.truncate(5, omission: ""), entreposage_ville.truncate(45, omission: ""), (entreposage_type_quantite || "").truncate(1, omission: ""), poids_en_tonnes2(entreposage_poids).truncate(8, omission: ""), entreposage_date.strftime("%Y%m%d"), 1, nil, entreposage_date_presentation.strftime("%Y%m%d"), nil ]

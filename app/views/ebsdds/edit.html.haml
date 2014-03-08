@@ -2,12 +2,34 @@
   %h1.underline
     = fa_icon "tags"
     Complèter l'eBSDD
-    = content_tag :button, type: :submit, id: "save_ebsdd_btn", class: "btn btn-info pull-right mg-l-5" do
+
+    = content_tag :button, type: :submit, id: "save_ebsdd_btn", class: "btn btn-success pull-right mg-l-5" do
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
-    = fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "eye lg", class: "btn btn-default pull-right"
-    - unless @ebsdd.is_incomplete?
-      = fa_link_to ebsdd_download_path, "Exporter au format ECODDS", "cloud-download lg", class: "btn btn-warning pull-right"
+    .btn-group.pull-right
+
+      %button.btn.btn-primary.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+        = fa_icon "cogs lg"
+        &nbsp;
+        Actions
+        %span.caret
+      %ul.dropdown-menu{role: "menu"}
+        %li
+          = fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "edit lg"
+        - unless @ebsdd.is_incomplete?
+          %li
+            = fa_link_to ebsdd_annexe_path, "Exporter l'Annexe 2", "cloud-download lg"
+          %li
+            = fa_link_to ebsdd_download_path, "Exporter au format ECODDS", "cloud-download lg"
+        %li.divider
+        %li
+          = fa_link_to ebsdds_path, "Voir tous les eBSDDs", "tags lg"
+
+
+
+
+
+
   - if @ebsdd.errors.any?
     .row
       .col-md-12
@@ -73,7 +95,7 @@
               =# fa_icon "gears ccc"
               Installation de destination / entreposage / reconditionnement
           .panel-body
-            = render partial: "ebsdds/edit/cadre2", object: f, as: :f
+            = render partial: "ebsdds/new/cadre2", object: f, as: :f
     =# ebsdds/edit/cadre 3
     .row
       .col-md-12

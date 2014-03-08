@@ -1,3 +1,6 @@
+-#= content_for :scripts do
+  -#= javascript_include_tag 'angular'
+
 = custom_form(@ebsdd) do |f|
   %h1.underline
     = fa_icon "tags"
@@ -34,9 +37,22 @@
               %span.badge 0
               Numéro ECODDS
           .panel-body
-            .form-group
-              = f.label :ecodds_id, "Numéro ECODDS"
-              = f.text_field :ecodds_id, placeholder: "Numéro ECODDS"
+            .row
+              .col-md-4
+                .form-group
+                  = f.label :ecodds_id, "Numéro ECODDS"
+                  = f.text_field :ecodds_id, placeholder: "Numéro ECODDS"
+              .col-md-4
+                .form-group
+                  = f.label :bordereau_id, "Numéro de Bordereau"
+                  = f.text_field :bordereau_id, placeholder: "Numéro de bordereau"
+              - unless @ebsdd[:libelle].nil?
+                .col-md-4
+                  .form-group
+                    %label
+                      Libellé EPICEA :
+                    %br
+                    = @ebsdd.libelle
     .row
       =# ebsdds/edit/cadre 1
       .col-md-6
@@ -47,7 +63,7 @@
               %span.badge 1
               Emetteur du bordereau
           .panel-body
-            = render partial: "ebsdds/edit/cadre1", object: f, as: :f
+            = render partial: "ebsdds/new/cadre1", object: f, as: :f, locals: {productable: Producteur.new}
       =# ebsdds/edit/cadre 2
       .col-md-6
         .panel.panel-default
@@ -57,7 +73,7 @@
               =# fa_icon "gears ccc"
               Installation de destination / entreposage / reconditionnement
           .panel-body
-            = render partial: "ebsdds/edit/cadre2", object: f, as: :f
+            = render partial: "ebsdds/new/cadre2", object: f, as: :f
     =# ebsdds/edit/cadre 3
     .row
       .col-md-12

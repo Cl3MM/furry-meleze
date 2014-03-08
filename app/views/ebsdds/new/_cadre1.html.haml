@@ -1,0 +1,110 @@
+.row
+  .col-md-12
+    .form-group
+      = f.label :productable_id, "Producteur", class: "disabled"
+      %br
+      - if @ebsdd.new_record?
+        - @ebsdd.productable_id = nil
+      = f.select :productable_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
+
+
+#producteur.panel-group
+  .panel.panel-default.panel-info
+    .panel-heading
+      %h4.panel-title
+        %a{"data-toggle"=>"collapse", href: "#producteur_infos" }
+          Informations détaillées
+    #producteur_infos.collapse.panel-body
+      .row
+        .col-md-12
+          .form-group
+            %label SIRET
+            = text_field_tag :productable_siret, nil, placeholder: "SIRET", class: "disabled form-control"
+        .col-md-12
+          .form-group
+            %label Nom
+            = text_field_tag :productable_nom, nil, placeholder: "Nom", class: "disabled form-control"
+
+
+        .col-md-12
+          .form-group
+            %label Contact
+            = text_field_tag :productable_responsable, nil, placeholder: "Contact", class: "disabled form-control"
+        .col-md-12
+          .form-group
+            %label Adresse
+            = text_field_tag :productable_adresse, nil, placeholder: "Adresse", class: "disabled form-control"
+
+        .col-md-12
+          .form-group
+            %label Code postal
+            = text_field_tag :productable_cp, nil, placeholder: "Code postal", class: "disabled form-control"
+
+        .col-md-12
+          .form-group
+            %label Ville
+            = text_field_tag :productable_ville, nil, placeholder: "Ville", class: "disabled form-control"
+
+      .row
+        .col-md-6
+          .form-group
+            %label Téléphone
+            = text_field_tag :productable_tel, nil, placeholder: "Téléphone", class: "disabled form-control"
+
+        .col-md-6
+          .form-group
+            %label Fax
+            = text_field_tag :productable_fax, nil, placeholder: "Fax", class: "disabled form-control"
+
+      .row
+        .col-md-12
+          .form-group
+            %label Adresse email
+            = text_field_tag :productable_email, nil, placeholder: "Adresse email", class: "disabled form-control"
+
+
+
+-#%div#new_producteur
+  -#.row
+    -#.col-md-12
+      -#.form-group
+        -#%label.disabled SIRET
+        -#= text_field_tag :siret, nil, placeholder: "SIRET", class: "disabled form-control"
+
+    -#.col-md-12
+      -#.form-group
+        -#%label.disabled  Contact
+        -#= text_field_tag :responsable, nil, placeholder: "Contact", class: "disabled form-control"
+    -#.col-md-12
+      -#.form-group
+        -#%label.disabled Adresse
+        -#= text_field_tag :adresse, nil, placeholder: "Adresse", class: "disabled form-control"
+
+  -#.row
+    -#.col-md-6
+      -#.form-group
+        -#%label.disabled  Code postal
+        -#= text_field_tag :cp, nil, placeholder: "Code postal", class: "disabled form-control"
+
+    -#.col-md-6
+      -#.form-group
+        -#%label.disabled  Ville
+        -#= text_field_tag :ville, nil, placeholder: "Ville", class: "disabled form-control"
+
+  -#.row
+    -#.col-md-6
+      -#.form-group
+        -#%label.disabled  Téléphone
+        -#= text_field_tag :tel, nil, placeholder: "Téléphone", class: "disabled form-control"
+
+    -#.col-md-6
+      -#.form-group
+        -#%label.disabled  Fax
+        -#= text_field_tag :fax, nil, placeholder: "Fax", class: "disabled form-control"
+
+  -#.row
+    -#.col-md-12
+      -#.form-group
+        -#%label.disabled  Adresse email
+        -#= text_field_tag :email, nil, placeholder: "Adresse email", class: "disabled form-control"
+

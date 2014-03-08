@@ -156,13 +156,13 @@ class Ebsdd # < ActiveRecord::Base
   #}
 #}
 
-  before_create :normalize, :set_status
+  before_create :normalize, :set_status, :set_num_cap
   before_update :set_status, :set_num_cap, :set_infos_from_productable, :set_is_ecodds
 
   def set_status
     if self[:status] == :import
       self[:status] = :incomplet
-    elsif self[:status] = :incomplet
+    elsif self[:status] == :incomplet
       self[:status] = :complet
     end
   end
@@ -176,11 +176,13 @@ class Ebsdd # < ActiveRecord::Base
     self[:is_ecodds] = productable.nom =~ /eco dds/i
   end
   def set_num_cap
-    self[:num_cap] = num_cap_auto
+    self[:num_cap] = num_cap_auto if num_cap.blank?
   end
 
   belongs_to :productable, polymorphic: true, class_name: "Producteur"#, inverse_of: :producteur
   belongs_to :collectable, polymorphic: true, class_name: "Producteur"
+  belongs_to :destinataire#, polymorphic: true, class_name: "Producteur"
+
   belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds
   accepts_nested_attributes_for :productable
@@ -346,8 +348,9 @@ class Ebsdd # < ActiveRecord::Base
 
   field :immatriculation, type: String
   field :exported, type: Integer, default: 0
+  field :bid, type: String
 
-  attr_accessible :id, :bordereau_id, :productable_attributes, :productable_id, :attachment_id,
+  attr_accessible :id, :bid, :bordereau_id, :productable_attributes, :productable_id, :attachment_id,
     :destination_id, :destination_attributes, :collectable_id, :collectable_attributes,
     :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
@@ -395,18 +398,26 @@ class Ebsdd # < ActiveRecord::Base
     :immatriculation, :exported, :ecodds_id
 
     validates_presence_of :bordereau_id, :productable_id,
-    :destinataire_siret, :destinataire_nom,
-    :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
-    :destinataire_responsable,
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
     #:collecteur_tel, :collecteur_responsable, 
-    :libelle,
     :bordereau_date_transport, :bordereau_poids,
-    :bordereau_date_creation, :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
+    :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
     :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     #:destination_ult_ville, :destination_ult_tel,
+
+
+
+    #:libelle,
+    #:bordereau_date_creation, 
+    #:destinataire_siret, :destinataire_nom,
+    #:destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
+    #:destinataire_responsable,
+
+
+
+
 
 #:ligne_flux_siret,
 #:ligne_flux_nom,
@@ -459,15 +470,26 @@ class Ebsdd # < ActiveRecord::Base
     :bordereau_poids_ult, numericality: true,
     unless: -> { new_record? || entreposage_provisoire == false }
 
+
+  # NOUVEAU eBSD AVEC DESTINATAIRE_ID
+
+  attr_accessible :destinataire_id
+  validates_presence_of :destinataire_id
+
+
+
+
+
+
   validates_presence_of :ecodds_id,
-    if: -> { productable.nom =~ /eco dds/i }
+    if: -> { !productable.nil? && productable.nom =~ /eco dds/i }
 
   validates :bordereau_poids, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 
   validates_presence_of :immatriculation,# :bordereau_limite_validite,
-    if: -> { !self.productable.nil? && self.collectable.nom == "TRIALP" }
+    if: -> { self.collectable.nom == "TRIALP" }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false
@@ -478,6 +500,9 @@ class Ebsdd # < ActiveRecord::Base
     else
       ""
     end
+  end
+  def poids_en_tonnes_pdf
+    "#{"%0.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
   end
   def poids_en_tonnes
     "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
@@ -555,11 +580,14 @@ class Ebsdd # < ActiveRecord::Base
              (collectable.email || "").truncate(50, omission: ""), (collectable.responsable || "").truncate(35, omission: ""),
              (collectable.mode_transport == 1 ? collectable.recepisse : nil).truncate(35, omission: ""),
              (collectable.mode_transport == 1 ? collectable.cp : nil),
-             (collectable.mode_transport == 1 ? bordereau_date_transport.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
-             #(collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
+             (collectable.mode_transport == 1 ? collectable.limite_validite.strftime("%Y%m%d") : nil), (collectable.mode_transport ? 1 : 0),
              bordereau_date_transport.strftime("%Y%m%d"), (transport_multimodal ? 1 : 0), nil ]
       csv << ["09", emetteur_nom.truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
-      csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""), (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""), poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil, (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
+      csv << ["10", (destinataire_siret || "").truncate(14, omission: ""), (destinataire_nom || "").truncate(60, omission: ""), 
+              (destinataire_adresse || "").truncate(100, omission: ""), (destinataire_cp || "").truncate(5, omission: ""),
+              (destinataire_ville || "").truncate(45, omission: ""), (destinataire_responsable || "").truncate(35, omission: ""),
+              poids_en_tonnes.truncate(8, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), 1, nil,
+              (destinataire_responsable || "").truncate(35, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil ]
       csv << ["11", code_operation, CodeDr[code_operation].truncate(35, omission: ""), (destinataire_responsable || "").truncate(60, omission: ""), bordereau_date_transport.strftime("%Y%m%d"), nil]
       csv << ["12", traitement_prevu.truncate(3, omission: ""), destination.siret.truncate(14, omission: ""), destination.nom.truncate(60, omission: ""), destination.adresse.truncate(100, omission: ""), destination.cp.truncate(5, omission: ""), destination.ville.truncate(45, omission: ""), destination.tel.truncate(35, omission: ""), destination.fax.truncate(35, omission: ""), destination.email.truncate(50, omission: ""), destination.responsable.truncate(35, omission: "") , nil]
       if entreposage_provisoire

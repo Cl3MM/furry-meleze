@@ -13,6 +13,7 @@
  *= require jquery.ui.theme
  *= require jquery.ui.datepicker
  *= require select2
+ *= require select2-bootstrap
  * require redmond/jquery-ui-1.10.3.custom.min
  */
 
@@ -78,6 +79,9 @@ h1 {
 .panel-fd .panel-body {
   background-color: #FDFDFD;
 }
+#new.panel-grey {
+  background-color: #FAFAFA;
+}
 #edit .panel-body {
   background-color: #FAFAFA;
 }
@@ -86,4 +90,10 @@ h1 {
 }
 .mg-r-5 {
   margin-right: 5px;
+}
+.has-error .select2-container {
+  border-color: #b94a48 !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #b94a48 !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #b94a48 !important;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #b94a48 !important;
 }

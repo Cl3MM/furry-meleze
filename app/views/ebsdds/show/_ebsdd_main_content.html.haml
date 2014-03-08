@@ -8,8 +8,11 @@
           Numéro ECODDS
       .panel-body
         %dl.dl-horizontal
-          %dt Numéro ECODDS
-          %dd= ebsdd.ecodds_id
+          %dt Numéro de BSD
+          %dd= ebsdd.bordereau_id
+          - unless ebsdd.ecodds_id.nil?
+            %dt Numéro ECODDS
+            %dd= ebsdd.ecodds_id
 .row
   =# cadre 1
   .col-md-7

@@ -8,7 +8,7 @@
             %th #EcoDDS
             %th Producteur
             -#%th Destinataire
-            %th Type déchet
+            %th.text-center Type déchet
             %th Date création
             %th Poids
             %th.actions Actions
@@ -17,10 +17,15 @@
           -@ebsdds.each do | ebsdd |
             %tr
               %td= ebsdd.short_bid
-              %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
+              %td.text-center
+                = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
               %td= truncate ebsdd.productable.nom.titleize, length: 50
               -#%td= ebsdd.destinataire_nom.titleize
-              %td= ebsdd.libelle.titleize
+              %td.text-center
+                - if ebsdd.dechet_nomenclature.nil?
+                  \-
+                - else
+                  = DechetDenomination[ebsdd.dechet_nomenclature][3..-1].titleize
               %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
               %td= "#{ebsdd.bordereau_poids} kg"
               %td.actions
@@ -28,6 +33,7 @@
                   = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
                   = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid})")
                   = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") unless ebsdd.is_incomplete?
+                  = link_to(fa_icon("truck lg", text: ""), ebsdd_printpdf_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format PDF")
 -else
   .center-block
     %p.text-center

@@ -29,4 +29,6 @@
   = @destination.email
 %p
   %b Nomenclature:
-  = @destination.nomenclatures
+  = @destination.nomenclatures.join(", ")
+
+= link_to "Modifier", edit_destination_path(@destination), class: "btn btn-primary"

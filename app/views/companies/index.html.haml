@@ -1,0 +1,50 @@
+= content_for :search do
+  = form_tag( "/#{@klass.name.downcase}s/search", class: "navbar-form navbar-right", role: :search ) do | f |
+    .form-group
+      = text_field_tag :query, nil, placeholder: "Nom du #{@klass.name.downcase}", class: "form-control"
+    %span.form-group-btn
+      %button.btn.btn-default{ type: :submit }
+        = fa_icon "search lg"
+%h1.page-header
+  = fa_icon "users"
+  Liste des #{ @klass.name.downcase }s
+  %span.small
+    = "(#{@companies.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_polymorphic_path(@klass.name.downcase), "Créer un nouveau #{@klass.name.downcase}", "user lg"
+
+- if @companies.any?
+  %table.table.table-striped
+    %tr
+      %th Nom
+      %th Responsable
+      %th Ville
+      %th Téléphone
+      %th Siret
+      %th.actions Actions
+
+    - @companies.each do |company|
+      %tr
+        %td= company.nom
+        %td= company.responsable
+        %td= company.ville
+        %td= company.tel
+        %td= company.siret
+        %td.actions
+          .center-block.text-center
+
+            = fa_link_to polymorphic_path(company), '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de #{company.nom}"
+
+            = fa_link_to edit_polymorphic_path(company), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de #{company.nom}"
+            = fa_link_to company, '', "times", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{company.nom} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{company.nom} ?" }
+- else
+  .jumbotron
+    %p.leader
+      Aucun #{ @klass.name.downcase } trouvé

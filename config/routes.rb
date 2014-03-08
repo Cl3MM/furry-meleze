@@ -3,6 +3,7 @@ Meleze::Application.routes.draw do
   resources :searches
 
   resources :destinations
+
   get 'destinations/find_by_nomenclature/:nomenclature', to: 'destinations#find_by_nomenclature', as: :find_by_nomenclature, format: [:js, :json]
 
   get  "attachments", to: "attachments#index"
@@ -13,6 +14,7 @@ Meleze::Application.routes.draw do
 
   post 'immatriculation/:id', to: 'immatriculation#create', as: :create_immatriculation
   get  'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
+  get  'ebsdds/printpdf/:id', to: 'ebsdds#print_pdf', defaults: { format: :pdf }, as: :ebsdd_printpdf
   get  'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
   get  'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
   #get  'ebsdds/reset', to: 'ebsdds#reset', as: :reset
@@ -23,12 +25,17 @@ Meleze::Application.routes.draw do
   match  'ebsdds/selection', to: 'ebsdds#selection', as: :ebsdds_selection, via: [:get, :post]
   post  'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
 
-  post  'producteurs/search', to: "producteurs#search", as: :producteurs_search
+  #post  '/search', to: "producteurs#search", as: :producteurs_search
+
+  post 'destinataires/search', to: "companies#search", as: :destinataires_search
+  post 'producteurs/search', to: "producteurs#search", as: :producteurs_search
   get  'producteurs/import'
   post 'producteurs/upload'
 
   #get 'destinataires/import'
   #post 'destinataires/upload'
+
+  resources :destinataires #, controller: :companies, type: "Destinateire"
 
   resources :ebsdds
   #resources :destinataires

@@ -30,6 +30,8 @@
             = fa_link_to attachments_path, "Gérer les fichiers importés", "file-text"
           %li
             = fa_link_to destinations_path, "Gérer les destinations", "truck lg"
+          %li
+            = fa_link_to destinataires_path, "Gérer les destinataires", "truck lg"
           %li.divider
           - if utilisateur_signed_in?
             %li.dropdown-header{ role: :presentation }

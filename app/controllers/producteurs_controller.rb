@@ -58,7 +58,6 @@ class ProducteursController < ApplicationController
   # GET /producteurs/new.json
   def new
     @producteur = Producteur.new
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @producteur }

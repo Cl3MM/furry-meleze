@@ -18,6 +18,8 @@ gem 'mongoid', '~>3.0.4'
 gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
+gem 'prawn'
+
 #gem 'gon', '3.0.5'
 #gem 'turbolinks'
 #gem 'will_paginate', '~> 3.0'
@@ -34,6 +36,9 @@ gem 'sass-rails',   '~> 3.2.3'
 # Gems used only for assets and not required
 # in production environments by default.
 gem 'coffee-rails', '~> 3.2.1'
+#gem 'underscore-rails'
+#gem 'underscore-string-rails'
+#gem 'angularjs-rails'
 
 group :assets do
   gem "select2-rails"

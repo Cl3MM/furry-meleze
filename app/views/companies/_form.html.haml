@@ -1,11 +1,5 @@
-= custom_form @destination do |f|
-  -#- if @destination.errors.any?
-    -##error_explanation
-      -#%h2= "#{pluralize(@destination.errors.count, "error")} prohibited this destination from being saved:"
-      -#%ul
-        -#- @destination.errors.full_messages.each do |msg|
-          -#%li= msg
-  - if @destination.errors.any?
+= custom_form (@company) do |f|
+  - if @company.errors.any?
     .row
       .col-md-12
         .alert.alert-danger.alert-dismissable
@@ -13,12 +7,12 @@
           #error_explanation
             %h2
               Merci de corriger
-              - if @destination.errors.count > 1
-                les #{@destination.errors.count} erreurs suivantes :
+              - if @company.errors.count > 1
+                les #{@company.errors.count} erreurs suivantes :
               - else
                 l'erreur suivante :
             %ul
-              - @destination.errors.full_messages.each do |msg|
+              - @company.errors.full_messages.each do |msg|
                 %li= msg
 
 
@@ -69,17 +63,11 @@
       .form-group
         = f.label :email
         = f.text_field :email
-  .row
-    .col-md-12
-      .form-group
-        = f.label :nomenclatures
-        = f.text_field :nomenclatures, value: @destination.nomenclatures.map(&:to_s).join(",")
-        -#= select_tag "destination_nomenclatures", nil, { "data-tags" => @destination.nomenclatures.join(","), name: "destination[nomenclatures]" }
-  .row
-    .actions
-      = content_tag :button, type: :submit, class: "btn btn-primary" do
-        Enregistrer les modifications&nbsp;
-        = fa_icon "save lg"
-  -#.field
-    -#= f.label :recepisse
-    -#= f.text_field :recepisse
+    .row
+      .actions
+        = link_to 'Retour', @company.class, class: "btn btn-default"
+        = content_tag :button, type: :submit, class: "btn btn-primary" do
+          Enregistrer les modifications&nbsp;
+          = fa_icon "save lg"
+        = link_to 'Voir le profil', polymorphic_path(@company), class: "btn btn-default"
+

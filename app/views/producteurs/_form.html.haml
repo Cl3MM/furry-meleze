@@ -89,9 +89,10 @@
         = link_to producteurs_path, class: "btn btn-default" do
           = fa_icon "arrow-circle-left lg"
           &nbsp;Retour à la liste des producteurs
-        = link_to producteur_path(@producteur), class: "btn btn-success" do
-          = fa_icon "eye lg"
-          &nbsp;Annuler les modifications
+        - unless @producteur.new_record?
+          = link_to producteur_path(@producteur), class: "btn btn-success" do
+            = fa_icon "eye lg"
+            &nbsp;Annuler les modifications
         = content_tag :button, type: :submit, class: "btn btn-primary" do
           Enregistrer les modifications&nbsp;
           = fa_icon "save lg"

@@ -1,0 +1,42 @@
+%h1.page-header
+  = fa_icon "user"
+  Détails #{@company.nom}
+.row
+  .col-md-12
+    .panel.panel-default
+      #new.panel-body
+        %p
+          %b Siret:
+          = @company.siret
+        %p
+          %b Nom:
+          = @company.nom
+        %p
+          %b Responsable:
+          = @company.responsable
+        %p
+          %b Adresse:
+          = @company.adresse
+        %p
+          %b Cp:
+          = @company.cp
+        %p
+          %b Ville:
+          = @company.ville
+        %p
+          %b Tel:
+          = @company.tel
+        %p
+          %b Fax:
+          = @company.fax
+        %p
+          %b Email:
+          = @company.email
+        %p
+          %b Actif:
+          = @company.actif
+
+        .row.text-center
+          .col-md-12
+            = link_to 'Modifier', edit_polymorphic_path(@company), class: "btn btn-primary"
+            = link_to 'Retour', @company.class, class: "btn btn-default"

@@ -15,12 +15,76 @@ fr:
         destination_ult_tel: Téléphone
     errors:
       models:
+        company:
+          attributes:
+            siret:
+              blank: ne doit pas être vide
+            nom:
+              blank: ne doit pas être vide
+            responsable:
+              blank: ne doit pas être vide
+            ville:
+              blank: ne doit pas être vide
+            adresse:
+              blank: ne doit pas être vide
+            cp:
+              blank: ne doit pas être vide
+            tel:
+              blank: ne doit pas être vide
+            fax:
+              blank: ne doit pas être vide
+            email:
+              blank: ne doit pas être vide
+        destinateire:
+          attributes:
+            siret:
+              blank: ne doit pas être vide
+            nom:
+              blank: ne doit pas être vide
+            responsable:
+              blank: ne doit pas être vide
+            ville:
+              blank: ne doit pas être vide
+            adresse:
+              blank: ne doit pas être vide
+            cp:
+              blank: ne doit pas être vide
+            tel:
+              blank: ne doit pas être vide
+            fax:
+              blank: ne doit pas être vide
+            email:
+              blank: ne doit pas être vide
+        destination:
+          attributes:
+            siret:
+              blank: ne doit pas être vide
+            nom:
+              blank: ne doit pas être vide
+            responsable:
+              blank: ne doit pas être vide
+            ville:
+              blank: ne doit pas être vide
+            adresse:
+              blank: ne doit pas être vide
+            cp:
+              blank: ne doit pas être vide
+            tel:
+              blank: ne doit pas être vide
+            fax:
+              blank: ne doit pas être vide
+            email:
+              blank: ne doit pas être vide
         producteur:
           attributes:
             nom:
               blank: ne doit pas être vide
         ebsdd:
           attributes:
+            destinataire_id:
+              blank: ne doit pas être vide
+            productable_id:
+              blank: ne doit pas être vide
             bordereau_poids:
               blank: ne doit pas être vide
             num_cap:

@@ -12,19 +12,15 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require twitter/bootstrap/tooltip
-//= require twitter/bootstrap/alert
-//= require twitter/bootstrap/button
-//= require twitter/bootstrap/dropdown
-//= require twitter/bootstrap/modal
-//= require twitter/bootstrap/tab
+//= require twitter/bootstrap
 //= require jquery.ui.datepicker
 //= require jquery.ui.datepicker-fr
 //= require select2/select2
-// require select2/select2_locale_fr
+//= require select2/select2_locale_fr
 //= require_self
 $(function() {
   $('.dropdown-toggle').dropdown();
+  //$('.collapse').collapse();
   if( $("a.touletip").length )
     $("a.touletip").tooltip();
   $('.dropdown-toggle').dropdown();

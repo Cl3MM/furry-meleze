@@ -1,0 +1,78 @@
+.form-group
+  = f.label :entreposage_provisoire, "Entreposage provisoire ou reconditionnement"
+  %br
+  %label.radio-inline
+    = f.radio_button :entreposage_provisoire, true
+    Oui
+  %label.radio-inline
+    = f.radio_button :entreposage_provisoire, false, checked: true
+    Non
+
+.form-group
+  = f.label :num_cap, "Numéro CAP"
+  = f.text_field :num_cap, placeholder: "Numéro CAP", disabled: true
+
+.form-group
+  = f.label :valorisation_prevue, "Valorisation prévue"
+  = f.select :valorisation_prevue, CodeDr.to_select, prompt: "Sélectionnez la valorisation..."
+
+.form-group
+  = f.label :destinataire_id, "Destinataires", class: "disabled"
+  %br
+  - if @ebsdd.new_record?
+    - @ebsdd.productable_id = nil
+  = f.select :destinataire_id, Destinataire.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un destinataire..."
+
+#destinataire.panel-group
+  .panel.panel-default.panel-info
+    .panel-heading
+      %h4.panel-title
+        %a{"data-toggle"=>"collapse", href: "#destinataires_infos" }
+          Informations détaillées
+    #destinataires_infos.collapse.panel-body
+      .row
+        .col-md-12
+          .form-group
+            %label SIRET
+            = text_field_tag :destinataire_siret, nil, placeholder: "SIRET", class: "disabled form-control"
+        .col-md-12
+          .form-group
+            %label Nom
+            = text_field_tag :destinataire_nom, nil, placeholder: "Nom", class: "disabled form-control"
+
+
+        .col-md-12
+          .form-group
+            %label Contact
+            = text_field_tag :destinataire_responsable, nil, placeholder: "Contact", class: "disabled form-control"
+        .col-md-12
+          .form-group
+            %label Adresse
+            = text_field_tag :destinataire_adresse, nil, placeholder: "Adresse", class: "disabled form-control"
+
+        .col-md-12
+          .form-group
+            %label Code postal
+            = text_field_tag :destinataire_cp, nil, placeholder: "Code postal", class: "disabled form-control"
+
+        .col-md-12
+          .form-group
+            %label Ville
+            = text_field_tag :destinataire_ville, nil, placeholder: "Ville", class: "disabled form-control"
+
+      .row
+        .col-md-6
+          .form-group
+            %label Téléphone
+            = text_field_tag :destinataire_tel, nil, placeholder: "Téléphone", class: "disabled form-control"
+
+        .col-md-6
+          .form-group
+            %label Fax
+            = text_field_tag :destinataire_fax, nil, placeholder: "Fax", class: "disabled form-control"
+
+      .row
+        .col-md-12
+          .form-group
+            %label Adresse email
+            = text_field_tag :destinataire_email, nil, placeholder: "Adresse email", class: "disabled form-control"

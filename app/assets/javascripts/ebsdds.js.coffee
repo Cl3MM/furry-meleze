@@ -8,12 +8,15 @@ jQuery ->
   $("th.touletip").tooltip(container: "body")
 
   # Enable / Disable $(".disabled")
-  disable = (x) ->
-    $(".disabled").each ->
-      $(this).prop('disabled', x) unless $(this).val() == ""
+  disable = (x, id = "") ->
+    $("#{ id } .disabled").each ->
+      $(this).prop('disabled', x) #unless $(this).val() == ""
+
+  disable(true, "#new_producteur") if $("#new_producteur").length
   disable( true ) if $('.disabled').length
+
+
   if $("#import_btn").length
-    #$("button#import_btn").button()
     $('#import_btn').click (e) ->
       btn = $(this)
       btn.button('loading')
@@ -48,9 +51,6 @@ jQuery ->
       $.datepicker.regional[ "fr" ]
 
     $('#search').on 'shown.bs.modal', (e) ->
-
-      console.log "Content loaded..."
-
       $("#search_date_min").datepicker
         defaultDate: "+1w"
         numberOfMonths: 3
@@ -78,17 +78,6 @@ jQuery ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
 
-  # Ajax call
-  remote_call = (url, success, { type, datatype } ) ->
-    type ?= "GET"
-    datatype ?= 'json'
-    $.ajax
-      type: type,
-      url: url,
-      dataType: 'json',
-      success: (data) ->
-        success(data)
-
   if $("#edit").length
 
     if $("#ebsdd_collectable_id option:selected").text() == 'TRIALP'
@@ -98,28 +87,18 @@ jQuery ->
     #$("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
     $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
 
-    #$("#e1").select2()
-    $("#ebsdd_collectable_id").select2
-      width: 1076
 
-    $("#ebsdd_productable_id").select2
-      width: 507
-
-    $("#ebsdd_destination_id").select2
-      width: 339
-
-    $("#ebsdd_immatriculation").select2
-      width: 707
-
-    $("#ebsdd_dechet_denomination").select2
-      width: 339
-
-    # Select2 pour le champ Contenants
-    $("#ebsdd_dechet_conditionnement").select2
-      width: 707
-
-    #$("#ebsdd_destination_id").select2
-      #width: 507
+    # éléments auxquel on va ajouter Select2 (le chiffre représente la largeur)
+    toSelect = {
+      1076 : [ "collectable_id" ],
+      707  : [ "immatriculation", "dechet_conditionnement" ],
+      507  : [ "productable_id", "destinataire_id" ],
+      339  : [ "destination_id", "dechet_denomination" ],
+    }
+    # On parcourt le dictionaire ci dessus et on ajoute select2 à tous les éléments
+    for len, arr of toSelect
+      for selector in arr
+        $("#ebsdd_#{ selector }").select2( containerCssClass: "form-control" )
 
     # On affiche le formulaire des immatriculations quand le collecteur sélectionné est TRIALP
     $("#ebsdd_collectable_id").on 'change', (e) ->
@@ -129,12 +108,12 @@ jQuery ->
         $("#immatriculations").hide()
 
     # Envoie une requête au serveur pour afficher les info du productable choisi
-    $("#ebsdd_productable_id").on 'change', (e) ->
-      val =  $(this).val()
-      #$("#ebsdd_productable_attributes_id").val(val)
-      $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
-      url = '/producteurs/' + val + '.js'
-      $.get( url)
+    #$("#ebsdd_productable_id").on 'change', (e) ->
+      #val =  $(this).val()
+      ##$("#ebsdd_productable_attributes_id").val(val)
+      #$("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
+      #url = '/producteurs/' + val + '.js'
+      #$.get( url)
 
     # Active le recepisse
     if $("#ebsdd_mode_transport").val() != "1"
@@ -215,9 +194,6 @@ jQuery ->
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
               $("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
       # Remplis le champ contenant en fonction du code déchet
-      console.log "contenants: #{ contenants }"
-      console.log "denomination: #{ denomination }"
-      console.log "contenant: #{ contenants[denomination] }"
 
       $("#ebsdd_dechet_conditionnement").val(contenants[denomination]).trigger('change')
 
@@ -226,25 +202,67 @@ jQuery ->
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'
       $.get( url)
 
-    # Ajoute une plaque d'immatriculation
+    # Ajoute un onClick listner qui crée une nouvelle plaque d'immatriculation
     $("#add-immatriculation").on 'click', (evt) ->
       plaque = $("#immatriculation-new").val()
       if plaque.length
-        $.ajax
-          type: 'POST',
-          url: '/immatriculation/' + plaque,
-          dataType: 'json',
-          success: (data) ->
-            unless jQuery.isEmptyObject(data)
-              alert "La plaque d'immatriculation " + data.valeur + " a bien été créée"
-              option = '<option value="' + data.id + '">' + data.valeur + "</option>"
-              $('#ebsdd_immatriculation').prepend( option )
-              $('#ebsdd_immatriculation').val(data.id)
-#$( document).ajaxComplete ->
-  #console.log "AjaxCompleted!!!"
-  #$("input#search_date_min").addClass("hasDatepicker")
-  #$("#search_date_max").addClass("hasDatepicker")
-  #$("#search_date").addClass("hasDatepicker")
-  #console.log $("#search_date").attr('class')
-  #$("body").append('<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-datepicker-multi ui-datepicker-multi-3" style="position: fixed; top: 166px; left: 683.5px; z-index: 1051; display: none; width: 51em;"><div class="ui-datepicker-group ui-datepicker-group-first"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-left"><a class="ui-datepicker-prev ui-corner-all" data-handler="prev" data-event="click" title="Précédent"><span class="ui-icon ui-icon-circle-triangle-w">Précédent</span></a><div class="ui-datepicker-title"><span class="ui-datepicker-month">janvier</span>&nbsp;<span class="ui-datepicker-year">2014</span></div></div><table class="ui-datepicker-calendar"><thead><tr><th><span title="lundi">L</span></th><th><span title="mardi">M</span></th><th><span title="mercredi">M</span></th><th><span title="jeudi">J</span></th><th><span title="vendredi">V</span></th><th class="ui-datepicker-week-end"><span title="samedi">S</span></th><th class="ui-datepicker-week-end"><span title="dimanche">D</span></th></tr></thead><tbody><tr><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">1</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">2</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">3</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">4</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">5</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">6</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">7</a></td><td class="  ui-datepicker-current-day ui-datepicker-today" data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default ui-state-highlight ui-state-active" href="#">8</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">9</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">10</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">11</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">12</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">13</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">14</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">15</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">16</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">17</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">18</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">19</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">20</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">21</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">22</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">23</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">24</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">25</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">26</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">27</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">28</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">29</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">30</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="0" data-year="2014"><a class="ui-state-default" href="#">31</a></td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td></tr></tbody></table></div><div class="ui-datepicker-group ui-datepicker-group-middle"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix"><div class="ui-datepicker-title"><span class="ui-datepicker-month">février</span>&nbsp;<span class="ui-datepicker-year">2014</span></div></div><table class="ui-datepicker-calendar"><thead><tr><th><span title="lundi">L</span></th><th><span title="mardi">M</span></th><th><span title="mercredi">M</span></th><th><span title="jeudi">J</span></th><th><span title="vendredi">V</span></th><th class="ui-datepicker-week-end"><span title="samedi">S</span></th><th class="ui-datepicker-week-end"><span title="dimanche">D</span></th></tr></thead><tbody><tr><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">1</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">2</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">3</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">4</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">5</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">6</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">7</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">8</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">9</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">10</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">11</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">12</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">13</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">14</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">15</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">16</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">17</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">18</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">19</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">20</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">21</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">22</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">23</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">24</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">25</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">26</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">27</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="1" data-year="2014"><a class="ui-state-default" href="#">28</a></td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td></tr></tbody></table></div><div class="ui-datepicker-group ui-datepicker-group-last"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-right"><a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click" title="Suivant"><span class="ui-icon ui-icon-circle-triangle-e">Suivant</span></a><div class="ui-datepicker-title"><span class="ui-datepicker-month">mars</span>&nbsp;<span class="ui-datepicker-year">2014</span></div></div><table class="ui-datepicker-calendar"><thead><tr><th><span title="lundi">L</span></th><th><span title="mardi">M</span></th><th><span title="mercredi">M</span></th><th><span title="jeudi">J</span></th><th><span title="vendredi">V</span></th><th class="ui-datepicker-week-end"><span title="samedi">S</span></th><th class="ui-datepicker-week-end"><span title="dimanche">D</span></th></tr></thead><tbody><tr><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">1</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">2</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">3</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">4</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">5</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">6</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">7</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">8</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">9</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">10</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">11</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">12</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">13</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">14</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">15</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">16</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">17</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">18</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">19</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">20</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">21</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">22</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">23</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">24</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">25</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">26</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">27</a></td><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">28</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">29</a></td><td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">30</a></td></tr><tr><td class=" " data-handler="selectDay" data-event="click" data-month="2" data-year="2014"><a class="ui-state-default" href="#">31</a></td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td><td class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">&nbsp;</td></tr></tbody></table></div><div class="ui-datepicker-row-break"></div></div>')
+        url = "/immatriculation/#{ plaque }.json"
+        $.post(url).done(addPlaqueImmat)
 
+    # Si la plaque d'immatriculation a bien été crée, on met à jour le champ ebsdd_immatriculation
+    addPlaqueImmat = (data, success) ->
+      unless jQuery.isEmptyObject(data)
+        alert "La plaque d'immatriculation " + data.valeur + " a bien été créée"
+        option = '<option value="' + data.id + '">' + data.valeur + "</option>"
+        $('#ebsdd_immatriculation').prepend( option )
+        $('#ebsdd_immatriculation').val(data.id)
+        $('#ebsdd_immatriculation').trigger('change')
+
+
+    # affiche une erreur en cas d'erreur du webservice
+    error = ->
+      alert "Impossible de récupérer les données depuis le serveur. Veuillez recommencer, ou recharger la page si l'erreur persiste."
+
+    # remet à zéro les éléments xxxx_siret, xxxx_nom ...
+    reset = (elem)->
+      attributes = "responsable siret nom adresse ville cp tel fax email".split(' ')
+      for attr in attributes
+        $("##{elem}_#{attr}").val("")
+
+    # Met à jour les attributs du selecteur 'tag' passé en paramètre
+    updateElementInfoAttributes = (data, success, tag) ->
+      attributes = "responsable siret nom adresse ville cp tel fax email".split(' ')
+      for attr in attributes
+        val = data[attr]
+        $("##{tag.elem}_#{attr}").val(val)
+
+    # Ajoute un onChange listener au paramètre tag.
+    # Le listener fait appel au webservice spécifié par le paramètre url
+    # en cas de succès on execute updateElementInfoAttributes avec en paramètre le
+    # nom du selecteur à mettre à jour
+    addOnChangeHandler = (tag, url) ->
+      $("#ebsdd_#{ tag }_id").on 'change', {'tag': tag, 'url': url}, (e) ->
+        #data = e.data
+        id = $(this).val()
+        url = "/#{ e.data.url }/#{id}.json"
+        #elem = data.tag
+        elem = e.data.tag
+        if id == ""
+          reset(e.data.tag)
+        else
+          $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem':elem})).fail(error)
+
+    # on ajoute un onchange handler pour les elements #ebsdd_xxx_id, afin d'afficher
+    # les données associées (nom, siret, email...)récupérées via webservice
+    for tag, url of { "destinataire" : "destinataires", "productable" : "producteurs" }
+      addOnChangeHandler(tag, url)
+
+    # on affiche les données par défaut pour le producteur en cas d'édition
+    initProductable = ->
+      id = $("#ebsdd_productable_id option:selected").val()
+      url = "/producteurs/#{id}.json"
+      $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "productable"})).fail(error) if(id != "")
+    initProductable()
+
+    $("#ebsdd_productable_id").on 'change', (e) ->
+      $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()

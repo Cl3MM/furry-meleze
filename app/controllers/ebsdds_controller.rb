@@ -2,7 +2,7 @@
 
 class EbsddsController < ApplicationController
   before_filter :authenticate_utilisateur!
-  before_filter :set_ebsdd, only: [:annexe_export, :download, :template, :show, :edit, :update, :destroy]
+  before_filter :set_ebsdd, only: [:print_pdf, :annexe_export, :download, :template, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]
 
   # GET /ebsdds/import
@@ -14,7 +14,6 @@ class EbsddsController < ApplicationController
     Attachment.delete_all
     redirect_to root_path, notice: "Base de données réinitialisée avec succès !"
   end
-
   def annexe_export
     respond_to do |format|
       format.html
@@ -31,6 +30,17 @@ class EbsddsController < ApplicationController
   end
   def export
     send_data Ebsdd.to_multi(params), filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
+  end
+  def print_pdf
+    respond_to do |format|
+      format.pdf do
+        pdf = EbsddPdf.new(@ebsdd)
+        send_data pdf.render, filename: "order_128191-112.pdf",
+          type: "application/pdf",
+          disposition: "inline"
+      end
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
   end
   def download
     @ebsdd.inc_export
@@ -74,34 +84,29 @@ class EbsddsController < ApplicationController
 
   # GET /ebsdds/new
   def new
-    @productable = Producteur.where(is_collecteur: false).build
     @ebsdd = Ebsdd.new
-    @ebsdd.productable = @productable
     #@collectable = Producteur.where(is_collecteur: true).build
   end
 
   # GET /ebsdds/1/edit
   def edit
-    @productable = @ebsdd.productable || Producteur.where(is_collecteur: false).build
     @destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
   end
 
   # POST /ebsdds
   # POST /ebsdds.json
   def create
+    params[:ebsdd][:productable_id] = nil if params[:ebsdd].has_key?(:productable_id) && params[:ebsdd][:productable_id].blank?
+    params[:ebsdd][:destinataire_id] = nil if params[:ebsdd].has_key?(:destinataire_id) && params[:ebsdd][:destinataire_id].blank?
     @ebsdd = Ebsdd.new(params[:ebsdd])
-
+    @ebsdd.status = :nouveau
+    @ebsdd.bordereau_date_creation = Time.now
+    @ebsdd.bid = @ebsdd.long_bid
     respond_to do |format|
-      saved = @ebsdd.save
-      valid = @ebsdd.productable.valid?
-      if saved && valid
-        format.html { redirect_to @ebsdd, notice: 'L\'EBSDD a été crée avec succès ! ' }
+      if @ebsdd.save
+        format.html { redirect_to @ebsdd, notice: "L'EBSDD a été crée avec succès !" }
         format.json { render action: 'show', status: :created, location: @ebsdd }
-      elsif !saved && valid
-        format.html { render action: 'edit' }
-        format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       else
-        @productable = Producteur.where(is_collecteur: false).build
         format.html { render action: 'new' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       end

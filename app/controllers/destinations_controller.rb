@@ -70,6 +70,7 @@ class DestinationsController < ApplicationController
   # PUT /destinations/1.json
   def update
     @destination = Destination.find(params[:id])
+    params[:destination][:nomenclatures] = params[:destination][:nomenclatures].split(",") if params.has_key?(:destination) && params[:destination].has_key?(:nomenclatures)
 
     respond_to do |format|
       if @destination.update_attributes(params[:destination])

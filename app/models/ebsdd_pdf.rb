@@ -148,25 +148,26 @@ class EbsddPdf < Prawn::Document
 
   def cadre2
     # siret
-    my_text_box @ebsdd.destinataire_siret, [345, 672], width: 183
+    my_text_box @ebsdd.destinataire.siret, [345, 672], width: 183
     #draw_text "399 619 147 00040", at: [345, 663.5]
     # nom
-    my_text_box @ebsdd.destinataire_nom, [345, 661], width: 183
+    my_text_box @ebsdd.destinataire.nom, [345, 661], width: 183
     # adresse
-    my_text_box "928 Avenue de la houille blanche ZI de Bissy\n73000 CHAMBERY", [345, 648.5], height: 19
+    my_text_box "#{@ebsdd.destinataire.adresse}\n#{@ebsdd.destinataire.cp} #{@ebsdd.destinataire.ville}", [345, 648.5], height: 19
     # tel
-    draw_text "04 79 96 41 00", at: [345, 622]
+    draw_text @ebsdd.destinataire.tel, at: [345, 622]
     # fax
-    draw_text "04 79 96 35 48", at: [450, 622]
+    draw_text @ebsdd.destinataire.fax, at: [450, 622]
     # email
-    draw_text "froux@valespace.com", at: [345, 612]
+    draw_text @ebsdd.destinataire.email, at: [345, 612]
     # responsable
-    draw_text "Fabrice ROUX", at: [380, 601]
+    draw_text @ebsdd.destinataire.responsable, at: [380, 601]
     draw_text @ebsdd.num_cap, at: [410, 581]
     draw_text "R13", at: [510, 570.5]
   end
   def my_text_box text, at, options = {}
     options.merge!({ width: 200, height: 12, overflow: :shrink_to_fit, valign: :center, align: :left }) { |key, v1, v2| v1 }
+    text = "" if text.nil?
     text_box text, at: at, height: options[:height], width: options[:width], overflow: options[:overflow], valign: options[:valign], align: options[:align]
   end
   def erase_all

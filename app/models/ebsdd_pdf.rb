@@ -12,12 +12,13 @@ class EbsddPdf < Prawn::Document
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
     image path, at: [0, here], width: 210.mm
-    #stroke_axis at: [300, 20], :step_length => 20, :color => 'FF00'
+    stroke_axis at: [500, 800], :step_length => 20, :color => 'FF00'
 
     self.font_size = 9
 
     erase_all
     checkboxes
+    page_num
 
     cadre0
     cadre1
@@ -35,6 +36,13 @@ class EbsddPdf < Prawn::Document
   def log text
     my_text_box text, [200, 746.5], width: 150, height: 10
   end
+  def page_num
+    fs = self.font_size
+    self.font_size = 10
+    my_text_box "1", [530, 783.3], width: 10, height: 15
+    my_text_box "1", [542, 783.3], width: 10, height: 15
+    self.font_size = fs
+  end
   def cadre12
     erase 85, 63, width: 160
     my_text_box @ebsdd.traitement_prevu, [155, 72], width: 200, height: 10
@@ -48,6 +56,7 @@ class EbsddPdf < Prawn::Document
   end
   def cadre11
     my_text_box @ebsdd.code_operation, [342, 228], width: 150, height: 20, valign: :top
+    my_text_box CodeDr[@ebsdd.code_operation], [296, 198], width: 230, height: 22, valign: :top
   end
   def cadre10
     erase 85, 227, width: 160

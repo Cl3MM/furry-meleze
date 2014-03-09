@@ -256,13 +256,10 @@ jQuery ->
     # les données associées (nom, siret, email...)récupérées via webservice
     for tag, url of { "destinataire" : "destinataires", "productable" : "producteurs" }
       addOnChangeHandler(tag, url)
-
-    # on affiche les données par défaut pour le producteur en cas d'édition
-    initProductable = ->
-      id = $("#ebsdd_productable_id option:selected").val()
-      url = "/producteurs/#{id}.json"
-      $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "productable"})).fail(error) if(id != "")
-    initProductable()
+      # on affiche les données par défaut pour le producteur en cas d'édition
+      id = $("#ebsdd_#{ tag }_id option:selected").val()
+      url = "/#{ url }/#{id}.json"
+      $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': tag})).fail(error) if(id != "")
 
     $("#ebsdd_productable_id").on 'change', (e) ->
       $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()

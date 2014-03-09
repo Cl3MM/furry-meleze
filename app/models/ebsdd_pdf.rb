@@ -12,7 +12,7 @@ class EbsddPdf < Prawn::Document
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
     image path, at: [0, here], width: 210.mm
-    stroke_axis at: [500, 800], :step_length => 20, :color => 'FF00'
+    #stroke_axis at: [500, 800], :step_length => 20, :color => 'FF00'
 
     self.font_size = 9
 

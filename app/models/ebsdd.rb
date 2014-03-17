@@ -682,6 +682,7 @@ class Ebsdd # < ActiveRecord::Base
     bordereau_id_column = header.index("bordereau_id")
     producteur_attrs = producteur_attr_indexes(attrs, header)
     failed, start, total, new_producteurs = [], Time.now, 0, []
+    dest_id = Destinataire.first.id
     unless bordereau_id_column.nil? || producteur_attrs.empty?
       (2..spreadsheet.last_row).each do | i |
         total += 1
@@ -712,6 +713,7 @@ class Ebsdd # < ActiveRecord::Base
             ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
           end
           ebsdd.line_number = i
+          ebsdd.destinataire_id = dest_id
           ebsdd.status = :import
           ebsdd.exported = 0
           ebsdd.write_attribute :bid, ebsdd.long_bid

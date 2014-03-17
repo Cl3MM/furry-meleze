@@ -231,10 +231,13 @@ jQuery ->
 
     # Met à jour les attributs du selecteur 'tag' passé en paramètre
     updateElementInfoAttributes = (data, success, tag) ->
-      attributes = "responsable siret nom adresse ville cp tel fax email".split(' ')
-      for attr in attributes
-        val = data[attr]
-        $("##{tag.elem}_#{attr}").val(val)
+        console.log this
+        console.log $(this)
+        attributes = "responsable siret nom adresse ville cp tel fax email".split(' ')
+        for attr in attributes
+          val = data[attr]
+          console.log "#{tag.elem}_#{attr}"
+          $("##{tag.elem}_#{attr}").val(val)
 
     # Ajoute un onChange listener au paramètre tag.
     # Le listener fait appel au webservice spécifié par le paramètre url
@@ -255,11 +258,14 @@ jQuery ->
     # on ajoute un onchange handler pour les elements #ebsdd_xxx_id, afin d'afficher
     # les données associées (nom, siret, email...)récupérées via webservice
     for tag, url of { "destinataire" : "destinataires", "productable" : "producteurs" }
-      addOnChangeHandler(tag, url)
-      # on affiche les données par défaut pour le producteur en cas d'édition
-      id = $("#ebsdd_#{ tag }_id option:selected").val()
-      url = "/#{ url }/#{id}.json"
-      $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': tag})).fail(error) if(id != "")
+      # Fucking CLOSURE !!!! We have to scope thanks to thd "do" keyword we end up with the same value passed on to every call...
+      do(tag, url) ->
+        addOnChangeHandler(tag, url)
+        # on affiche les données par défaut pour le producteur en cas d'édition
+        id = $("#ebsdd_#{ tag }_id option:selected").val()
+        url = "/#{ url }/#{id}.json"
+        prout = tag
+        $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "#{tag}" })).fail(error) if(id != "")
 
     $("#ebsdd_productable_id").on 'change', (e) ->
       $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()

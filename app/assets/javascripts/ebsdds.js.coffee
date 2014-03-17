@@ -231,12 +231,9 @@ jQuery ->
 
     # Met à jour les attributs du selecteur 'tag' passé en paramètre
     updateElementInfoAttributes = (data, success, tag) ->
-        console.log this
-        console.log $(this)
         attributes = "responsable siret nom adresse ville cp tel fax email".split(' ')
         for attr in attributes
           val = data[attr]
-          console.log "#{tag.elem}_#{attr}"
           $("##{tag.elem}_#{attr}").val(val)
 
     # Ajoute un onChange listener au paramètre tag.

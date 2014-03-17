@@ -85,7 +85,7 @@
               %span.badge 1
               Emetteur du bordereau
           .panel-body
-            = render partial: "ebsdds/edit/cadre1", object: f, as: :f, locals: {productable: @ebsdd.productable}
+            = render partial: "ebsdds/edit/cadre1", object: f, as: :f, locals: {emitted: @ebsdd.emitted}
       =# ebsdds/edit/cadre 2
       .col-md-6
         .panel.panel-default

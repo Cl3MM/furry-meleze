@@ -80,19 +80,19 @@ jQuery ->
 
   if $("#edit").length
 
-    if $("#ebsdd_collectable_id option:selected").text() == 'TRIALP'
+    if $("#ebsdd_collected_id option:selected").text() == 'TRIALP'
       $("#immatriculations").show()
     else
       $("#immatriculations").hide()
-    #$("#ebsdd_emetteur_nom").val $("#ebsdd_collectable_id option:selected").text()
-    $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
+    #$("#ebsdd_emetteur_nom").val $("#ebsdd_collected_id option:selected").text()
+    $("#ebsdd_emetteur_nom").val $("#ebsdd_emitted_id option:selected").text()
 
 
     # éléments auxquel on va ajouter Select2 (le chiffre représente la largeur)
     toSelect = {
-      1076 : [ "collectable_id" ],
+      1076 : [ "collected_id" ],
       707  : [ "immatriculation", "dechet_conditionnement" ],
-      507  : [ "productable_id", "destinataire_id" ],
+      507  : [ "emitted_id", "destinataire_id" ],
       339  : [ "destination_id", "dechet_denomination" ],
     }
     # On parcourt le dictionaire ci dessus et on ajoute select2 à tous les éléments
@@ -101,17 +101,17 @@ jQuery ->
         $("#ebsdd_#{ selector }").select2( containerCssClass: "form-control" )
 
     # On affiche le formulaire des immatriculations quand le collecteur sélectionné est TRIALP
-    $("#ebsdd_collectable_id").on 'change', (e) ->
-      if $("#ebsdd_collectable_id option:selected").text() == 'TRIALP'
+    $("#ebsdd_collected_id").on 'change', (e) ->
+      if $("#ebsdd_collected_id option:selected").text() == 'TRIALP'
         $("#immatriculations").show()
       else
         $("#immatriculations").hide()
 
-    # Envoie une requête au serveur pour afficher les info du productable choisi
-    #$("#ebsdd_productable_id").on 'change', (e) ->
+    # Envoie une requête au serveur pour afficher les info du emitted choisi
+    #$("#ebsdd_emitted_id").on 'change', (e) ->
       #val =  $(this).val()
-      ##$("#ebsdd_productable_attributes_id").val(val)
-      #$("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
+      ##$("#ebsdd_emitted_attributes_id").val(val)
+      #$("#ebsdd_emetteur_nom").val $("#ebsdd_emitted_id option:selected").text()
       #url = '/producteurs/' + val + '.js'
       #$.get( url)
 
@@ -198,7 +198,7 @@ jQuery ->
       $("#ebsdd_dechet_conditionnement").val(contenants[denomination]).trigger('change')
 
       # Ajax pour trouver la destination associée à la sélection
-      #$("#ebsdd_productable_attributes_id").val(denomination)
+      #$("#ebsdd_emitted_attributes_id").val(denomination)
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'
       $.get( url)
 
@@ -254,7 +254,7 @@ jQuery ->
 
     # on ajoute un onchange handler pour les elements #ebsdd_xxx_id, afin d'afficher
     # les données associées (nom, siret, email...)récupérées via webservice
-    for tag, url of { "destinataire" : "destinataires", "productable" : "producteurs" }
+    for tag, url of { "destinataire" : "destinataires", "emitted" : "producteurs" }
       # Fucking CLOSURE !!!! We have to scope thanks to thd "do" keyword we end up with the same value passed on to every call...
       do(tag, url) ->
         addOnChangeHandler(tag, url)
@@ -264,5 +264,5 @@ jQuery ->
         prout = tag
         $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "#{tag}" })).fail(error) if(id != "")
 
-    $("#ebsdd_productable_id").on 'change', (e) ->
-      $("#ebsdd_emetteur_nom").val $("#ebsdd_productable_id option:selected").text()
+    $("#ebsdd_emitted_id").on 'change', (e) ->
+      $("#ebsdd_emetteur_nom").val $("#ebsdd_emitted_id option:selected").text()

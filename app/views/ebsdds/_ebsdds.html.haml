@@ -19,7 +19,7 @@
               %td= ebsdd.short_bid
               %td.text-center
                 = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
-              %td= truncate ebsdd.productable.nom.titleize, length: 50
+              %td= truncate ebsdd.emitted.nom.titleize, length: 50
               -#%td= ebsdd.destinataire_nom.titleize
               %td.text-center
                 - if ebsdd.dechet_nomenclature.nil?

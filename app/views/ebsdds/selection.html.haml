@@ -53,7 +53,7 @@
             %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
             %td.touletip{title: "Nombre d'export effectués pour l'ebsdd #{ebsdd.short_bid} : #{ebsdd.exported}"}
               = ebsdd.exported
-            %td= truncate ebsdd.productable.nom.titleize, length: 50
+            %td= truncate ebsdd.emitted.nom.titleize, length: 50
             -#%td= ebsdd.destinataire_nom.titleize
             %td= ebsdd.libelle.titleize
             %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")

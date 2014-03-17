@@ -27,10 +27,10 @@
       %br
       %label
         Numéro de recepissé
-      - if ebsdd.collectable.nil?
+      - if ebsdd.collected.nil?
         Aucun
       - else
-        = ebsdd.collectable.recepisse
+        = ebsdd.collected.recepisse
       %br
       %label
         Transport multimodal :

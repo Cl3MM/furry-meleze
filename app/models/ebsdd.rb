@@ -128,9 +128,9 @@ class Ebsdd # < ActiveRecord::Base
     self[:num_cap] = num_cap_auto if num_cap.blank?
   end
 
-  belongs_to :emitted, polymorphic: true, class_name: "Producteur", inverse_of: :emitted
-  belongs_to :collected, polymorphic: true, class_name: "Producteur", inverse_of: :collected
-  #belongs_to :producteur
+  #belongs_to :emitted, polymorphic: true, class_name: "Producteur", inverse_of: :emitted
+  #belongs_to :collected, polymorphic: true, class_name: "Producteur", inverse_of: :collected
+  belongs_to :producteur
   belongs_to :destinataire#, polymorphic: true, class_name: "Producteur"
   belongs_to :prout#, polymorphic: true, class_name: "Producteur"
   belongs_to :collecteur#, polymorphic: true, class_name: "Producteur"

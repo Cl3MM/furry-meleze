@@ -1,39 +1,39 @@
-class Producteur #< Company
+class Producteur < Company
 
- # has_many :ebsdds
+  has_many :ebsdds
 
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  #include Mongoid::Document
+  #include Mongoid::Timestamps
 
-  #has_many :ebsdds#, inverse_of: :ebsdds
-  has_many :emitted, class_name: "Producteur", autosave: true, inverse_of: :emitted
-  has_many :collected, class_name: "Producteur", autosave: true, inverse_of: :collected
+  ##has_many :ebsdds#, inverse_of: :ebsdds
+  #has_many :emitted, class_name: "Producteur", autosave: true, inverse_of: :emitted
+  #has_many :collected, class_name: "Producteur", autosave: true, inverse_of: :collected
 
-  scope :collecteurs, where( is_collecteur: true)
-  scope :producteurs, Producteur.or( { is_collecteur: false}, { :is_collecteur.exists => false } ).asc(:nom)
+  #scope :collecteurs, where( is_collecteur: true)
+  #scope :producteurs, Producteur.or( { is_collecteur: false}, { :is_collecteur.exists => false } ).asc(:nom)
 
-  field :siret, type: String
-  field :nom, type: String
-  field :adresse, type: String
-  field :cp, type: String
-  field :ville, type: String
-  field :tel, type: String
-  field :fax, type: String
-  field :email, type: String, default: nil
-  field :responsable, type: String
-  field :actif, type: Boolean
-  field :is_collecteur, type: Boolean
+  #field :siret, type: String
+  #field :nom, type: String
+  #field :adresse, type: String
+  #field :cp, type: String
+  #field :ville, type: String
+  #field :tel, type: String
+  #field :fax, type: String
+  #field :email, type: String, default: nil
+  #field :responsable, type: String
+  #field :actif, type: Boolean
+  #field :is_collecteur, type: Boolean
 
-  field :recepisse, type: String, default: ->{ id }
-  field :mode_transport, type: Integer, default: 1
-  field :limite_validite, type: Date, default: ->{ 10.days.from_now }
+  #field :recepisse, type: String, default: ->{ id }
+  #field :mode_transport, type: Integer, default: 1
+  #field :limite_validite, type: Date, default: ->{ 10.days.from_now }
 
-  validates_presence_of :recepisse, :limite_validite, :mode_transport,
-    if: -> { self[:is_collecteur] }
+  #validates_presence_of :recepisse, :limite_validite, :mode_transport,
+    #if: -> { self[:is_collecteur] }
 
-  attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif, :is_collecteur, :recepisse, :mode_transport, :limite_validite
+  #attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif, :is_collecteur, :recepisse, :mode_transport, :limite_validite
 
-  validates_presence_of :nom, :cp #, :email, :siret, :tel, :fax
+  #validates_presence_of :nom, :cp #, :email, :siret, :tel, :fax
 
   ##validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers

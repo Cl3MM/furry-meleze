@@ -1,4 +1,7 @@
-class Producteur
+class Producteur #< Company
+
+ # has_many :ebsdds
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -32,7 +35,7 @@ class Producteur
 
   validates_presence_of :nom, :cp #, :email, :siret, :tel, :fax
 
-  #validates :siret,  numericality: { only_integer: true }
+  ##validates :siret,  numericality: { only_integer: true }
   def self.check_headers headers
     attrs = [
       :siret, :nom, :adresse, :cp, :ville,

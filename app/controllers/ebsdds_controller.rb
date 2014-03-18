@@ -125,13 +125,12 @@ class EbsddsController < ApplicationController
   def update
     @ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
-      valid = @ebsdd.emitted.valid?
-      if @ebsdd.update_attributes(params[:ebsdd]) && valid
+      if @ebsdd.update_attributes(params[:ebsdd])
         format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }
         format.json { head :no_content }
       else
-        @emitted = @ebsdd.emitted || Producteur.where(is_collecteur: false).build
-        @destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
+        #@emitted = @ebsdd.emitted || Producteur.where(is_collecteur: false).build
+        #@destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
         format.html { render action: 'edit' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       end

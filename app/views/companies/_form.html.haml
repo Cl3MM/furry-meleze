@@ -63,6 +63,11 @@
       .form-group
         = f.label :email
         = f.text_field :email
+
+  - if @company.is_a? Collecteur
+    #collecteur
+      = render :partial => "collecteurs/custom_form", object: f, as: :f
+
     .row
       .actions
         = link_to 'Retour', @company.class, class: "btn btn-default"

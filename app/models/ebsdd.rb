@@ -1,72 +1,21 @@
 # encoding: utf-8
 
-
-#["100000053072",
- #"100000053074",
- #"100000053078",
- #"100000053080",
- #"100000053075",
- #"100000053077",
- #"100000053106",
- #"100000053108",
- #"100000053095",
- #"100000053096",
- #"100000053097",
- #"100000053098",
- #"100000053102",
- #"100000053103",
- #"100000053104",
- #"100000053110",
- #"100000053112",
- #"100000053114"]
-
-
 #TODO
 #Documents à recevoir :
 #Séverine : liste produits et liste contenants pour bsd non ecodds
-#Brigitte : tableau correspondance poids / produits et immatriculations trialp
-
-#Producteurs : 
-#- Ajouter une case pour spécifier si ECODDS ou non
-#- Ajouter devant les noms des producteurs de déchets "ECODDS", exemple : ECODDS Chambéry Métropole
-#- Faire une correspondance entre le nom du producteur et le producteur ecodds
-#- tu as écrit : "producteur collecteur : limite de validité = enlever bordereau !" 
-#- Page producteur : le bouton créer producteur ne fonctionne pas
-
-#Nouveaux BSD : Différencier BSD ECODDS ou nont
-
-#Recherche : par numéro de BSD, par producteur
 
 #Edition BSD
-#- Case plaque d'immatriculation uniquement quand collecteur est TRIALP
-#- Choix de la plaque d'immatriculation : on commence à écrire le numéro et il propose la liste de plaques
 #- Ajouter bouton "enregistrer" à côté du dernier cadre en cours de modification
 #- ou Ajouter bouton (fenêtre qui se lève) en bas pour remonter en haut
 #- Fonction "export ecodds" s'affiche QUE pour les bsd ecodds
 #- Afficher le nombre d'exports du bsd
 #- Afficher produits différents et contenants différents pour bsd non ecodds
-#- Cadre 3 : numéro de déchet à 6 chiffres : mettre une "*"
 
-#Cadre 3 : ne pas mettre de valeur par défaut au type de déchet, si l'opérateur enregistre le bsd sans avoir modifié la valeur, il y a une erreur.
-#Cadre 6 : table de correspondance entre contenant et poids estimé
-#Cadre 9 : émetteur = cadre 1
-#Cadre 11 : tu as écrit "bloquer R13" mais il faut que tu revois les règles de ECODDS pour les cases D/R !!
 #Cadre 12 : Ajouter une liste pour "non ecodds"
 
 #Récipissé + limite de validité du collecteur à stocker dans le bsd 
 
-#Numéro CAP : créer automatiquement les numéros :
-
-#YYYYPPSSSSSSSSS, exemple : 2014TF247300049
-#YYYY : année
-#PP : type de produit
-#SSSSSSSSS : 9 premiers chiffres du siret du producteur du déchet
-#Pour le type de produit on se réfère aux tables type de déchet et ca donne ça :
-#PP : 01=PE, 02= ES, 03= AE, 04=SO, 05=PH, 06=FH, 07=AC, 08=BA, 09=CO
-
 #- Lors d'une sortie d'un déchet, on remplit l'annexe 2.
-
-#Fichier traduction : "blank" mettre "ne doit pas être vide" en indiquant le numéro de cadre.
 
 class Ebsdd # < ActiveRecord::Base
   include Mongoid::Document
@@ -181,7 +130,10 @@ class Ebsdd # < ActiveRecord::Base
 
   belongs_to :emitted, polymorphic: true, class_name: "Producteur", inverse_of: :emitted
   belongs_to :collected, polymorphic: true, class_name: "Producteur", inverse_of: :collected
+  #belongs_to :producteur
   belongs_to :destinataire#, polymorphic: true, class_name: "Producteur"
+  belongs_to :prout#, polymorphic: true, class_name: "Producteur"
+  belongs_to :collecteur#, polymorphic: true, class_name: "Producteur"
 
   belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds
@@ -397,7 +349,7 @@ class Ebsdd # < ActiveRecord::Base
     :ligne_flux_date_remise, :ligne_flux_poids,
     :immatriculation, :exported, :ecodds_id
 
-    validates_presence_of :bordereau_id,
+    validates_presence_of :bordereau_id, :collected_id, :emitted_id,
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
     #:collecteur_tel, :collecteur_responsable, 
     :bordereau_date_transport, :bordereau_poids,

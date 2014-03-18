@@ -35,10 +35,10 @@ Meleze::Application.routes.draw do
   #get 'destinataires/import'
   #post 'destinataires/upload'
 
+  resources :collecteurs #, controller: :companies, type: "Destinateire"
   resources :destinataires #, controller: :companies, type: "Destinateire"
 
   resources :ebsdds
-  #resources :destinataires
   resources :producteurs
 
   root to: 'dashboard#index'

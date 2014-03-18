@@ -1,7 +1,5 @@
 # encoding: utf-8
-class ProducteursController < ApplicationController
-  before_filter :authenticate_utilisateur!
-
+class ProducteursController < CompaniesController
   def upload
     if params.has_key? :file
       file = params[:file]
@@ -42,48 +40,48 @@ class ProducteursController < ApplicationController
     end
   end
 
-  # GET /producteurs/1
-  # GET /producteurs/1.json
-  def show
-    @producteur = Producteur.find(params[:id])
-    #gon.push( @producteur)
-    respond_to do |format|
-      format.js
-      format.html # show.html.erb
-      format.json { render json: @producteur }
-    end
-  end
+  ## GET /producteurs/1
+  ## GET /producteurs/1.json
+  #def show
+    #@producteur = Producteur.find(params[:id])
+    ##gon.push( @producteur)
+    #respond_to do |format|
+      #format.js
+      #format.html # show.html.erb
+      #format.json { render json: @producteur }
+    #end
+  #end
 
-  # GET /producteurs/new
-  # GET /producteurs/new.json
-  def new
-    @producteur = Producteur.new
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @producteur }
-    end
-  end
+  ## GET /producteurs/new
+  ## GET /producteurs/new.json
+  #def new
+    #@producteur = Producteur.new
+    #respond_to do |format|
+      #format.html # new.html.erb
+      #format.json { render json: @producteur }
+    #end
+  #end
 
-  # GET /producteurs/1/edit
-  def edit
-    @producteur = Producteur.find(params[:id])
-  end
+  ## GET /producteurs/1/edit
+  #def edit
+    #@producteur = Producteur.find(params[:id])
+  #end
 
-  # POST /producteurs
-  # POST /producteurs.json
-  def create
-    @producteur = Producteur.new(params[:producteur])
+  ## POST /producteurs
+  ## POST /producteurs.json
+  #def create
+    #@producteur = Producteur.new(params[:producteur])
 
-    respond_to do |format|
-      if @producteur.save
-        format.html { redirect_to @producteur, notice: 'Le producteur a été crée avec succès !' }
-        format.json { render json: @producteur, status: :created, location: @producteur }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @producteur.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+    #respond_to do |format|
+      #if @producteur.save
+        #format.html { redirect_to @producteur, notice: 'Le producteur a été crée avec succès !' }
+        #format.json { render json: @producteur, status: :created, location: @producteur }
+      #else
+        #format.html { render action: "new" }
+        #format.json { render json: @producteur.errors, status: :unprocessable_entity }
+      #end
+    #end
+  #end
 
   def search
     if params.has_key?(:query)
@@ -100,31 +98,32 @@ class ProducteursController < ApplicationController
       end
     end
   end
-  # PUT /producteurs/1
-  # PUT /producteurs/1.json
-  def update
-    @producteur = Producteur.find(params[:id])
 
-    respond_to do |format|
-      if @producteur.update_attributes(params[:producteur])
-        format.html { redirect_to @producteur, notice: 'Le producteur a été modifié avec succès !' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @producteur.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  ## PUT /producteurs/1
+  ## PUT /producteurs/1.json
+  #def update
+    #@producteur = Producteur.find(params[:id])
 
-  # DELETE /producteurs/1
-  # DELETE /producteurs/1.json
-  def destroy
-    @producteur = Producteur.find(params[:id])
-    @producteur.destroy
+    #respond_to do |format|
+      #if @producteur.update_attributes(params[:producteur])
+        #format.html { redirect_to @producteur, notice: 'Le producteur a été modifié avec succès !' }
+        #format.json { head :no_content }
+      #else
+        #format.html { render action: "edit" }
+        #format.json { render json: @producteur.errors, status: :unprocessable_entity }
+      #end
+    #end
+  #end
 
-    respond_to do |format|
-      format.html { redirect_to producteurs_url }
-      format.json { head :no_content }
-    end
-  end
+  ## DELETE /producteurs/1
+  ## DELETE /producteurs/1.json
+  #def destroy
+    #@producteur = Producteur.find(params[:id])
+    #@producteur.destroy
+
+    #respond_to do |format|
+      #format.html { redirect_to producteurs_url }
+      #format.json { head :no_content }
+    #end
+  #end
 end

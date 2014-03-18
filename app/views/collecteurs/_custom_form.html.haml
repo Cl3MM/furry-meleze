@@ -1,0 +1,14 @@
+.row
+  .col-md-4
+    .form-group
+      = f.label :recepisse, "Recepissé"
+      = f.text_field :recepisse, placeholder: "Recepissé"
+  .col-md-4
+    .form-group
+      = f.label :mode_transport, "Mode de transport"
+      = f.select :mode_transport, [["Route", 1], ["Aérien", 2], ["Ferroviaire", 3], ["Fluvial", 3], ["Maritime", 5]], prompt: "Sélectionnez un mode de transport..."
+  .col-md-4
+    .form-group
+      = f.label :limite_validite, "Limite de validité du bordereau"
+      = f.text_field :limite_validite, placeholder: "Limite de validité", value: date_limite_de_validite, class: "datepicker"
+

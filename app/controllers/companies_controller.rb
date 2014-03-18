@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class CompaniesController < ApplicationController
-  before_filter :get_type
+  before_filter :authenticate_utilisateur!, :get_type
   # GET /companies
   # GET /companies.json
   def index
@@ -115,7 +115,7 @@ class CompaniesController < ApplicationController
     end
     def get_type
       resource = request.path.split('/')[1] if request.path.split('/').size >= 1
-      redirect_to root_url, alert: "Impossible de trouver la ressource demandée" unless ["destinataires"].include?(resource.downcase)
+      redirect_to root_url, alert: "Impossible de trouver la ressource demandée" unless ["destinataires", "collecteurs", "producteurs"].include?(resource.downcase)
       @klass   = resource.singularize.capitalize.constantize
     end
 end

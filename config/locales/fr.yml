@@ -79,11 +79,19 @@ fr:
           attributes:
             nom:
               blank: ne doit pas être vide
+        collecteur:
+          attributes:
+            mode_transport:
+              blank: ne doit pas être vide
+            recepisse:
+              blank: ne doit pas être vide
+            limite_validite:
+              blank: ne doit pas être vide
         ebsdd:
           attributes:
             destinataire_id:
               blank: ne doit pas être vide
-            productable_id:
+            emitted_id:
               blank: ne doit pas être vide
             bordereau_poids:
               blank: ne doit pas être vide

@@ -13,5 +13,6 @@ class Company
   field :responsable, type: String
   field :actif, type: Boolean
 
-  validates_presence_of :siret, :responsable, :nom, :cp, :ville, :adresse
+  attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable
+  validates_presence_of :nom #:siret, :responsable, :nom, :cp, :ville, :adresse
 end

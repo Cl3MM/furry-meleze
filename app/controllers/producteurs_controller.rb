@@ -44,7 +44,8 @@ class ProducteursController < CompaniesController
   # GET /producteurs/1.json
   def show
     @producteur = Producteur.find(params[:id])
-    @ebsdds = @producteur.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month).order_by(updated_at: 1)
+    @ebsdds = @producteur.ebsdds.where(created_at: Date.today-50..Date.today.end_of_month).order_by(updated_at: 1)
+    #@ebsdds = @producteur.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month).order_by(updated_at: 1)
     respond_to do |format|
       format.js
       format.html # show.html.erb

@@ -14,7 +14,7 @@
         = fa_link_to edit_producteur_path(@producteur), "Modifier", "edit lg"
 
 .row#edit
-  .col-md-12
+  .col-md-10
     .panel.panel-default
       .panel-heading
         %h3.panel-title
@@ -47,24 +47,29 @@
 
           %dt Adresse email :
           %dd= @producteur.email
-  .col-md-12
+  .col-md-2
     .panel.panel-default
       .panel-heading
         %h3.panel-title
-          = fa_icon "user ccc"
+          = fa_icon "tags ccc"
           Déchets emis en #{ l(Date.today, format: :mois) }
           %span.small
             {
             = @ebsdds.count
             }
-          %span.pull-right
-            %a{href: "#"} &lt;&lt; mois précédent
-            &nbsp;|&nbsp;
-            %a{href: "#"} mois suivant &gt;&gt;
+          -#%span.pull-right
+            -#%a{href: "#"} &lt;&lt; mois précédent
+            -#&nbsp;|&nbsp;
+            -#%a{href: "#"} mois suivant &gt;&gt;
       .panel-body
         - if @ebsdds.any?
-          - @ebsdds.each do | em |
-            = link_to em.bid, ebsdd_path(em)
+          .table-responsive
+            %table.table.table-condensed
+              %tbody
+                - @ebsdds.each do | em |
+                  %tr
+                    %td
+                      = link_to em.bid, ebsdd_path(em)
         - else
           %p.text-center Aucun eBSD pour le mois de #{ l(Date.today, format: :mois) }
 

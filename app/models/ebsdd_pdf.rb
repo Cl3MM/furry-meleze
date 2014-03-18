@@ -75,17 +75,17 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [220, 261], width: 200, height: 10
   end
   def cadre8
-    my_text_box @ebsdd.collected.siret, [89, 375.5], width: 200, height: 10
-    my_text_box @ebsdd.collected.nom, [89, 365], width: 200, height: 10
-    my_text_box "#{@ebsdd.collected.adresse}\n#{@ebsdd.collected.cp} #{@ebsdd.collected.ville}", [89, 355], width: 200, height: 20
-    my_text_box @ebsdd.collected.tel, [68, 334], width: 50, height: 10
-    my_text_box @ebsdd.collected.fax, [180, 334], width: 50, height: 10
-    my_text_box @ebsdd.collected.email, [68, 325], width: 200, height: 12
-    my_text_box @ebsdd.collected.responsable, [127, 314], width: 200, height: 12
-    my_text_box @ebsdd.collected.recepisse, [356, 387.5], width: 50, height: 12
-    my_text_box @ebsdd.collected.cp[0..1], [486, 387.5], width: 50, height: 12
-    my_text_box @ebsdd.collected.limite_validite.strftime("%d/%m/%Y"), [367, 377.5], width: 50, height: 12
-    mt = case @ebsdd.collected.mode_transport
+    my_text_box @ebsdd.collecteur.siret, [89, 375.5], width: 200, height: 10
+    my_text_box @ebsdd.collecteur.nom, [89, 365], width: 200, height: 10
+    my_text_box "#{@ebsdd.collecteur.adresse}\n#{@ebsdd.collecteur.cp} #{@ebsdd.collecteur.ville}", [89, 355], width: 200, height: 20
+    my_text_box @ebsdd.collecteur.tel, [68, 334], width: 50, height: 10
+    my_text_box @ebsdd.collecteur.fax, [180, 334], width: 50, height: 10
+    my_text_box @ebsdd.collecteur.email, [68, 325], width: 200, height: 12
+    my_text_box @ebsdd.collecteur.responsable, [127, 314], width: 200, height: 12
+    my_text_box @ebsdd.collecteur.recepisse, [356, 387.5], width: 50, height: 12
+    my_text_box @ebsdd.collecteur.cp[0..1], [486, 387.5], width: 50, height: 12
+    my_text_box @ebsdd.collecteur.limite_validite.strftime("%d/%m/%Y"), [367, 377.5], width: 50, height: 12
+    mt = case @ebsdd.collecteur.mode_transport
          when 1
            "ROUTE"
          when 2
@@ -140,19 +140,19 @@ class EbsddPdf < Prawn::Document
   end
   def cadre1
     # siret
-    draw_text @ebsdd.emitted.siret, at: [88, 632]
+    draw_text @ebsdd.producteur.siret, at: [88, 632]
     # nom
-    my_text_box @ebsdd.emitted.nom, [72, 630.5]
+    my_text_box @ebsdd.producteur.nom, [72, 630.5]
     # adresse
-    my_text_box "#{@ebsdd.emitted.adresse}\n#{@ebsdd.emitted.cp} #{@ebsdd.emitted.ville}", [80, 620], height: 22
+    my_text_box "#{@ebsdd.producteur.adresse}\n#{@ebsdd.producteur.cp} #{@ebsdd.producteur.ville}", [80, 620], height: 22
     # tel
-    my_text_box @ebsdd.emitted.tel, [68, 599.5], width: 90
+    my_text_box @ebsdd.producteur.tel, [68, 599.5], width: 90
     # fax
-    my_text_box @ebsdd.emitted.fax, [190, 599.5], width: 90
+    my_text_box @ebsdd.producteur.fax, [190, 599.5], width: 90
     # email
-    my_text_box @ebsdd.emitted.email, [74, 588]
+    my_text_box @ebsdd.producteur.email, [74, 588]
     # responsable
-    my_text_box @ebsdd.emitted.responsable, [125, 579], width: 145
+    my_text_box @ebsdd.producteur.responsable, [125, 579], width: 145
   end
 
   def cadre2

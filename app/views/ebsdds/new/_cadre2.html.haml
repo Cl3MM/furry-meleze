@@ -20,7 +20,7 @@
   = f.label :destinataire_id, "Destinataires", class: "disabled"
   %br
   - if @ebsdd.new_record?
-    - @ebsdd.emitted_id = nil
+    - @ebsdd.producteur_id = nil
   = f.select :destinataire_id, Destinataire.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un destinataire..."
 
 #destinataire.panel-group

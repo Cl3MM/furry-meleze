@@ -1,9 +1,9 @@
 .row
   .col-md-12
     .form-group
-      = f.label :collected_id, "Collecteur"
+      = f.label :collecteur_id, "Collecteur"
       %br
-      = f.select :collected_id, Producteur.collecteurs.map{ |p| [p.nom, p.id] }
+      = f.select :collecteur_id, Collecteur.all.map{ |p| [p.nom, p.id] }
 
     -#.form-group
       -#= f.label :mode_transport, "Mode de transport"

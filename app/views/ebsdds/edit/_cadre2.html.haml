@@ -20,8 +20,8 @@
   -#= f.label :destinataire_id, "Producteur", class: "disabled"
   -#%br
   -#- if @ebsdd.new_record?
-    -#- @ebsdd.emitted_id = nil
-  -#= f.select :emitted_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
+    -#- @ebsdd.producteur_id = nil
+  -#= f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
 -#.row
   -#.col-md-12
     -#.form-group

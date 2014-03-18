@@ -14,7 +14,7 @@
         %tr
           %td= ebsdd.short_bid
           %td
-            = link_to truncate(ebsdd.emitted.nom.titleize, length: 20), producteur_path(ebsdd.emitted), class: "touletip", title: "Producteur du déchet : #{ebsdd.emitted.nom.titleize}"
+            = link_to truncate(ebsdd.producteur.nom.titleize, length: 20), producteur_path(ebsdd.producteur), class: "touletip", title: "Producteur du déchet : #{ebsdd.producteur.nom.titleize}"
           %td= truncate ebsdd.destinataire_nom.titleize, length: 18
           %td= truncate ebsdd.libelle.titleize, length: 15
           %td= "#{ebsdd.bordereau_poids} kg"

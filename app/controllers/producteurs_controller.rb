@@ -40,18 +40,22 @@ class ProducteursController < CompaniesController
     end
   end
 
-  ## GET /producteurs/1
-  ## GET /producteurs/1.json
-  #def show
-    #@producteur = Producteur.find(params[:id])
-    ##gon.push( @producteur)
-    #respond_to do |format|
-      #format.js
-      #format.html # show.html.erb
-      #format.json { render json: @producteur }
-    #end
-  #end
+  # GET /producteurs/1
+  # GET /producteurs/1.json
+  def show
+    @producteur = Producteur.find(params[:id])
+    @ebsdds = @producteur.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month).order_by(updated_at: 1)
+    respond_to do |format|
+      format.js
+      format.html # show.html.erb
+      format.json { render json: @producteur }
+    end
+  end
 
+  def monthly_stat_by_type
+    @producteur = Producteur.find(params[:id])
+    #Date.today.beginning_of_month..Date.today.end_of_month
+  end
   ## GET /producteurs/new
   ## GET /producteurs/new.json
   #def new

@@ -6,8 +6,8 @@ class Producteur < Company
   #include Mongoid::Timestamps
 
   ##has_many :ebsdds#, inverse_of: :ebsdds
-  #has_many :emitted, class_name: "Producteur", autosave: true, inverse_of: :emitted
-  #has_many :collected, class_name: "Producteur", autosave: true, inverse_of: :collected
+  #has_many :producteur, class_name: "Producteur", autosave: true, inverse_of: :producteur
+  #has_many :collecteur, class_name: "Producteur", autosave: true, inverse_of: :collecteur
 
   #scope :collecteurs, where( is_collecteur: true)
   #scope :producteurs, Producteur.or( { is_collecteur: false}, { :is_collecteur.exists => false } ).asc(:nom)

@@ -14,5 +14,5 @@ class Company
   field :actif, type: Boolean
 
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable
-  validates_presence_of :nom #:siret, :responsable, :nom, :cp, :ville, :adresse
+  validates_presence_of :siret, :responsable, :nom, :cp, :ville, :adresse
 end

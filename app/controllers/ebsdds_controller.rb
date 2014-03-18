@@ -85,7 +85,7 @@ class EbsddsController < ApplicationController
   # GET /ebsdds/new
   def new
     @ebsdd = Ebsdd.new
-    #@collected = Producteur.where(is_collecteur: true).build
+    #@collecteur = Producteur.where(is_collecteur: true).build
   end
 
   # GET /ebsdds/1/edit
@@ -96,7 +96,7 @@ class EbsddsController < ApplicationController
   # POST /ebsdds
   # POST /ebsdds.json
   def create
-    params[:ebsdd][:emitted_id] = nil if params[:ebsdd].has_key?(:emitted_id) && params[:ebsdd][:emitted_id].blank?
+    params[:ebsdd][:producteur_id] = nil if params[:ebsdd].has_key?(:producteur_id) && params[:ebsdd][:producteur_id].blank?
     params[:ebsdd][:destinataire_id] = nil if params[:ebsdd].has_key?(:destinataire_id) && params[:ebsdd][:destinataire_id].blank?
     @ebsdd = Ebsdd.new(params[:ebsdd])
     @ebsdd.status = :nouveau
@@ -129,7 +129,7 @@ class EbsddsController < ApplicationController
         format.html { redirect_to @ebsdd, notice: 'Le eBSDD à été modifié avec succès.' }
         format.json { head :no_content }
       else
-        #@emitted = @ebsdd.emitted || Producteur.where(is_collecteur: false).build
+        #@producteur = @ebsdd.producteur || Producteur.where(is_collecteur: false).build
         #@destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
         format.html { render action: 'edit' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }

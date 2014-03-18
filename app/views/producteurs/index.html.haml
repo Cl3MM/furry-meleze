@@ -1,0 +1,55 @@
+= content_for :search do
+  = form_tag( "/producteurs/search", class: "navbar-form navbar-right", role: :search ) do | f |
+    .form-group
+      = text_field_tag :query, nil, placeholder: "Nom du producteur", class: "form-control"
+    %span.form-group-btn
+      %button.btn.btn-default{ type: :submit }
+        = fa_icon "search lg"
+
+%h1.underline
+  = fa_icon "tags"
+  Liste des producteurs
+  %span.small
+    = "(#{Producteur.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_producteur_path, "Créer un nouveau producteur", "user lg"
+      %li.divider
+      %li
+        = fa_link_to producteurs_import_path, "Importer une liste de producteurs", "group lg"
+
+- if @producteurs.any?
+  %table.table.table-striped
+    %tr
+      %th Nom
+      %th Responsable
+      %th Ville
+      %th Téléphone
+      %th Siret
+      %th.actions Actions
+
+    - @producteurs.each do |producteur|
+      %tr
+        %td= producteur.nom
+        %td= producteur.responsable
+        %td= producteur.ville
+        %td= producteur.tel
+        %td= producteur.siret
+
+        %td.actions
+          .center-block.text-center
+            = fa_link_to producteur, '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de #{producteur.nom}"
+            = fa_link_to edit_producteur_path(producteur), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de #{producteur.nom}"
+            =# fa_link_to producteur, 'Destroy', :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+  = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
+- else
+  .jumbotron
+    %p.leader
+      Aucun producteur trouvé, veuillez en créer un !

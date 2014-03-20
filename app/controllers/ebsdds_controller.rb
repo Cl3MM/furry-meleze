@@ -36,7 +36,7 @@ class EbsddsController < ApplicationController
       format.pdf do
         pdf = EbsddPdf.new(@ebsdd)
         send_data pdf.render, filename: "#{@ebsdd.bordereau_id}_#{Date.today.strftime("%d-%m-%y")}.pdf",
-          type: "application/pdf" , disposition: "inline"
+          type: "application/pdf"# , disposition: "inline"
       end
       #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end

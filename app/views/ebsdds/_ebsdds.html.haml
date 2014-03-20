@@ -34,7 +34,8 @@
                   = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?
                   = link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid})")
                   = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid} au format CSV") unless ebsdd.is_incomplete?
-                  = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd), class: "btn btn-danger touletip btn-xs", role: "button", "data-html"=>true, title: "<i class='fa fa-warning'></i>&nbsp;ATTENTION, fonction Expérimentale, le fichier généré pèse plus de 1Mo. Télécharger l'eBSDD ##{ebsdd.bid} au format PDF")
+                  = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd), class: "btn btn-success touletip btn-xs", role: "button", "data-html"=>true, title: "<i class='fa fa-warning'></i>&nbsp;ATTENTION, fonction Expérimentale, le fichier généré pèse plus de 1Mo. Télécharger l'eBSDD ##{ebsdd.bid} au format PDF")
+                  = fa_link_to ebsdd, '', "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid} ?" }
 -else
   .center-block
     %p.text-center

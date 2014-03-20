@@ -20,3 +20,16 @@ jQuery ->
       console.log val
       for attr in ['recepisse', 'mode_transport', 'limite_validite']
         $("#producteur_#{ attr }").prop('disabled', val)
+
+  Morris.Donut( {
+    element: 'monthly-stats-by-type-donut',
+    data: $("#monthly-stats-by-type-donut").data("graph")
+  } )
+
+  Morris.Bar({
+    element: 'monthly-stats-by-type-bar',
+    data: $("#monthly-stats-by-type-bar").data("graph")
+    xkey: 'y',
+    ykeys: 'x',
+    labels: 'Poids'
+  })

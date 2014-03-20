@@ -29,16 +29,25 @@
       Tous
     - else
       = link_to "Tous", ebsdds_path
+
+  %li{ class: "#{@status == :nouveau ? "active" : ""}" }
+    - if @status == :nouveau
+      Nouveau
+    - else
+      = link_to "Nouveau", ebsdd_status_path(status: :nouveau)
+
   %li{ class: "#{@status == :incomplets ? "active" : ""}" }
     - if @status == :incomplets
       Incomplets
     - else
       = link_to "Incomplets", ebsdd_status_path(status: :incomplets)
+
   %li{ class: "#{@status == :complets ? "active" : ""}" }
     - if @status == :complets
       Complets
     - else
       = link_to "Complets", ebsdd_status_path(status: :complets)
+
   %li{ class: "#{@status == :expedies ? "active" : ""}" }
     - if @status == :expedies
       Expédiés

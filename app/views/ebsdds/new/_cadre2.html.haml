@@ -21,7 +21,7 @@
   %br
   - if @ebsdd.new_record?
     - @ebsdd.producteur_id = nil
-  = f.select :destinataire_id, Destinataire.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un destinataire..."
+  = f.select :destinataire_id, Destinataire.all.asc(:nom).map{ |p| [p.nom, p.id] }#, prompt: "Sélectionnez un destinataire..."
 
 #destinataire.panel-group
   .panel.panel-default.panel-info

@@ -25,11 +25,11 @@ class EbsddPdf < Prawn::Document
     cadre2
     cadre3
     cadre4
-    cadre5
+    cadre5 unless @ebsdd.status == :nouveau
     cadre6
     cadre8
     cadre9
-    cadre10
+    cadre10 unless @ebsdd.status == :nouveau
     cadre11
     cadre12
   end
@@ -68,6 +68,9 @@ class EbsddPdf < Prawn::Document
     erase 128, 168, width: 50
     my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
+    # Cadre 10 Lot accepté
+    checkbox 114.5, 155.5
+
   end
   def cadre9
     erase 225, 265, width: 50
@@ -109,9 +112,11 @@ class EbsddPdf < Prawn::Document
       ## Réelle
       #checkbox 111, 471.5
     #end
-    my_text_box @ebsdd.poids_en_tonnes_pdf.to_s, [212.5, 472], width: 31, height: 10, align: :right
+    my_text_box @ebsdd.poids_en_tonnes_pdf.to_s, [212.5, 472], width: 31, height: 10, align: :right unless @ebsdd.status == :nouveau
   end
   def cadre5
+    # Cadre 5 : Conditionnement
+    checkbox 322, 494
     my_text_box @ebsdd.dechet_nombre_colis.to_s, [510, 494], width: 30, height: 10
   end
   def cadre4
@@ -226,16 +231,13 @@ class EbsddPdf < Prawn::Document
     #checkbox 479.3, 559
 
     # Cadre 5 : Conditionnement
-    checkbox 322, 494
+    #checkbox 322, 494
 
     ## Cadre 6 : Quantité
     ## Réelle
     #checkbox 111, 471.5
     ## Estimée
     #checkbox 168.5, 472
-
-    # Cadre 10 Lot accepté
-    checkbox 114.5, 155.5
 
   end
 

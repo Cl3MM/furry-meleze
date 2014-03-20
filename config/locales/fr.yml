@@ -112,7 +112,7 @@ fr:
           attributes:
             destinataire_id:
               blank: ne doit pas être vide
-            emitted_id:
+            producteur_id:
               blank: ne doit pas être vide
             bordereau_poids:
               blank: ne doit pas être vide

@@ -17,14 +17,6 @@
 
 #- Lors d'une sortie d'un déchet, on remplit l'annexe 2.
 
-class Ebsdd # < ActiveRecord::Base
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  def self.per_page
-    15
-  end
-
 #TODO :
   #Recherche :
     #Critères :
@@ -35,77 +27,15 @@ class Ebsdd # < ActiveRecord::Base
       #Numéro bordereau_id ou ecodds_id
       #Intervalle de temps (du 26 Juillet au 31 Septembre)
 
-#map = %Q{
-  #function() {
-    #emit({nom: this.nom, siret: this.siret}, { count: 1 });
-  #}
-#}
+class Ebsdd
+  include Mongoid::Document
+  include Mongoid::Timestamps
 
-#reduce = %Q{
-  #function(key, countObjVals) {
-  #}
-#}
-#map = %Q{
-  #function() {
-    #var count = 1;
-    #if (this.siret == null) {
-      #count = 0;
-    #}
-    #emit(this.nom, { count: count });
-  #}
-#}
+  def self.per_page
+    15
+  end
 
-#reduce = %Q{
-  #function(key, countObjVals) {
-    #var result = 0;
-    #countObjVals.forEach(function(value) {
-      #result += value.count;
-    #});
-    #return { count: result };
-  #}
-#}
-#map = %Q{
-  #function() {
-    #var count = 1;
-    #if (this.siret == null) {
-      #count = 0;
-    #}
-    #emit(this.nom, { count: count });
-  #}
-#}
-
-#reduce = %Q{
-  #function(key, countObjVals) {
-    #var result = 0;
-    #countObjVals.forEach(function(value) {
-      #result += value.count;
-    #});
-    #return { count: result };
-  #}
-#}
-#c = Producteur.map_reduce(map, reduce).out(inline: true)
-#c.reduce({}){ |h, e| h[e["_id"]] = e["value"]["count"] if e["value"]["count"] > 1 ; h }
-##Producteur.map_reduce(map, reduce).out(inline: true).finalize(func).each{ |d| puts d}.count
-#reduce = %Q{
-  #function(key, countObjVals) {
-    #var result = { count: 0 };
-    #countObjVals.forEach(function(value) {
-      #result.count += value.count;
-    #});
-    #return result;
-  #}
-#}
-
-#func = %Q{
-
-  #function(key, value) {
-    #if(value.count > 1) {
-      #return value;
-    #}
-  #}
-#}
-
-  before_create :normalize, :set_status, :set_num_cap
+  before_create :normalize, :set_status, :set_num_cap, :set_bordereau_id
   before_update :set_status, :set_num_cap, :set_infos_from_producteur, :set_is_ecodds
 
   def set_status
@@ -116,6 +46,9 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 
+  def set_bordereau_id
+    self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
+  end
   def set_infos_from_producteur
     self[:recepisse] = producteur.recepisse
     self[:limite_validite] = producteur.limite_validite
@@ -130,10 +63,10 @@ class Ebsdd # < ActiveRecord::Base
 
   #belongs_to :emitted, polymorphic: true, class_name: "Producteur", inverse_of: :emitted
   #belongs_to :collected, polymorphic: true, class_name: "Producteur", inverse_of: :collected
-  belongs_to :producteur
-  belongs_to :destinataire#, polymorphic: true, class_name: "Producteur"
-  belongs_to :prout#, polymorphic: true, class_name: "Producteur"
-  belongs_to :collecteur#, polymorphic: true, class_name: "Producteur"
+  belongs_to :producteur, inverse_of: :ebsdds
+  belongs_to :destinataire, inverse_of: :ebsdds
+  belongs_to :prout
+  belongs_to :collecteur, inverse_of: :ebsdds
 
   belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds
@@ -189,7 +122,7 @@ class Ebsdd # < ActiveRecord::Base
   field :nomenclature_dechet_code_nomen_c, type: Integer
   field :nomenclature_dechet_code_nomen_a, type: Integer
   field :bordereau_date_transport, type: Date
-  field :bordereau_poids, type: Integer
+  #field :bordereau_poids, type: Integer
   field :libelle, type: String
   field :bordereau_date_creation, type: Date
   field :num_cap, type: String
@@ -349,12 +282,12 @@ class Ebsdd # < ActiveRecord::Base
     :ligne_flux_date_remise, :ligne_flux_poids,
     :immatriculation, :exported, :ecodds_id
 
-    validates_presence_of :bordereau_id, :collecteur_id, :producteur_id,
+    validates_presence_of :collecteur_id, :producteur_id,
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
     #:collecteur_tel, :collecteur_responsable, 
-    :bordereau_date_transport, :bordereau_poids,
+    :bordereau_date_transport,
     :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
-    :dechet_conditionnement, :dechet_nombre_colis, :type_quantite, :bordereau_poids, :emetteur_nom,
+    :type_quantite, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
     #:destination_ult_ville, :destination_ult_tel,
@@ -366,7 +299,6 @@ class Ebsdd # < ActiveRecord::Base
     #:destinataire_siret, :destinataire_nom,
     #:destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel,
     #:destinataire_responsable,
-
 
 
 
@@ -427,16 +359,38 @@ class Ebsdd # < ActiveRecord::Base
 
   attr_accessible :destinataire_id
   validates_presence_of :destinataire_id
+  #validates_presence_of :bordereau_id
+  validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, :bordereau_poids,
+    unless: -> { new_record? }
+  validates :bordereau_poids, numericality: true,
+    unless: -> { new_record? }
 
 
 
+  def self.en_cours_stock date = Date.today
+    map = %Q{
+      function() {
+        emit(this.dechet_nomenclature, this.bordereau_poids);
+      }
+    }.squish
 
+    reduce = %Q{
+      function(key, countObjVals) {
+        var result = 0;
+        countObjVals.forEach(function(value) {
+          result += value;
+        });
+        return result;
+      }
+    }.squish
+    results = ebsdds.where(created_at: date.beginning_of_day..date.end_of_day).and(status: :complet).map_reduce(map, reduce).out(inline: true)
+    #results.entries.map{ |i| [DechetDenomination[i["_id"]][3..-1], i["value"].to_i ] }
+  end
 
 
   validates_presence_of :ecodds_id,
     if: -> { !producteur.nil? && producteur.nom =~ /eco dds/i }
 
-  validates :bordereau_poids, numericality: true
   validates_presence_of :recepisse,# :bordereau_limite_validite,
     if: -> { self[:mode_transport] == 1 }
 
@@ -752,3 +706,77 @@ class Ebsdd # < ActiveRecord::Base
     end
   end
 end
+
+  #p.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month)
+
+
+#map = %Q{
+  #function() {
+    #emit({nom: this.nom, siret: this.siret}, { count: 1 });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+  #}
+#}
+#map = %Q{
+  #function() {
+    #var count = 1;
+    #if (this.siret == null) {
+      #count = 0;
+    #}
+    #emit(this.nom, { count: count });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = 0;
+    #countObjVals.forEach(function(value) {
+      #result += value.count;
+    #});
+    #return { count: result };
+  #}
+#}
+#map = %Q{
+  #function() {
+    #var count = 1;
+    #if (this.siret == null) {
+      #count = 0;
+    #}
+    #emit(this.nom, { count: count });
+  #}
+#}
+
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = 0;
+    #countObjVals.forEach(function(value) {
+      #result += value.count;
+    #});
+    #return { count: result };
+  #}
+#}
+#c = Producteur.map_reduce(map, reduce).out(inline: true)
+#c.reduce({}){ |h, e| h[e["_id"]] = e["value"]["count"] if e["value"]["count"] > 1 ; h }
+##Producteur.map_reduce(map, reduce).out(inline: true).finalize(func).each{ |d| puts d}.count
+#reduce = %Q{
+  #function(key, countObjVals) {
+    #var result = { count: 0 };
+    #countObjVals.forEach(function(value) {
+      #result.count += value.count;
+    #});
+    #return result;
+  #}
+#}
+
+#func = %Q{
+
+  #function(key, value) {
+    #if(value.count > 1) {
+      #return value;
+    #}
+  #}
+#}
+

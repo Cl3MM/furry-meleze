@@ -45,7 +45,7 @@
               .col-md-4
                 .form-group
                   = f.label :bordereau_id, "Numéro de Bordereau"
-                  = f.text_field :bordereau_id, placeholder: "Numéro de bordereau"
+                  = f.text_field :bordereau_id, placeholder: "Numéro de bordereau", class: "disabled"
               - unless @ebsdd[:libelle].nil?
                 .col-md-4
                   .form-group

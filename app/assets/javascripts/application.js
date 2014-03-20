@@ -17,6 +17,8 @@
 //= require jquery.ui.datepicker-fr
 //= require select2/select2
 //= require select2/select2_locale_fr
+//= require raphael
+//= require morris
 //= require_self
 $(function() {
   $('.dropdown-toggle').dropdown();

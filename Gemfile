@@ -39,6 +39,8 @@ gem 'coffee-rails', '~> 3.2.1'
 #gem 'underscore-rails'
 #gem 'underscore-string-rails'
 #gem 'angularjs-rails'
+gem 'morrisjs-rails'
+gem 'raphael-rails'
 
 group :assets do
   gem "select2-rails"

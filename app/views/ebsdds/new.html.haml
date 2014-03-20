@@ -36,6 +36,9 @@
               =# fa_icon "tags ccc"
               %span.badge 0
               Numéro ECODDS
+              %span.pull-right
+                Statut
+                %span.label.label-warning Nouveau
           .panel-body
             .row
               .col-md-4
@@ -63,7 +66,7 @@
               %span.badge 1
               Emetteur du bordereau
           .panel-body
-            = render partial: "ebsdds/new/cadre1", object: f, as: :f, locals: {producteur: Producteur.new}
+            = render partial: "ebsdds/new/cadre1", object: f, as: :f#, locals: {producteur: Producteur.new}
       =# ebsdds/edit/cadre 2
       .col-md-6
         .panel.panel-default
@@ -219,3 +222,7 @@
 
     = render partial: "ebsdds/edit/annexe_2", object: f, as: :f
 
+%p#back-top.text-center.lead
+  %a{href: "#edit"}
+    %i.fa.fa-arrow-circle-up.fa-5x
+    %br Haut de la page

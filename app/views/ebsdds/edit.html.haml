@@ -26,10 +26,6 @@
           = fa_link_to ebsdds_path, "Voir tous les eBSDDs", "tags lg"
 
 
-
-
-
-
   - if @ebsdd.errors.any?
     .row
       .col-md-12
@@ -47,8 +43,8 @@
                   = msg
   %div#edit
 
-    = f.check_box :is_ecodds, placeholder: "Bordereau ECODDS"
-    = f.label :bordereau_id, "Bordereau ECODDS"
+    -#= f.check_box :is_ecodds, placeholder: "Bordereau ECODDS"
+    -#= f.label :bordereau_id, "Bordereau ECODDS"
     .row
       =# ebsdds/edit/cadre 1
       .col-md-12
@@ -58,6 +54,9 @@
               =# fa_icon "tags ccc"
               %span.badge 0
               Numéro ECODDS
+              %span.pull-right
+                Statut
+                %span.label.label-info #{@ebsdd.status}
           .panel-body
             .row
               .col-md-4
@@ -310,3 +309,8 @@
             = render partial: "ebsdds/edit/cadre21", object: f, as: :f
 
     = render partial: "ebsdds/edit/annexe_2", object: f, as: :f
+
+%p#back-top.text-center.lead
+  %a{href: "#edit"}
+    %i.fa.fa-arrow-circle-up.fa-5x
+    %br Haut de la page

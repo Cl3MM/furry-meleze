@@ -116,6 +116,7 @@ fr:
               blank: ne doit pas être vide
             bordereau_poids:
               blank: ne doit pas être vide
+              not_a_number: doit être un nombre
             num_cap:
               blank: ne doit pas être vide
             producteur_adresse:

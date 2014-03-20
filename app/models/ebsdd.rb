@@ -35,9 +35,15 @@ class Ebsdd
     15
   end
 
-  before_create :normalize, :set_status, :set_num_cap, :set_bordereau_id
-  before_update :set_status, :set_num_cap, :set_infos_from_producteur, :set_is_ecodds
+  before_create :normalize, :complete_new
+  before_update :set_status, :set_num_cap, :set_infos_from_collecteur, :set_is_ecodds
 
+  def skip_before_update_callback
+    Ebsdd.skip_callback(:update, :before, :set_status, :set_infos_from_emitted, :set_is_ecodds)
+  end
+  def set_before_update_callback
+    Ebsdd.set_callback(:update, :before, :set_status, :set_infos_from_emitted, :set_is_ecodds)
+  end
   def set_status
     if self[:status] == :import
       self[:status] = :incomplet
@@ -49,10 +55,10 @@ class Ebsdd
   def set_bordereau_id
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
   end
-  def set_infos_from_producteur
-    self[:recepisse] = producteur.recepisse
-    self[:limite_validite] = producteur.limite_validite
-    self[:mode_transport] = producteur.mode_transport
+  def set_infos_from_collecteur
+    self[:recepisse] = collecteur.recepisse
+    self[:limite_validite] = collecteur.limite_validite
+    self[:mode_transport] = collecteur.mode_transport
   end
   def set_is_ecodds
     self[:is_ecodds] = producteur.nom =~ /eco dds/i
@@ -361,11 +367,9 @@ class Ebsdd
   validates_presence_of :destinataire_id
   #validates_presence_of :bordereau_id
   validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, :bordereau_poids,
-    unless: -> { new_record? }
+    unless: -> { new_record? || is_nouveau?  }
   validates :bordereau_poids, numericality: true,
-    unless: -> { new_record? }
-
-
+    unless: -> { new_record?  || is_nouveau? }
 
   def self.en_cours_stock date = Date.today
     map = %Q{
@@ -389,6 +393,9 @@ class Ebsdd
 
 
   validates_presence_of :ecodds_id,
+    if: -> { !producteur.nil? && producteur.nom =~ /eco dds/i }
+  validates :ecodds_id, length: { is: 8,
+    wrong_length: ": la longueur du numéro doit être de %{count} chiffres" },
     if: -> { !producteur.nil? && producteur.nom =~ /eco dds/i }
 
   validates_presence_of :recepisse,# :bordereau_limite_validite,
@@ -415,6 +422,17 @@ class Ebsdd
   end
   def poids_en_tonnes_ult
     "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
+  end
+  def complete_new
+    self[:status] = :nouveau
+    self[:bordereau_date_creation] = Time.now
+    self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
+    self[:bid] = long_bid
+    set_num_cap
+    set_infos_from_collecteur
+  end
+  def is_nouveau?
+    status == :nouveau
   end
   def is_incomplete?
     status == :incomplet
@@ -673,7 +691,7 @@ class Ebsdd
   protected
 
   def normalize
-    self[:recepisse] = nil unless read_attribute(:mode_transport) == 1
+    self[:recepisse] = collecteur.recepisse unless read_attribute(:mode_transport) == 1
     [ :destinataire_email].each do | attr |
       self[attr] = nil if read_attribute(attr).blank?
     end

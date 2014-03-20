@@ -98,9 +98,6 @@ class EbsddsController < ApplicationController
     params[:ebsdd][:producteur_id] = nil if params[:ebsdd].has_key?(:producteur_id) && params[:ebsdd][:producteur_id].blank?
     params[:ebsdd][:destinataire_id] = nil if params[:ebsdd].has_key?(:destinataire_id) && params[:ebsdd][:destinataire_id].blank?
     @ebsdd = Ebsdd.new(params[:ebsdd])
-    @ebsdd.status = :nouveau
-    @ebsdd.bordereau_date_creation = Time.now
-    @ebsdd.bid = @ebsdd.long_bid
     respond_to do |format|
       if @ebsdd.save
         format.html { redirect_to @ebsdd, notice: "L'EBSDD a été crée avec succès !" }

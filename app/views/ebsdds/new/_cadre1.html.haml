@@ -3,8 +3,6 @@
     .form-group
       = f.label :producteur_id, "Producteur", class: "disabled"
       %br
-      - if @ebsdd.new_record?
-        - @ebsdd.producteur_id = nil
       = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
 
 

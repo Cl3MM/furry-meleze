@@ -107,10 +107,10 @@ class EbsddPdf < Prawn::Document
   def cadre6
     #if(@ebsdd.new_record?)
       ## Estimée
-      checkbox 168.5, 472
+      #checkbox 168.5, 472
     #else
       ## Réelle
-      #checkbox 111, 471.5
+      checkbox 111, 471.5
     #end
     my_text_box @ebsdd.poids_en_tonnes_pdf.to_s, [212.5, 472], width: 31, height: 10, align: :right unless @ebsdd.status == :nouveau
   end

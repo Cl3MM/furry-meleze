@@ -78,6 +78,30 @@ jQuery ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
 
+  display_back_to_top_arrow = () ->
+    h = $(window).height()
+    w = $("body .container").width() + parseInt $("body .container").css("margin-left").replace("px", "")
+    $("#back-top").css(
+      "position": "fixed",
+      "bottom": 20,
+      "left": w + 30
+    ).hide()
+    $(window).scroll ->
+      if $(this).scrollTop() > 100
+        $("#back-top").slideDown()
+      else
+        $("#back-top").slideUp()
+      return
+
+    # scroll body to 0px on click
+    $("#back-top a").click ->
+      $("body,html").animate
+        scrollTop: 0
+      , 500
+      false
+
+  display_back_to_top_arrow() if $("#back-top")
+
   if $("#edit").length
 
     if $("#ebsdd_collecteur_id option:selected").text() == 'TRIALP'

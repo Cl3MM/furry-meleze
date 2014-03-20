@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   def fa_link_to path, text, icon, options = {}
     view_context.link_to(path, options) do
-      icon += " margin-right-4" if icon =~ /lg|\dx/
+      icon += "" if icon =~ /lg|\dx/
       view_context.fa_icon icon, text: text
     end
   end

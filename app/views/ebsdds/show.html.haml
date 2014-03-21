@@ -39,7 +39,7 @@
   #ebsdd_annexe2.tab-pane.fade
     = render partial: "ebsdds/show/ebsdd_annexe_2", object: @ebsdd, as: :ebsdd
 
-%p#back-top.text-center.lead
-  %a{href: "#show"}
-    %i.fa.fa-arrow-circle-up.fa-5x
-    %br Haut de la page
+#button-bar{style: "display: none"}
+  %p#back-top.text-center.no-margin
+    %a.touletip{href: "#edit", title: "Retour en haut de la page", "data-placement" => "left", "data-container" => "body"}
+      %i.fa.fa-arrow-circle-up.fa-4x

@@ -78,29 +78,46 @@ jQuery ->
     $(".entreposage-provisoire :input").each ->
       $(this).prop('disabled', x)
 
+  #move_save_button = (original) ->
+    #if original
+      #$("#save-ebsdd-btn").css(position: 'initial', 'z-index': 1000)
+    #else
+      #$("#save-ebsdd-btn").hide()
+      #w = (parseInt $("body .container").css("margin-right").replace("px", "") - $("#save-ebsdd-btn").width() ) / 2
+      #$("#save-ebsdd-btn").css(position: 'fixed', bottom: 20, right: w, 'z-index': 1000).show()
+
+  buttonBarRightMargin = () ->
+    rightMargin = parseInt($("body .container").css("margin-right").replace("px", ""))
+    bttw = $("#button-bar").width()
+    rightMargin - bttw
+
   display_back_to_top_arrow = () ->
-    h = $(window).height()
-    w = $("body .container").width() + parseInt $("body .container").css("margin-left").replace("px", "")
-    $("#back-top").css(
+    $("#floating-save").tooltip()
+    $("#floating-save").on 'click', (e) ->
+      $(".panel-body > form").submit()
+
+    $("#button-bar").css
       "position": "fixed",
-      "bottom": 20,
-      "left": w + 30
-    ).hide()
+      "bottom": 15,
+      "right": buttonBarRightMargin()
+
+    $(window).on 'resize', (e) ->
+      $('#button-bar').css right: buttonBarRightMargin()
     $(window).scroll ->
       if $(this).scrollTop() > 100
-        $("#back-top").slideDown()
+        $("#button-bar").slideDown()
       else
-        $("#back-top").slideUp()
+        $("#button-bar").slideUp()
       return
 
     # scroll body to 0px on click
-    $("#back-top a").click ->
+    $("#button-bar a").click ->
       $("body,html").animate
         scrollTop: 0
       , 500
       false
 
-  display_back_to_top_arrow() if $("#back-top")
+  display_back_to_top_arrow() if $("#button-bar")
 
   if $("#edit").length
 

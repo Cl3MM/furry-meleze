@@ -5,7 +5,7 @@
   %h1.underline
     = fa_icon "tags"
     Créer un nouveau eBSDD
-    = content_tag :button, type: :submit, class: "btn btn-info pull-right mg-l-5" do
+    = content_tag :button, id: "save-ebsdd-btn", type: :submit, class: "btn btn-info pull-right mg-l-5" do
       = fa_icon "save lg"
       &nbsp;Enregistrer les modifications
     -#= fa_link_to ebsdd_path(@ebsdd), "Voir le eBSDD", "eye lg", class: "btn btn-default pull-right"
@@ -222,7 +222,12 @@
 
     = render partial: "ebsdds/edit/annexe_2", object: f, as: :f
 
-%p#back-top.text-center.lead
-  %a{href: "#edit"}
-    %i.fa.fa-arrow-circle-up.fa-5x
-    %br Haut de la page
+#button-bar{style: "display: none"}
+  %p#back-top.text-center.no-margin
+    %a.touletip{href: "#edit", title: "Retour en haut de la page", "data-placement" => "left", "data-container" => "body"}
+      %i.fa.fa-arrow-circle-up.fa-4x
+  %p.text-center.no-margin
+    = content_tag :button, type: :submit, id: "floating-save", class: "btn btn-link touletip no-padding no-margin", title: "Enregistrer ce eBSDD", "data-placement" => "left", "data-container" => "body" do
+      %span.fa-stack.fa-2x
+        %i.fa.fa-square.fa-stack-2x
+        %i.fa.fa-save.fa-stack-1x.fa-inverse.fa-lg

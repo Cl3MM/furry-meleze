@@ -83,7 +83,7 @@ class Ebsdd
 
   field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}#{"%04d" % Ebsdd.count}" }
   field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
-  field :status, type: Symbol, default: :incomplet
+  field :status, type: Symbol, default: :nouveau
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
@@ -424,7 +424,7 @@ class Ebsdd
     "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
   end
   def complete_new
-    self[:status] = :nouveau
+    self[:status] = :nouveau unless self[:status] == :incomplet
     self[:bordereau_date_creation] = Time.now
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
     self[:bid] = long_bid
@@ -640,7 +640,7 @@ class Ebsdd
           ebsdd.line_number = i
           ebsdd.destinataire = dest_id
           ebsdd.collecteur = clctr
-          ebsdd.status = :import
+          ebsdd.status = :incomplet
           ebsdd.exported = 0
           ebsdd.write_attribute :bid, ebsdd.long_bid
           ebsdd.producteur = producteur

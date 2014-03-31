@@ -491,7 +491,14 @@ class Ebsdd
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bordereau_id.to_s.truncate(35, omission: ""), nil]
-      csv << ["01", 4, producteur.siret.truncate(14, omission: ""), producteur.nom.truncate(60, omission: ""), producteur.adresse.truncate(100, omission: ""), producteur.cp.truncate(5, omission: ""), producteur.ville.truncate(45, omission: ""), producteur.tel.truncate(35, omission: ""), producteur.fax.truncate(35, omission: ""), producteur.email.truncate(50, omission: ""), producteur.responsable.truncate(35, omission: ""), nil]
+      begin
+        csv << ["01", 4, producteur.try(:siret).try(:truncate, 14, omission: ""), producteur.try(:nom).try(:truncate, 60, omission: ""), producteur.try(:adresse).try(:truncate, 100, omission: ""),
+                producteur.try(:cp).try(:truncate, 5, omission: ""), producteur.try(:ville).try(:truncate, 45, omission: ""), producteur.try(:tel).try(:truncate, 35, omission: ""), 
+                producteur.try(:fax).try(:truncate, 35, omission: ""), producteur.try(:email).try(:truncate, 50, omission: ""),
+                producteur.try(:responsable).try(:truncate, 35, omission: ""), nil]
+      rescue
+        binding.pry
+      end
       csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire.siret || "").truncate(14, omission: ""), (destinataire.nom || "").truncate(60, omission: ""), (destinataire.adresse || "").truncate(100, omission: ""), (destinataire.cp || "").truncate(5, omission: ""), (destinataire.ville || "").truncate(45, omission: ""), (destinataire.tel || "").truncate(35, omission: ""), (destinataire.fax || "").truncate(35, omission: ""), (destinataire.email || "").truncate(50, omission: ""), (destinataire.responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
       csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, DechetDenomination[dechet_denomination].truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
       csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]

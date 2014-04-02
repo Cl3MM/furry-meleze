@@ -23,10 +23,10 @@ class Producteur < Company
     #results.entries.map{ |i| [DechetDenomination[i["_id"]][3..-1], i["value"].to_i ] }
   end
   def donut_stats
-    monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination[i["_id"]][3..-1], value: i["value"].to_i } }.to_json
+    monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination[i["_id"]], value: i["value"].to_i } }.to_json
   end
   def bar_stats
-    monthly_stats_by_type.entries.map{ |i| { y: DechetDenomination[i["_id"]][3..-1], x: i["value"].to_i } }.to_json
+    monthly_stats_by_type.entries.map{ |i| { y: DechetDenomination[i["_id"]], x: i["value"].to_i } }.to_json
   end
   def self.check_headers headers
     attrs = [

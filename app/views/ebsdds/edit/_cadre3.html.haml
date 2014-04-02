@@ -1,8 +1,9 @@
+#dechets{ "data-data" =>  DechetDenomination.to_data.to_json }
 .row
   .col-md-4
     .form-group
-      = f.label :dechet_denomination, "Dénomination usuelle du déchet"
-      = f.select :dechet_denomination, DechetDenomination.to_select, :prompt => "Sélectionnez une dénomination..."
+      = f.label :super_denomination, "Dénomination usuelle du déchet"
+      = f.hidden_field :super_denomination, :placeholder => "Sélectionnez une dénomination..."
 
   .col-md-3
     .form-group

@@ -1,4 +1,5 @@
 .form-group
   = f.label :dechet_nomenclature, "Mention au titre des règlements"
-  = f.select :dechet_nomenclature, DechetNomenclature.to_select, {}, class: "disabled", prompt: "Sélectionnez la nommenclature usuelle..." #readonly: true
+  -#= f.select :dechet_nomenclature, DechetNomenclature.to_select, {}, class: "disabled", prompt: "Sélectionnez la nommenclature usuelle..." #readonly: true
+  = f.select :dechet_nomenclature, DechetDenomination.to_nomenclature, {}, class: "disabled", prompt: "Sélectionnez la nommenclature usuelle..." #readonly: true
   = f.hidden_field :dechet_nomenclature

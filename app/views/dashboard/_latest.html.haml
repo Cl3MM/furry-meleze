@@ -15,7 +15,7 @@
           %td= ebsdd.short_bid
           %td
             = link_to truncate(ebsdd.producteur.nom.titleize, length: 20), producteur_path(ebsdd.producteur), class: "touletip", title: "Producteur du déchet : #{ebsdd.producteur.nom.titleize}"
-          %td= truncate ebsdd.destinataire_nom.titleize, length: 18
+          %td= truncate ebsdd.destinataire.nom.titleize, length: 18
           %td= truncate ebsdd.libelle.titleize, length: 15
           %td= "#{ebsdd.bordereau_poids} kg"
           %td.actions
@@ -31,5 +31,7 @@
       = fa_icon "times-circle pull-left ccc lg"
       - if status == :incomplet
         Aucun eBSDD. Veuillez importer un fichier Excel pour commencer
+      - elsif status == :nouveau
+        Aucun eBSD nouvellement crée. Veuillez créer un nouveau eBSD
       - else
-        Aucun eBSDD complet. Merci de compléter les eBSDDs.
+        Aucun eBSDD. Veuillez importer un fichier Excel pour commencer

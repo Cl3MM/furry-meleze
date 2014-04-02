@@ -134,7 +134,7 @@ jQuery ->
       1076 : [ "collecteur_id" ],
       707  : [ "immatriculation", "dechet_conditionnement" ],
       507  : [ "producteur_id", "destinataire_id" ],
-      339  : [ "destination_id", "dechet_denomination" ],
+      #339  : [ "destination_id", "super_denomination" ],
     }
     # On parcourt le dictionaire ci dessus et on ajoute select2 à tous les éléments
     for len, arr of toSelect
@@ -185,11 +185,11 @@ jQuery ->
     #$("#ebsdd_dechet_nomenclature").on 'change', (evt) ->
       #denomination = $(this).val()
       #$("#code_rubrique_dechet").html denomination
-      #$("#ebsdd_dechet_denomination").val denomination
+      #$("#ebsdd_super_denomination").val denomination
 
     # Set default value for hidden field to avoid errors
-    if $("#ebsdd_dechet_denomination").length and $("input#ebsdd_dechet_nomenclature").length
-      $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_dechet_denomination").val() )
+    if $("#ebsdd_super_denomination").length and $("input#ebsdd_dechet_nomenclature").length
+      $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_super_denomination").val() )
 
     # S'il y a une erreur dans la désignation, le msg est affiché 2 fois.
     # Du coup on cache un des deux messages
@@ -221,27 +221,80 @@ jQuery ->
       200115: "CA0609"
       160904: "CA0609"
 
-    # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
-    $("#ebsdd_dechet_denomination").on 'change', (evt) ->
+
+    ## MEGA TEST pour les produits
+    # {id: 2, label: "Emballages Vides Souillés (Evs)", cr: "150110", dr11: "R13", dr12: "R1"…}
+    db = $("#dechets").data("data")
+    console.log db
+    console.log db[1]
+
+    $("#ebsdd_super_denomination").on 'change', (evt) ->
       denomination = $(this).val()
-      $("#code_rubrique_dechet").html("#{ denomination }*")
-      $("select#ebsdd_dechet_nomenclature").val(denomination)
-      # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
-      $("input#ebsdd_dechet_nomenclature").val(denomination)
-      for k, v of destination_configuration
-        if k == denomination
+      denominationInt = parseInt $(this).val()
+      console.log denomination
+      for l in db
+        if l.id == denominationInt
+          console.log l
+          $("#code_rubrique_dechet").html("#{ l.cr }*")
+          $("select#ebsdd_dechet_nomenclature").val(l.id)
+          # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
+          $("input#ebsdd_dechet_nomenclature").val(l.cr)
+
+          # consistance
+          $("#ebsdd_dechet_consistance_0").prop("checked", true) if l.c6tnc == 0
+          $("#ebsdd_dechet_consistance_1").prop("checked", true) if l.c6tnc == 1
+          $("#ebsdd_dechet_consistance_2").prop("checked", true) if l.c6tnc == 2
+          $("#ebsdd_code_operation").val(l.dr11)
           $("#ebsdd_destination_id option").each (e) ->
-            if $(this).text() == v[1]
+            if $(this).text() == l.dest
+              console.log "OK"
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
-              $("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
+              $("#ebsdd_traitement_prevu").val(l.dr12).trigger('change')
+          console.log l.cr
+          console.log contenants[l.cr]
+          console.log contenants[parseInt l.cr]
+          boite = contenants[l.cr]
+          console.log boite
+          $("#ebsdd_dechet_conditionnement").select2('val', boite ) #.trigger('change')
+
       # Remplis le champ contenant en fonction du code déchet
 
-      $("#ebsdd_dechet_conditionnement").val(contenants[denomination]).trigger('change')
+      #$("#ebsdd_dechet_conditionnement").val(contenants[l.cr]).trigger('change')
 
       # Ajax pour trouver la destination associée à la sélection
       #$("#ebsdd_producteur_attributes_id").val(denomination)
       url = '/destinations/find_by_nomenclature/' + denomination + '.js'
       $.get( url)
+
+
+
+
+
+
+
+
+
+    # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
+    #$("#ebsdd_super_denomination").on 'change', (evt) ->
+      #denomination = $(this).val()
+      #$("#code_rubrique_dechet").html("#{ denomination }*")
+      #$("select#ebsdd_dechet_nomenclature").val(denomination)
+      ## On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
+      #$("input#ebsdd_dechet_nomenclature").val(denomination)
+      #for k, v of destination_configuration
+        #if k == denomination
+          #$("#ebsdd_destination_id option").each (e) ->
+            #if $(this).text() == v[1]
+              #$("#ebsdd_destination_id").val($(this).val()).trigger('change')
+              #$("#ebsdd_traitement_prevu").val(v[0]).trigger('change')
+      ## Remplis le champ contenant en fonction du code déchet
+
+      #$("#ebsdd_dechet_conditionnement").val(contenants[denomination]).trigger('change')
+
+      ## Ajax pour trouver la destination associée à la sélection
+      ##$("#ebsdd_producteur_attributes_id").val(denomination)
+      #url = '/destinations/find_by_nomenclature/' + denomination + '.js'
+      #$.get( url)
 
     # Ajoute un onClick listner qui crée une nouvelle plaque d'immatriculation
     $("#add-immatriculation").on 'click', (evt) ->
@@ -305,5 +358,22 @@ jQuery ->
         prout = tag
         $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "#{tag}" })).fail(error) if(id != "")
 
+    initDenomination = () ->
+      data = []
+      data.push {text: l.label, id: l.id} for l in db
+      console.log data
+      $("#ebsdd_super_denomination").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
+
+    initDenomination()
     $("#ebsdd_producteur_id").on 'change', (e) ->
       $("#ebsdd_emetteur_nom").val $("#ebsdd_producteur_id option:selected").text()
+      val = $(this).select2('data').text
+      console.log 'Matching'
+      data = []
+      for l in db
+        if !!val.match(/ECO ?DDS/gi)
+          data.push {text: l.label, id: l.id} if l.id < 10
+        else
+          data.push {text: l.label, id: l.id}
+      console.log data
+      $("#ebsdd_super_denomination").select2(data: data)

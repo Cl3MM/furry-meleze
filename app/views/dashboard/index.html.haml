@@ -7,6 +7,20 @@
       .panel-heading
         %h3.panel-title
           = fa_icon "tags ccc"
+          10 Derniers eBSDDs crées
+      .panel-body
+        = render partial: 'latest', object: @nouveaux, as: 'ebsdds', locals: { status: :nouveaux }
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "tags ccc"
+          10 Derniers eBSDDs en attente
+      .panel-body
+        = render partial: 'latest', object: @en_attente, as: 'ebsdds', locals: { status: :en_attente }
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "tags ccc"
           10 Derniers eBSDDs importés
       .panel-body
         = render partial: 'latest', object: @incomplete, as: 'ebsdds', locals: { status: :incomplet }

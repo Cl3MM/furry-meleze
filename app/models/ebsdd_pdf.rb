@@ -120,7 +120,8 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.dechet_nombre_colis.to_s, [510, 494], width: 30, height: 10
   end
   def cadre4
-    my_text_box DechetNomenclature[@ebsdd.dechet_denomination].upcase, [45, 515], width: 430, height: 20
+    #my_text_box DechetNomenclature[@ebsdd.dechet_denomination].upcase, [45, 515], width: 430, height: 20
+    my_text_box @ebsdd.denomination_cadre_4.upcase, [45, 515], width: 430, height: 20
   end
   def cadre0
     my_text_box @ebsdd.bordereau_id.to_s, [118, 745.5], width: 150, height: 10
@@ -141,7 +142,8 @@ class EbsddPdf < Prawn::Document
       checkbox 479.3, 559
     end
     # Dénomination usuelle
-    my_text_box DechetDenomination[@ebsdd.dechet_denomination][3..-1].upcase, [175, 536], width: 300, height: 10
+    #my_text_box DechetDenomination[@ebsdd.dechet_denomination].upcase, [175, 536], width: 300, height: 10
+    my_text_box @ebsdd.denomination_cadre_3.upcase, [175, 536], width: 300, height: 10
   end
   def cadre1
     # siret

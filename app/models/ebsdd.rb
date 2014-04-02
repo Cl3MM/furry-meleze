@@ -38,10 +38,10 @@ class Ebsdd
   before_create :normalize, :complete_new
   before_update :set_status, :set_num_cap, :set_infos_from_collecteur, :set_is_ecodds
 
-  def skip_before_update_callback
+  def self.skip_before_update_callback
     Ebsdd.skip_callback(:update, :before, :set_status, :set_infos_from_emitted, :set_is_ecodds)
   end
-  def set_before_update_callback
+  def self.set_before_update_callback
     Ebsdd.set_callback(:update, :before, :set_status, :set_infos_from_emitted, :set_is_ecodds)
   end
   def set_status
@@ -51,7 +51,10 @@ class Ebsdd
       self[:status] = :complet
     end
   end
-
+  def set_denomination
+    self[:libelle] = DechetDenomination.reborn[@ebsdd.dechet_denomination][3]
+    self[:dechet_denomination_tmp] = DechetDenomination.reborn[@ebsdd.dechet_denomination].first
+  end
   def set_bordereau_id
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
   end
@@ -237,11 +240,12 @@ class Ebsdd
   field :mode_transport, type: Integer, default: 1
   field :bordereau_limite_validite, type: Date, default: ->{ 10.days.from_now }
 
+  field :super_denomination, type: String
   field :immatriculation, type: String
   field :exported, type: Integer, default: 0
   field :bid, type: String
 
-  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id,
+  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination,
     :destination_id, :destination_attributes, :collecteur_id,
     :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
@@ -292,7 +296,7 @@ class Ebsdd
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
     #:collecteur_tel, :collecteur_responsable, 
     :bordereau_date_transport,
-    :dechet_denomination, :dechet_consistance, :dechet_nomenclature,
+    :super_denomination, :dechet_consistance, :dechet_nomenclature,
     :type_quantite, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
@@ -345,7 +349,7 @@ class Ebsdd
     :collecteur_18_fax, :collecteur_18_email, :collecteur_18_responsable, :mode_transport_18, :bordereau_limite_validite_18,
     :transport_multimodal_18, :recepisse_18,
 
-    :date_prise_en_charge_18, :date_19, :nom_19, :entreposage_poids,
+    :date_prise_en_charge_18, :date_19, :nom_19,
 
     :dest_prevue_siret, :dest_prevue_nom, :dest_prevue_adresse, :dest_prevue_cp, :dest_prevue_ville, :dest_prevue_tel,
     :dest_prevue_fax, :dest_prevue_email, :dest_prevue_responsable,
@@ -357,7 +361,7 @@ class Ebsdd
     :entreposage_date,
     :entreposage_date_presentation,
     :entreposage_poids,
-    :bordereau_poids_ult, numericality: true,
+    :bordereau_poids_ult,#, numericality: true,
     unless: -> { new_record? || entreposage_provisoire == false }
 
 
@@ -424,12 +428,15 @@ class Ebsdd
     "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
   end
   def complete_new
+    self[:libelle] = DechetDenomination.reborn[self[:super_denomination].to_i][3]
+    self[:dechet_denomination] = DechetDenomination.reborn[self[:super_denomination].to_i ].first
     self[:status] = :nouveau unless self[:status] == :incomplet
     self[:bordereau_date_creation] = Time.now
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
     self[:bid] = long_bid
     set_num_cap
     set_infos_from_collecteur
+    binding.pry
   end
   def is_nouveau?
     status == :nouveau
@@ -454,7 +461,21 @@ class Ebsdd
     end
   end
   def short_bid
-    long_bid.gsub('1000000', "")
+    #self[:bid].gsub(Date.today.strftime("%Y%m%d"), "") if self[:bid] =~ /\A#{Date.today.strftime("%Y")}/
+    if self[:bid] =~ /\A1/
+      long_bid.gsub('1000000', "")
+    else
+      self[:bid]
+    end
+  end
+  def denomination_cadre_3
+    DechetDenomination.reborn[self[:super_denomination].to_i ][3]
+  end
+  def denomination_ecodds
+    "#{"%02d" % DechetDenomination.reborn[self[:super_denomination].to_i ][2]}-#{DechetDenomination.reborn[self[:super_denomination].to_i ][3]}"
+  end
+  def denomination_cadre_4
+    DechetDenomination.reborn[self[:super_denomination].to_i ][8]
   end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
@@ -496,8 +517,8 @@ class Ebsdd
                 producteur.try(:fax).try(:truncate, 35, omission: ""), producteur.try(:email).try(:truncate, 50, omission: ""),
                 producteur.try(:responsable).try(:truncate, 35, omission: ""), nil]
       csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire.siret || "").truncate(14, omission: ""), (destinataire.nom || "").truncate(60, omission: ""), (destinataire.adresse || "").truncate(100, omission: ""), (destinataire.cp || "").truncate(5, omission: ""), (destinataire.ville || "").truncate(45, omission: ""), (destinataire.tel || "").truncate(35, omission: ""), (destinataire.fax || "").truncate(35, omission: ""), (destinataire.email || "").truncate(50, omission: ""), (destinataire.responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
-      csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, DechetDenomination[dechet_denomination].truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
-      csv << ["04", DechetNomenclature[dechet_denomination].truncate(255, omission: ""), nil ]
+      csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, denomination_ecodds.truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
+      csv << ["04", denomination_cadre_4.truncate(255, omission: ""), nil ]
       csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
       csv << ["06", type_quantite.truncate(1, omission: ""), poids_en_tonnes.truncate(8, omission: ""), nil ]
       csv << ["08", (collecteur.siret || "").truncate(14, omission: ""), (collecteur.nom || "").truncate(60, omission: ""),
@@ -685,9 +706,9 @@ class Ebsdd
   end
   def self.search params
     if params.has_key?(:status)
-      Ebsdd.where(status: params[:status].singularize).order_by(bordereau_id: :asc)
+      Ebsdd.where(status: params[:status].singularize).exists(archived: false).order_by(created_at: :desc)
     else
-      Ebsdd.all.order_by(bordereau_id: :asc)
+      Ebsdd.exists(archived: false).order_by(created_at: :desc)
     end
   end
 
@@ -722,7 +743,31 @@ class Ebsdd
     unless dechet_conditionnement.nil?
       y = Time.now.strftime("%Y")
       s = producteur.siret[0..8]
-      p = DechetDenomination.num_cap dechet_denomination
+
+      p = case super_denomination.to_i
+      when 1
+        "PE"
+      when 2
+        "ES"
+      when 3
+        "AE"
+      when 4
+        "SO"
+      when 5
+        "PH"
+      when 6
+        "FH"
+      when 7
+        "AC"
+      when 8
+        "BA"
+      when 9
+        "CO"
+      else
+        libelle.try(:slice, 0,2).try(:upcase) || "XX"
+      end
+
+      binding.pry
       "#{y}#{p}#{s}"
     end
   end

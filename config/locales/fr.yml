@@ -23,6 +23,7 @@ fr:
   mongoid:
     attributes:
       ebsdd:
+        super_denomination: Dénomination du déchet
         bordereau_poids: Poids
         num_cap: Numéro CAP
         bordereau_poids_ult: Poids
@@ -110,6 +111,8 @@ fr:
               blank: ne doit pas être vide
         ebsdd:
           attributes:
+            super_denomination:
+              blank: ne doit pas être vide
             destinataire_id:
               blank: ne doit pas être vide
             producteur_id:

@@ -32,9 +32,15 @@
 
   %li{ class: "#{@status == :nouveau ? "active" : ""}" }
     - if @status == :nouveau
-      Nouveau
+      Nouveaux
     - else
       = link_to "Nouveau", ebsdd_status_path(status: :nouveau)
+
+  %li{ class: "#{@status == :en_attente ? "active" : ""}" }
+    - if @status == :en_attente
+      En Attente
+    - else
+      = link_to "En Attente", ebsdd_status_path(status: :en_attente)
 
   %li{ class: "#{@status == :incomplets ? "active" : ""}" }
     - if @status == :incomplets

@@ -5,6 +5,16 @@ namespace :mlz do
 
   # Ajoute le champ bid si celui ci n'existe pas
   desc "Update bordereau_id"
+  task :archive_all => :environment do
+    Ebsdd.skip_before_update_callback
+    Ebsdd.all.each do | e |
+      status = e.status
+      e.write_attribute(:archived, true)
+      e.save(validate: false)
+    end
+    Ebsdd.set_before_update_callback
+  end
+  desc "archive all"
   task :update_bid => :environment do
     Ebsdd.skip_callback(:update, :before, :set_status)
     Ebsdd.all.each do | e |

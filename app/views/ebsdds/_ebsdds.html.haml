@@ -20,15 +20,17 @@
               %td.text-center
                 = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
               %td
-                = link_to truncate(ebsdd.producteur.nom.titleize, length: 50), producteur_path(ebsdd.producteur)
+                = link_to truncate(ebsdd.producteur.nom.titleize, length: 25), producteur_path(ebsdd.producteur), class:"touletip", title: ebsdd.producteur.nom.titleize
               -#%td= ebsdd.destinataire_nom.titleize
               %td.text-center
-                - if ebsdd.dechet_nomenclature.nil?
+                - if ebsdd.super_denomination.nil?
                   \-
                 - else
-                  = DechetDenomination[ebsdd.dechet_nomenclature][3..-1].titleize
+                  .touletip{title: "#{ ebsdd.libelle.titleize }" }
+                    = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
               %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
-              %td= "#{ebsdd.bordereau_poids} kg"
+              %td
+                = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
               %td.actions
                 .center-block.text-center
                   = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs", role: "button", title: "Complèter") if ebsdd.is_incomplete?

@@ -24,6 +24,7 @@ Meleze::Application.routes.draw do
   post 'ebsdds/upload'
   match  'ebsdds/selection', to: 'ebsdds#selection', as: :ebsdds_selection, via: [:get, :post]
   post  'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
+  post  'ebsdds/nouveaux_pdfs', to: 'ebsdds#nouveaux_pdfs', as: :ebsdds_nouveaux_pdfs
 
   #post  '/search', to: "producteurs#search", as: :producteurs_search
 

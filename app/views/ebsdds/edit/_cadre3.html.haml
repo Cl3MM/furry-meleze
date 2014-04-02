@@ -1,4 +1,4 @@
-#dechets{ "data-data" =>  DechetDenomination.to_data.to_json }
+#dechets{ "data-data" =>  "#{@ebsdd.status == :incomplet ? DechetDenomination.to_ecodds_data.to_json : DechetDenomination.to_data.to_json}" }
 .row
   .col-md-4
     .form-group

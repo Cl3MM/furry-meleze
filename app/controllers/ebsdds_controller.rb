@@ -31,6 +31,29 @@ class EbsddsController < ApplicationController
   def export
     send_data Ebsdd.to_multi(params), filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
   end
+  def nouveaux_pdfs
+    binding.pry
+    if params[:ids].present?
+      ids, pdf = params[:ids], []
+      ids.each do | id |
+        ebsdd = Ebsdd.find_by(bid: id)
+        pdf << EbsddPdf.new(ebsdd) if ebsdd
+      end
+      if pdf.any?
+        send_data pdf.map{ |p| p.render }.join(), filename: "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf", type: "application/pdf"# , disposition: "inline"
+        #send_data pdf.first.render, filename: "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf", type: "application/pdf"# , disposition: "inline"
+      else
+        respond_to do | format |
+          format.json { render json: { error: "aucun bsd à traiter"}, status: :unprocessable_entity }
+        end
+      end
+    else
+      #format.html { render action: 'new' }
+      respond_to do | format |
+        format.json { render json: { error: "aucun bsd à traiter"}, status: :unprocessable_entity }
+      end
+    end
+  end
   def print_pdf
     respond_to do |format|
       format.pdf do

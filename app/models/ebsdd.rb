@@ -428,15 +428,17 @@ class Ebsdd
     "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
   end
   def complete_new
-    self[:libelle] = DechetDenomination.reborn[self[:super_denomination].to_i][3]
-    self[:dechet_denomination] = DechetDenomination.reborn[self[:super_denomination].to_i ].first
-    self[:status] = :nouveau unless self[:status] == :incomplet
+    # evite les problèmes en cas d'import
+    unless self[:status] == :incomplet
+      self[:libelle] = DechetDenomination.reborn[self[:super_denomination].to_i][3] 
+      self[:dechet_denomination] = DechetDenomination.reborn[self[:super_denomination].to_i ].first
+      self[:status] = :nouveau
+    end
     self[:bordereau_date_creation] = Time.now
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
     self[:bid] = long_bid
     set_num_cap
     set_infos_from_collecteur
-    binding.pry
   end
   def is_nouveau?
     status == :nouveau
@@ -472,7 +474,8 @@ class Ebsdd
     DechetDenomination.reborn[self[:super_denomination].to_i ][3]
   end
   def denomination_ecodds
-    "#{"%02d" % DechetDenomination.reborn[self[:super_denomination].to_i ][2]}-#{DechetDenomination.reborn[self[:super_denomination].to_i ][3]}"
+      self[:super_denomination] = DechetDenomination.reborn.values.select{ |v| v.first == dechet_denomination }.flatten[2].to_s if super_denomination.nil?
+      "#{"%02d" % DechetDenomination.reborn[self[:super_denomination].to_i ][2]}-#{DechetDenomination.reborn[self[:super_denomination].to_i ][3]}"
   end
   def denomination_cadre_4
     DechetDenomination.reborn[self[:super_denomination].to_i ][8]
@@ -712,7 +715,6 @@ class Ebsdd
     end
   end
 
-  protected
 
   def normalize
     self[:recepisse] = collecteur.recepisse unless read_attribute(:mode_transport) == 1
@@ -742,7 +744,7 @@ class Ebsdd
   def num_cap_auto
     unless dechet_conditionnement.nil?
       y = Time.now.strftime("%Y")
-      s = producteur.siret[0..8]
+      s = producteur.siret.gsub(/ |-|\./, "")[0..8]
 
       p = case super_denomination.to_i
       when 1
@@ -767,7 +769,6 @@ class Ebsdd
         libelle.try(:slice, 0,2).try(:upcase) || "XX"
       end
 
-      binding.pry
       "#{y}#{p}#{s}"
     end
   end

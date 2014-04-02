@@ -55,7 +55,7 @@ class DechetDenomination # < ActiveRecord::Base
       3 => [ 160504,"160504",3,"Aérosols","R13","R4","SARPI",0,"UN 1950, Déchet, Aérosols, 2, ( E )","gaz en récipients à pression (y compris les halons) contenant des substances dangereuses" ],
       4 => [ 200113,"200113",4,"Produits Liquides (Solvants)","R13","R1","SARPI",1,"UN 1993, Déchet, liquide inflammable n.s.a., 3, II ( E )","solvants" ],
       5 => [ 200119,"200119",5,"Phytosanitaires Et Biocides","D13","D9","SARPI",1,"UN 2902, Déchet, Pesticide liquide toxique n.s.a., 6.1, II ( E )","pesticides" ],
-      6 => [ 160127,"160127",6,"Filtres à Huile","R13","R4","CHIMIREC",0,"UN 3175, Déchet, Solide contenant du liquide inflammable n.s.a., 4.1, II ( E )","filtres à huile" ],
+      6 => [ 160107,"160127",6,"Filtres à Huile","R13","R4","CHIMIREC",0,"UN 3175, Déchet, Solide contenant du liquide inflammable n.s.a., 4.1, II ( E )","filtres à huile" ],
       7 => [ 200114,"200114",7,"Acides","D13","D9","SARPI",1,"UN 3264, Déchet, liquide inorganique corrosif acide n.s.a., 8, II ( E )","acides" ],
       8 => [ 200115,"200115",8,"Bases","D13","D9","SARPI",1,"UN 3266, Déchet, Liquide inorganique corrosif basique n.s.a., 8, II ( E )","déchets basiques" ],
       9 => [ 160904,"160904",9,"Comburants","D13","D9","SARPI",0,"UN 1479, Déchet, Solide comburant n.s.a., 5.1, II ( E )","substances oxydantes non spécifiées ailleurs" ],
@@ -118,6 +118,9 @@ class DechetDenomination # < ActiveRecord::Base
   def self.to_nomenclature
     reborn.values.map { |r| [ r[8], r[2] ] }
   end
+  def self.to_ecodds_data
+    reborn.values.map { |r| {id: r[2], label: r[3], cr: r[1], dr11: r[4], dr12: r[5], dest: r[6], c6tnc: r[7], un: r[8] } if r[2] < 10 }.compact
+  end
   def self.to_data
     reborn.values.map { |r| {id: r[2], label: r[3], cr: r[1], dr11: r[4], dr12: r[5], dest: r[6], c6tnc: r[7], un: r[8] } }
   end
@@ -131,8 +134,6 @@ class DechetDenomination # < ActiveRecord::Base
   #end
   #end
   def self.num_cap denom
-    binding.pry
-    h = DechetDenomination.denomination.reduce({}) { | h, (a,b,c) | h[a] = b ; h }
     case h[denom]
     when 1
       "PE"

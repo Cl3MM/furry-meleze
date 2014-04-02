@@ -13,6 +13,12 @@
     %ul.dropdown-menu{role: "menu"}
       %li
         = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
+      - if @status == :nouveau
+        %li.divider
+        %li
+          = fa_link_to "#", "Imprimer les BSD pour la collecte", "truck lg", id: "nouveaux_pdfs"
+        %li
+          = fa_link_to "#", "Basculer en retour collecte", "check-square-o lg", id: "to_retour_collecte"
       %li.divider
       %li
         = fa_link_to new_search_path, "Recherche avancée", "search lg"#, {"data-target" => "#search", "data-toggle" => "modal"}

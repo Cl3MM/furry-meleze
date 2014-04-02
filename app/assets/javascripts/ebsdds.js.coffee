@@ -1,3 +1,28 @@
+#jQuery.download = (url, data, method) ->
+  
+  #console.log url
+  #console.log data
+  #console.log method
+
+  #return false
+  ##url and data options required
+  #if url and data
+    
+    ##data can be string of parameters or array/object
+    #data = (if typeof data is "string" then data else jQuery.param(data))
+    
+    ##split params into form inputs
+    #inputs = ""
+    #jQuery.each data.split("&"), ->
+      #pair = @split("=")
+      #inputs += "<input type=\"hidden\" name=\"" + pair[0] + "\" value=\"" + pair[1] + "\" />"
+      #return
+
+    ##send request
+    #jQuery("<form action=\"" + url + "\" method=\"" + (method or "post") + "\">" + inputs + "</form>").appendTo("body").submit().remove()
+    #preventDefault()
+    #return false
+
 jQuery ->
   $('.datepicker').datepicker
     defaultDate: "+1w"
@@ -267,13 +292,6 @@ jQuery ->
       $.get( url)
 
 
-
-
-
-
-
-
-
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
     #$("#ebsdd_super_denomination").on 'change', (evt) ->
       #denomination = $(this).val()
@@ -358,6 +376,7 @@ jQuery ->
         prout = tag
         $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "#{tag}" })).fail(error) if(id != "")
 
+    # initialisation de la liste des produits
     initDenomination = () ->
       data = []
       data.push {text: l.label, id: l.id} for l in db
@@ -365,6 +384,7 @@ jQuery ->
       $("#ebsdd_super_denomination").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()
+
     $("#ebsdd_producteur_id").on 'change', (e) ->
       $("#ebsdd_emetteur_nom").val $("#ebsdd_producteur_id option:selected").text()
       val = $(this).select2('data').text
@@ -377,3 +397,38 @@ jQuery ->
           data.push {text: l.label, id: l.id}
       console.log data
       $("#ebsdd_super_denomination").select2(data: data)
+
+
+
+  # Traitement des nouveaux BSDs
+  $("#nouveaux_pdfs").on 'click', (e) ->
+    thead = $(".panel .panel-body table thead tr").first()
+    thead.prepend('<td class=".toggle_nv_pdf"><input id="master_nouveau_pdf_checkbox" type="checkbox"></td>')
+
+    tbody = $(".panel .panel-body table tbody").first()
+    tdCounts = $(".panel .panel-body table tbody tr:first td").length + 1
+    console.log tdCounts
+    tbody.append("<td class='.toggle_nv_pdf' colspan='#{ tdCounts }'><a href='#' id='export_nv_bsds' class='btn btn-primary btn-sm'><i class='fa fa-file'></i> BSD</a></td>")
+    $(".panel .panel-body table tbody tr").each (e) ->
+      $(this).prepend('<td class=".toggle_nv_pdf"><input type="checkbox" class="nouveau_pdf"></td>')
+
+    $("#export_nv_bsds").on 'click', (e) ->
+      ids = []
+      $(".nouveau_pdf").each (i) ->
+        ids.push $(this).closest('td').next().text() if $(this).prop('checked')
+      $("#export_nv_bsds").prop('disabled', true)
+      $("#export_nv_bsds i").removeClass("fa-file").addClass("fa-spin fa-spinner")
+      #$.get("/ebsdds/nouveaux_pdfs", { ids: ids}).done(nvPdfDone).fail(nvPdfFail)
+      $.download("/ebsdds/nouveaux_pdfs", { ids: ids}, 'post')
+
+    nvPdfFail = (d,s) ->
+      console.log d
+    nvPdfDone = (d,s) ->
+      console.log d
+      $("#export_nv_bsds").prop('disabled', false)
+      $("#export_nv_bsds i").removeClass("fa-spin fa-spinner").addClass("fa-file")
+
+    $("#master_nouveau_pdf_checkbox").on 'change', (e) ->
+      $(".panel .panel-body table tbody tr .nouveau_pdf").each (c) ->
+        checked = $(this).prop('checked')
+        $(this).prop('checked', !checked)

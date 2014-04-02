@@ -16,7 +16,7 @@
         %tbody
           -@ebsdds.each do | ebsdd |
             %tr
-              %td= ebsdd.short_bid
+              %td= ebsdd.bid
               %td.text-center
                 = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
               %td

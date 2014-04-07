@@ -22,9 +22,20 @@ Meleze::Application.routes.draw do
   get  'ebsdds/search/:q', to: 'ebsdds#search', as: :ebsdds_search
   get  'ebsdds/import'
   post 'ebsdds/upload'
-  match  'ebsdds/selection', to: 'ebsdds#selection', as: :ebsdds_selection, via: [:get, :post]
-  post  'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
-  post  'ebsdds/nouveaux_pdfs', to: 'ebsdds#nouveaux_pdfs', as: :ebsdds_nouveaux_pdfs
+  match 'ebsdds/selection', to: 'ebsdds#selection', as: :ebsdds_selection, via: [:get, :post]
+  post 'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
+  post 'ebsdds/nouveaux_pdfs', to: 'ebsdds#nouveaux_pdfs', as: :ebsdds_nouveaux_pdfs
+  post 'ebsdds/change_nouveau_statut', to: 'ebsdds#change_nouveau_statut'
+  post 'ebsdd/:id/change_nouveau_statut', to: 'ebsdds#change_ebsdd_nouveau_statut'
+  post 'ebsdd/:id/change_en_attente_statut', to: 'ebsdds#change_ebsdd_en_attente_statut'
+
+  post  'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
+  post  'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir
+  # Bons de sortie
+  get  'bon_de_sorties/new', to: 'bon_de_sorties#new', as: :new_bon_de_sortie
+  post 'bon_de_sorties', to: 'bon_de_sorties#create'
+  get 'bon_de_sorties/:id', to: 'bon_de_sorties#show', as: :bon_de_sortie
+  get 'bon_de_sorties', to: 'bon_de_sorties#index', as: :bon_de_sorties
 
   #post  '/search', to: "producteurs#search", as: :producteurs_search
 

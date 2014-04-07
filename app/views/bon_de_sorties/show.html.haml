@@ -1,0 +1,34 @@
+%h2.page-header
+  Détails du bon de sortie #{@bds.id}
+
+- if @bds.ebsdds.any?
+  %table.table.table-striped
+    %thead
+      %th Id
+      %th Denomination
+      %th Poids
+      %th Producteur
+      %th #CAP
+      %th Date de Transport
+    %tbody
+      - @bds.ebsdds.each do | ebsdd |
+        %tr
+          %td
+            = link_to ebsdd.bid, ebsdd, target: "_blank"
+          %td
+            = ebsdd.denomination_cadre_3
+          %td
+            = ebsdd.bordereau_poids
+            kg
+          %td
+            = ebsdd.producteur.nom
+          %td
+            = ebsdd.num_cap
+          %td
+            = ebsdd.bordereau_date_transport.strftime("%d/%m/%y")
+
+- else
+  .alert.alert-danger Aucun eBSDDs associés
+
+
+

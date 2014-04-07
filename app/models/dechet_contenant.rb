@@ -8,7 +8,8 @@ class DechetContenant
       ["AD6090", "Bac ADR", "600 - 900 L"],
       ["AD1000", "Bac ADR", "> 1000 L"],
       ["BA6090", "Bac", "600 - 900 L"],
-      ["BA1000", "Bac", "> 1000 L"]
+      ["BA1000", "Bac", "> 1000 L"],
+      ["xxxxxx", "Autre", "..."]
     ]
   end
   def self.to_select

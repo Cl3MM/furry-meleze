@@ -38,6 +38,7 @@ class DestinationsController < ApplicationController
   # GET /destinations/new.json
   def new
     @destination = Destination.new
+    @destination.nomenclatures = []
 
     respond_to do |format|
       format.html # new.html.erb
@@ -53,6 +54,7 @@ class DestinationsController < ApplicationController
   # POST /destinations
   # POST /destinations.json
   def create
+    params[:destination][:nomenclatures] = params[:destination][:nomenclatures].split(",") if params[:destination][:nomenclatures].present? && params[:destination][:nomenclatures] =~ /,/
     @destination = Destination.new(params[:destination])
 
     respond_to do |format|

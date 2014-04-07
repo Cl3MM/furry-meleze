@@ -3,6 +3,7 @@ class Destination
   include Mongoid::Timestamps
 
   has_many :ebsdds
+  has_many :bon_de_sortie, inverse_of: :destination
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable, :actif, :recepisse,
     :mode_transport, :limite_validite, :nomenclatures
 

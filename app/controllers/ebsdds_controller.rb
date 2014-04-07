@@ -31,22 +31,79 @@ class EbsddsController < ApplicationController
   def export
     send_data Ebsdd.to_multi(params), filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
   end
-  def nouveaux_pdfs
-    binding.pry
-    if params[:ids].present?
-      ids, pdf = params[:ids], []
-      ids.each do | id |
-        ebsdd = Ebsdd.find_by(bid: id)
-        pdf << EbsddPdf.new(ebsdd) if ebsdd
-      end
-      if pdf.any?
-        send_data pdf.map{ |p| p.render }.join(), filename: "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf", type: "application/pdf"# , disposition: "inline"
-        #send_data pdf.first.render, filename: "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf", type: "application/pdf"# , disposition: "inline"
+  def change_ebsdd_en_attente_statut
+    if params[:id].present?
+      ebsdd = Ebsdd.find_by(bid: params[:id])
+      if ebsdd
+        ebsdd.set(:status, :attente_sortie)
+        respond_to do | format |
+          format.json { render json: { id: params[:id] } }
+        end
       else
         respond_to do | format |
-          format.json { render json: { error: "aucun bsd à traiter"}, status: :unprocessable_entity }
+          format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
         end
       end
+    else
+      respond_to do | format |
+        format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
+      end
+    end
+  end
+  def change_ebsdd_nouveau_statut
+    if params[:id].present?
+      ebsdd = Ebsdd.find_by(bid: params[:id])
+      if ebsdd
+        ebsdd.set(:status, :en_attente)
+        respond_to do | format |
+          format.json { render json: { id: params[:id] } }
+        end
+      else
+        respond_to do | format |
+          format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do | format |
+        format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
+      end
+    end
+  end
+  def change_nouveau_statut
+    if params[:ids].present?
+      ids = params[:ids]
+      ids.each_with_index do | id, ix |
+        ebsdd = Ebsdd.find_by(bid: id)
+        ebsdd.set(:status, :en_attente)
+      end
+      msg = { data: ids }
+      respond_to do | format |
+        format.json { render json: msg }
+      end
+    else
+      #format.html { render action: 'new' }
+      respond_to do | format |
+        format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
+      end
+    end
+  end
+  def nouveaux_pdfs
+    if params[:ids].present?
+      ids, pdf_list = params[:ids], []
+      path = File.join(Rails.root, "tmp", "pdfs")
+      FileUtils.remove_dir(path) if File.exists? path
+      FileUtils.mkdir_p path
+      ids.each_with_index do | id, ix |
+        ebsdd = Ebsdd.find_by(bid: id)
+        pdf_path = File.join( path, ebsdd.bid ) + ".pdf"
+        pdf = EbsddPdf.new(ebsdd)
+        pdf.render_file pdf_path
+        pdf_list << pdf_path
+      end
+      cmd = "pdftk #{pdf_list.join(" ")} cat output #{File.join(path, "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf")}"
+      Rails.logger.debug cmd
+      %x(#{cmd})
+      send_file File.join(path, "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf"), type: "application/pdf"
     else
       #format.html { render action: 'new' }
       respond_to do | format |
@@ -55,9 +112,10 @@ class EbsddsController < ApplicationController
     end
   end
   def print_pdf
+    status = params[:status].present? ? params[:status].to_sym : :empty
     respond_to do |format|
       format.pdf do
-        pdf = EbsddPdf.new(@ebsdd)
+        pdf = EbsddPdf.new(@ebsdd, status)
         send_data pdf.render, filename: "#{@ebsdd.bordereau_id}_#{Date.today.strftime("%d-%m-%y")}.pdf",
           type: "application/pdf"# , disposition: "inline"
       end
@@ -115,6 +173,24 @@ class EbsddsController < ApplicationController
     @destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
   end
 
+  def types_dechet_a_sortir
+    types = Ebsdd.where(status: :attente_sortie).distinct(:super_denomination).map{ |s| { text: DechetDenomination.reborn[s.to_i][3], id: s.to_i } }
+    render json: types
+  end
+
+  def a_sortir
+    if params[:denomination].present?
+      denomination = params[:denomination]
+      @ebsdds = Ebsdd.where(status: :attente_sortie).and(super_denomination: denomination)
+      @destinataire = DechetDenomination.reborn[denomination.to_i][6]
+      respond_to do | format |
+        format.js
+      end
+    else
+      render json: { error: "Aucune denomination"}, status: :unprocessable_entity
+    end
+  end
+
   # POST /ebsdds
   # POST /ebsdds.json
   def create
@@ -142,6 +218,8 @@ class EbsddsController < ApplicationController
   # PATCH/PUT /ebsdds/1
   # PATCH/PUT /ebsdds/1.json
   def update
+    # Si l'opérateur tape une virgule à la place d'un point dans le poids
+    params[:ebsdd][:bordereau_poids].gsub!(",", ".") if params[:ebsdd][:bordereau_poids].present? && params[:ebsdd][:bordereau_poids] =~ /,/
     @ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
       if @ebsdd.update_attributes(params[:ebsdd])

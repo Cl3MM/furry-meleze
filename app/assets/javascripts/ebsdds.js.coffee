@@ -1,27 +1,20 @@
-#jQuery.download = (url, data, method) ->
-  
-  #console.log url
-  #console.log data
-  #console.log method
-
-  #return false
-  ##url and data options required
-  #if url and data
-    
-    ##data can be string of parameters or array/object
-    #data = (if typeof data is "string" then data else jQuery.param(data))
-    
-    ##split params into form inputs
-    #inputs = ""
-    #jQuery.each data.split("&"), ->
-      #pair = @split("=")
-      #inputs += "<input type=\"hidden\" name=\"" + pair[0] + "\" value=\"" + pair[1] + "\" />"
-      #return
-
-    ##send request
-    #jQuery("<form action=\"" + url + "\" method=\"" + (method or "post") + "\">" + inputs + "</form>").appendTo("body").submit().remove()
-    #preventDefault()
-    #return false
+jQuery.download = (url, data, method) ->
+  authenticityToken = $("meta[name='csrf-token']").attr("content")
+  console.log authenticityToken
+  #url and data options required
+  if url and data
+    #data can be string of parameters or array/object
+    data = (if typeof data is "string" then data else jQuery.param(data))
+    #split params into form inputs
+    inputs = ""
+    $.each data.split("&"), ->
+      pair = @split("=")
+      inputs += "<input type=\"hidden\" name=\"" + pair[0] + "\" value=\"" + pair[1] + "\" />" unless !pair[0]
+      return
+    #send request
+    inputs += '<input name="authenticity_token" type="hidden" value="' + authenticityToken + '">'
+    form = "<form action=\"" + url + "\" method=\"" + (method or "post") + "\">" + inputs + "</form>"
+    $(form).appendTo("body").submit().remove()
 
 jQuery ->
   $('.datepicker').datepicker
@@ -402,15 +395,49 @@ jQuery ->
 
   # Traitement des nouveaux BSDs
   $("#nouveaux_pdfs").on 'click', (e) ->
+    e.preventDefault()
+    if $("#master_nouveau_pdf_checkbox").length
+      $(".toggle_nv_pdf").toggle()
+      return
     thead = $(".panel .panel-body table thead tr").first()
-    thead.prepend('<td class=".toggle_nv_pdf"><input id="master_nouveau_pdf_checkbox" type="checkbox"></td>')
+    thead.prepend('<td class="toggle_nv_pdf"><input id="master_nouveau_pdf_checkbox" type="checkbox"></td>')
 
     tbody = $(".panel .panel-body table tbody").first()
     tdCounts = $(".panel .panel-body table tbody tr:first td").length + 1
-    console.log tdCounts
-    tbody.append("<td class='.toggle_nv_pdf' colspan='#{ tdCounts }'><a href='#' id='export_nv_bsds' class='btn btn-primary btn-sm'><i class='fa fa-file'></i> BSD</a></td>")
     $(".panel .panel-body table tbody tr").each (e) ->
-      $(this).prepend('<td class=".toggle_nv_pdf"><input type="checkbox" class="nouveau_pdf"></td>')
+      $(this).prepend('<td class="toggle_nv_pdf"><input type="checkbox" class="nouveau_pdf"></td>')
+    tbody.append("<tr><td class='toggle_nv_pdf' colspan='#{ tdCounts }'>
+        <a href='#' id='export_nv_bsds' class='btn btn-primary btn-sm'><i class='fa fa-file'></i> BSD</a>&nbsp;
+        <a href='#' id='changeNouveauStatus' class='btn btn-primary btn-sm'><i class='fa fa-truck'></i> Prêt pour la collecte</a>
+      </td></tr>")
+
+    $("#changeNouveauStatus").on 'click', (e) ->
+      ids = []
+      $(".nouveau_pdf").each (i) ->
+        ids.push $(this).closest('td').next().text() if $(this).prop('checked')
+      console.log ids
+      $("#changeNouveauStatus").prop('disabled', true)
+      $("#changeNouveauStatus i").removeClass("fa-file").addClass("fa-spin fa-spinner")
+      url = "/ebsdds/change_nouveau_statut.json"
+      $.post(url, { ids: ids }).done( nouveauStatusChanged )
+
+    nouveauStatusChanged = (d,s) ->
+      console.log d
+      console.log s
+      $("#changeNouveauStatus i").removeClass("fa-spin fa-spinner").addClass("fa-file")
+      ids = d.data
+      for id in ids
+        $(".nouveau_pdf").each (i) ->
+          if $(this).closest('td').next().text() == id
+            $(this).closest('tr').fadeOut(600, removeNouveauTr)
+
+    removeNouveauTr = ()->
+      $(this).remove()
+      console.log 'removed !'
+      console.log tbody.find('tr').length
+      if tbody.find('tr').length == 1 and $(".toggle_nv_pdf").length
+        div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
+        $(".panel .panel-body table").fadeOut(600).replaceWith(div)
 
     $("#export_nv_bsds").on 'click', (e) ->
       ids = []
@@ -419,12 +446,15 @@ jQuery ->
       $("#export_nv_bsds").prop('disabled', true)
       $("#export_nv_bsds i").removeClass("fa-file").addClass("fa-spin fa-spinner")
       #$.get("/ebsdds/nouveaux_pdfs", { ids: ids}).done(nvPdfDone).fail(nvPdfFail)
-      $.download("/ebsdds/nouveaux_pdfs", { ids: ids}, 'post')
+      params = ""
+      params += "ids[]=#{ids[i]}&" for i in [0..ids.length-1]
+      console.log params
+      $.download("/ebsdds/nouveaux_pdfs", params, 'post')
+      setTimeout nvPdfDone, 1000
 
     nvPdfFail = (d,s) ->
       console.log d
-    nvPdfDone = (d,s) ->
-      console.log d
+    nvPdfDone = () ->
       $("#export_nv_bsds").prop('disabled', false)
       $("#export_nv_bsds i").removeClass("fa-spin fa-spinner").addClass("fa-file")
 
@@ -432,3 +462,48 @@ jQuery ->
       $(".panel .panel-body table tbody tr .nouveau_pdf").each (c) ->
         checked = $(this).prop('checked')
         $(this).prop('checked', !checked)
+
+  # bouton nouveau status (passe le status de Nouveau à En Attente)
+  $(".nouveau_statut").on 'click', (e) ->
+    id = $(this).closest('tr').find('td:first').text()
+    url = "/ebsdd/#{id}/change_nouveau_statut.json"
+    console.log url
+    $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
+
+  fadeNvEbsdd = (d,s) ->
+    id = d.id
+    $(".panel .panel-body table tbody tr td:first-child").each (e) ->
+      if $(this).text() == id
+        $(this).closest('tr').fadeOut(700, removeNouveauEbsdd)
+
+  removeNouveauEbsdd = (e) ->
+    $(this).remove()
+    if $(".panel .panel-body table tbody tr").length == 0
+      div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
+      $(".panel .panel-body table").fadeOut(600).replaceWith(div)
+
+
+  # bouton en attente status (passe le status de En Attente à Pret à sortir)
+  $(".en_attente_statut").on 'click', (e) ->
+    if $(this).first().closest('td').prev().text().trim() == "-"
+      div = "<div class='alert alert-danger'>Veuillez remplir le bsd avant de changer le statut.</div>"
+      $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
+      return false
+    id = $(this).closest('tr').find('td:first').text()
+    url = "/ebsdd/#{id}/change_en_attente_statut.json"
+    console.log url
+    $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
+
+  removeNouveauEbsdd = (e) ->
+    $(this).remove()
+    if $(".panel .panel-body table tbody tr").length == 0
+      div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
+      $(".panel .panel-body table").fadeOut(600).replaceWith(div)
+
+  # vérification du champ poids pour permettre le téléchargment du bsd
+  $(".check-poids").on 'click', (e) ->
+    if $(this).first().closest('td').prev().text().trim() == "-"
+      div = "<div class='alert alert-danger'>Veuillez remplir le bsd avant d'imprimer le Cerfa.</div>"
+      $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
+      return false
+

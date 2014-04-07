@@ -1,0 +1,34 @@
+%h1.underline
+  = fa_icon "tags"
+  Liste des Bon de sorties
+  %span.small
+    = "(#{@bds.total_entries})"
+
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_bon_de_sortie_path, "Créer un nouveau Bon de sortie", "tag lg"
+
+- if @bds.any?
+  %table.table.table-stripped
+    %thead
+      %th Id
+      %th # eBSDDs
+      %th Destination
+      %th Créé le
+    %tbody
+    - @bds.each do | bd |
+      %tr
+        %td= link_to bd.id, bon_de_sortie_path(bd)
+        %td= bd.ebsdds.count
+        %td= bd.destination.nom
+        %td= bd.created_at.strftime("%d/%m/%y")
+
+- else
+  .alert.alert-info
+    Aucun bon de sortie.

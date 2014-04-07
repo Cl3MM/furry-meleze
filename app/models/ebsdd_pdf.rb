@@ -6,32 +6,65 @@ class EbsddPdf < Prawn::Document
   WHITE = "FFFFFF"
   SUPER_PINK = "FF11FF"
 
-  def initialize(ebsdd)
+  def initialize(ebsdd, status)
     @ebsdd = ebsdd
+    @status = status
     path = File.join(Rails.root, "vendor", "assets", "cerfa.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-    image path, at: [0, here], width: 210.mm
     #stroke_axis at: [500, 800], :step_length => 20, :color => 'FF00'
 
     self.font_size = 9
+    if @ebsdd.status == :nouveau || @status == :first_part
+      image path, at: [0, here], width: 210.mm
+      erase_all
+      checkboxes
+      page_num
 
-    erase_all
-    checkboxes
-    page_num
-
-    cadre0
-    cadre1
-    cadre2
-    cadre3
-    cadre4
-    cadre5 unless @ebsdd.status == :nouveau
-    cadre6
-    cadre8
-    cadre9
-    cadre10 unless @ebsdd.status == :nouveau
-    cadre11
-    cadre12
+      cadre0
+      cadre1
+      cadre2
+      cadre3
+      cadre4
+      cadre6
+      cadre8
+      cadre9
+      cadre11
+      cadre12
+    elsif @ebsdd.status == :en_attente || @status == :second_part
+      cadre5
+      cadre10
+      cadre6
+    else
+      image path, at: [0, here], width: 210.mm
+      erase_all
+      checkboxes
+      page_num
+      cadre0
+      cadre1
+      cadre2
+      cadre3
+      cadre4
+      cadre5
+      cadre6
+      cadre8
+      cadre9
+      cadre10
+      cadre11
+      cadre12
+    end
+    #cadre0
+    #cadre1
+    #cadre2
+    #cadre3
+    #cadre4
+    #cadre5 unless @ebsdd.status == :nouveau
+    #cadre6
+    #cadre8
+    #cadre9
+    #cadre10 unless @ebsdd.status == :nouveau
+    #cadre11
+    #cadre12
   end
   def log text
     my_text_box text, [200, 746.5], width: 150, height: 10

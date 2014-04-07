@@ -74,8 +74,9 @@ class Ebsdd
   #belongs_to :collected, polymorphic: true, class_name: "Producteur", inverse_of: :collected
   belongs_to :producteur, inverse_of: :ebsdds
   belongs_to :destinataire, inverse_of: :ebsdds
-  belongs_to :prout
+  #belongs_to :prout
   belongs_to :collecteur, inverse_of: :ebsdds
+  belongs_to :bon_de_sortie#, inverse_of: :ebsdds
 
   belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds
@@ -246,7 +247,7 @@ class Ebsdd
   field :bid, type: String
 
   attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination,
-    :destination_id, :destination_attributes, :collecteur_id,
+    :destination_id, :destination_attributes, :collecteur_id, :bon_de_sortie_id,
     :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
     :libelle, :bordereau_date_transport,
@@ -372,7 +373,7 @@ class Ebsdd
   #validates_presence_of :bordereau_id
   validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, :bordereau_poids,
     unless: -> { new_record? || is_nouveau?  }
-  validates :bordereau_poids, numericality: true,
+  validates_numericality_of :bordereau_poids, greater_than: 0,
     unless: -> { new_record?  || is_nouveau? }
 
   def self.en_cours_stock date = Date.today

@@ -3,6 +3,15 @@
   Liste des destinations
   %span.small
     = "(#{Destination.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_destination_path, "Créer une nouvelle destination", "truck lg"
 
 -if @destinations.any?
   .panel.panel-default
@@ -27,7 +36,7 @@
                 .center-block.text-center
                   = link_to(fa_icon("eye lg", text: ""), destination, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce destination")
                   = link_to(fa_icon("gear lg", text: ""), edit_destination_path(destination), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
-                  = link_to(fa_icon("times lg", text: ""), destination, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le destination")
+                  = link_to(fa_icon("times lg", text: ""), destination, method: :delete, data: { confirm: 'Etes vous sur ?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le destination")
               -#%td= link_to 'Show', destination
               -#%td= link_to 'Edit', edit_destination_path(destination)
               -#%td= link_to 'Destroy', destination, :method => :delete, :data => { :confirm => 'Are you sure?' }

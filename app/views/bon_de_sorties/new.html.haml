@@ -1,0 +1,40 @@
+= javascript_include_tag "spin.min.js"
+= javascript_include_tag "jquery.spin.js"
+= stylesheet_link_tag "bon_de_sorties.css"
+%h2.page-header 
+  Créer un nouveau bon de sortie
+  %a.btn.btn-success.pull-right#createBds{href: "#"}
+    %i.fa.fa-sign-out
+    Créer le Bon de sortie
+#spinner
+  -#= custom_form @bds, class: "form-horizontal", id: "bon-de-sortie", role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}"  do | f |
+  %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}" }
+    .form-group
+      %label.control-label.col-sm-3 Type de déchet à sortir
+      .col-md-9
+        = hidden_field_tag "type_dechet", nil,  class: "form-control col-md-9", prompt: "Sélectionnez le type de déchet à sortir...", "data-placeholder" => "Sélectionnez le type de déchet à sortir..."
+    .form-group
+      %label.control-label.col-sm-3 Destination Finale
+      .col-md-9
+        = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...",
+          disabled: true,  "data-destinations" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[6], text: r[6] } unless ( a.map{|c| c[:text]}.include?(r[6]) || r[6].blank? ) ; a  }.to_json
+        .input-group#destinationGroup
+          %span.input-group-addon Ou
+          = text_field_tag 'destinationAutre', nil, class: "form-control col-sm-2", placeholder: "Sélectionnez une autre destination"
+        -#%span.prout ou
+    .alert.alert-info#alert-poids{style: "display: none;"}
+      %p.text-center
+        %strong
+          Poids total du bon de sortie :
+          %span#poids
+          %span kg
+    %table.table.table-striped#ebsdds_list{'data-url' => "#{ebsdds_a_sortir_url}", style: "display: none;"}
+      %thead
+        %th
+          = check_box_tag "chauffe"
+        %th Id
+        %th Denomination
+        %th Poids
+        %th Producteur
+        %th Transport
+      %tbody

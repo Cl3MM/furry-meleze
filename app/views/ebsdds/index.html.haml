@@ -13,6 +13,8 @@
     %ul.dropdown-menu{role: "menu"}
       %li
         = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
+      %li
+        = fa_link_to new_bon_de_sortie_path, "Créer un Bon de Sortie", "sign-out lg"
       - if @status == :nouveau
         %li.divider
         %li
@@ -40,13 +42,25 @@
     - if @status == :nouveau
       Nouveaux
     - else
-      = link_to "Nouveau", ebsdd_status_path(status: :nouveau)
+      = link_to "Nouveaux", ebsdd_status_path(status: :nouveau)
 
   %li{ class: "#{@status == :en_attente ? "active" : ""}" }
     - if @status == :en_attente
       En Attente
     - else
       = link_to "En Attente", ebsdd_status_path(status: :en_attente)
+
+  %li{ class: "#{@status == :attente_sortie ? "active" : ""}" }
+    - if @status == :attente_sortie
+      Attente sortie
+    - else
+      = link_to "Attente sortie", ebsdd_status_path(status: :attente_sortie)
+
+  %li{ class: "#{@status == :clos ? "active" : ""}" }
+    - if @status == :clos
+      Archivés
+    - else
+      = link_to "Archivés", ebsdd_status_path(status: :clos)
 
   %li{ class: "#{@status == :incomplets ? "active" : ""}" }
     - if @status == :incomplets
@@ -59,12 +73,6 @@
       Complets
     - else
       = link_to "Complets", ebsdd_status_path(status: :complets)
-
-  %li{ class: "#{@status == :expedies ? "active" : ""}" }
-    - if @status == :expedies
-      Expédiés
-    - else
-      = link_to "Expédiés", ebsdd_status_path(status: :expedies)
 
 = render partial: "ebsdds/ebsdds"
 #search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}

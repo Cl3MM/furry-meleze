@@ -118,6 +118,7 @@ fr:
             producteur_id:
               blank: ne doit pas être vide
             bordereau_poids:
+              greater_than: doit être supérieur à %{count}
               blank: ne doit pas être vide
               not_a_number: doit être un nombre
             num_cap:

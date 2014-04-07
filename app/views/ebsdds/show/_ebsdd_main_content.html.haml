@@ -13,6 +13,9 @@
           - unless ebsdd.ecodds_id.nil?
             %dt Numéro ECODDS
             %dd= ebsdd.ecodds_id
+          %dt Statut
+          %dd
+            %span.label.label-info #{@ebsdd.status.to_s.gsub("_", " ")}
 .row
   =# cadre 1
   .col-md-7

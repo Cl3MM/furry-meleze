@@ -4,6 +4,6 @@
 
 
 jQuery ->
-  $("#destination_nomenclatures").select2(tags: $("#destination_nomenclatures").val())
+  $("#destination_nomenclatures").select2(tags: $("#destination_nomenclatures").val(), width: 906, allowClear: true, placeholder: "Ajouter les nomemnclatures de déchets...")
 
   console.log $("#destination_nomenclatures").val()

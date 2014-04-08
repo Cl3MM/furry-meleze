@@ -36,6 +36,7 @@ Meleze::Application.routes.draw do
   post 'bon_de_sorties', to: 'bon_de_sorties#create'
   get 'bon_de_sorties/:id', to: 'bon_de_sorties#show', as: :bon_de_sortie
   get 'bon_de_sorties', to: 'bon_de_sorties#index', as: :bon_de_sorties
+  post 'bon_de_sorties/search', to: "bon_de_sorties#search", as: :bon_de_sorties_search
 
   #post  '/search', to: "producteurs#search", as: :producteurs_search
 

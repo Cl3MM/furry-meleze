@@ -1,5 +1,16 @@
 %h2.page-header
   Détails du bon de sortie #{@bds.id}
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_bon_de_sortie_path, "Créer un nouveau bon de sortie", "sign-out lg"
+      %li
+        = fa_link_to bon_de_sorties_path, "Voir les bons de sortie", "sign-out lg"
 
 - if @bds.ebsdds.any?
   %table.table.table-striped

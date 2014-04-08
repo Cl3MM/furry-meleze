@@ -19,14 +19,14 @@ class Producteur < Company
         return result;
       }
     }.squish
-    results = ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month).and(status: :complet).map_reduce(map, reduce).out(inline: true)
+    results = ebsdds.where(created_at: datemin..datemax).and(status: :clos).map_reduce(map, reduce).out(inline: true)
     #results.entries.map{ |i| [DechetDenomination[i["_id"]][3..-1], i["value"].to_i ] }
   end
   def donut_stats
-    monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination[i["_id"]], value: i["value"].to_i } }.to_json
+    monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination.reborn[i["_id"].to_i][3], value: i["value"].to_i } }.to_json
   end
   def bar_stats
-    monthly_stats_by_type.entries.map{ |i| { y: DechetDenomination[i["_id"]], x: i["value"].to_i } }.to_json
+    monthly_stats_by_type.entries.map{ |i| { y: DechetDenomination.reborn[i["_id"].to_i][3], x: i["value"].to_i } }.to_json
   end
   def self.check_headers headers
     attrs = [

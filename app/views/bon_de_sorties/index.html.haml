@@ -1,3 +1,11 @@
+= content_for :search do
+  = form_tag( "/bon_de_sorties/search", class: "navbar-form navbar-right", role: :search ) do | f |
+    .form-group
+      = text_field_tag :query, nil, placeholder: "Numéro du bon de sortie", class: "form-control"
+    %span.form-group-btn
+      %button.btn.btn-default{ type: :submit }
+        = fa_icon "search lg"
+
 %h1.underline
   = fa_icon "tags"
   Liste des Bon de sorties

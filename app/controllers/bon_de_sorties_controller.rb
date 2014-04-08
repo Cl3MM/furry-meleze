@@ -20,7 +20,7 @@ class BonDeSortiesController < ApplicationController
         e = Ebsdd.find_by(bid: bid)
         e.set(:status, :clos)
         @bds.ebsdds << e
-        e.save!
+        #e.save!
       end
       if @bds.save!
         redirect_to bon_de_sortie_path(@bds), notice: "L'EBSDD a été crée avec succès !"
@@ -34,6 +34,22 @@ class BonDeSortiesController < ApplicationController
   end
   def show
   end
+  def search
+    if params.has_key?(:query)
+      @bds = BonDeSortie.where(id: /#{params[:query]}/i).paginate(page: params[:page], per_page: 20)
+      #binding.pry
+    end
+    respond_to do |format|
+      if @bds
+        format.html { render action: "index" }
+        format.json { render json: @bds, status: :created }
+      else
+        format.html { redirect_to :producteurs_path, notice: 'Aucun producteur trouvé :(' }
+        format.json { render json: [], status: :unprocessable_entity }
+      end
+    end
+  end
+
 
   private
 

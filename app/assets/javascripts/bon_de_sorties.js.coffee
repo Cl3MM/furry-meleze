@@ -20,8 +20,8 @@ jQuery ->
         authenticityToken = $("meta[name='csrf-token']").attr("content")
         form.append('<input name="authenticity_token" type="hidden" value="' + authenticityToken + '">')
         console.log form
-        alert "Désolé, cette fonction n'est pas encore active"
-        #form.submit()
+        #alert "Désolé, cette fonction n'est pas encore active"
+        form.submit()
       else
         console.log "not ok"
         div = '<div class="alert alert-danger">Veuillez selectionner au moins un eBSDD !</div>'

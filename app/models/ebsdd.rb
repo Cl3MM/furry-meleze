@@ -76,7 +76,7 @@ class Ebsdd
   belongs_to :destinataire, inverse_of: :ebsdds
   #belongs_to :prout
   belongs_to :collecteur, inverse_of: :ebsdds
-  belongs_to :bon_de_sortie#, inverse_of: :ebsdds
+  belongs_to :bon_de_sortie, inverse_of: :ebsdds
 
   belongs_to :destination, inverse_of: :destination
   belongs_to :attachment #, :inverse_of => :ebsdds

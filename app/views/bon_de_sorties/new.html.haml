@@ -4,8 +4,20 @@
 %h2.page-header 
   Créer un nouveau bon de sortie
   %a.btn.btn-success.pull-right#createBds{href: "#"}
-    %i.fa.fa-sign-out
+    %i.fa.fa-save
     Créer le Bon de sortie
+  .btn-group.pull-right.mg-r-5
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_bon_de_sortie_path, "Créer un nouveau bon de sortie", "sign-out lg"
+      %li
+        = fa_link_to bon_de_sorties_path, "Voir les bons de sortie", "list-ol lg"
+
 #spinner
   -#= custom_form @bds, class: "form-horizontal", id: "bon-de-sortie", role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}"  do | f |
   %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}" }

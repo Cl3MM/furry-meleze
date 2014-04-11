@@ -38,6 +38,7 @@ Meleze::Application.routes.draw do
   get 'bon_de_sorties', to: 'bon_de_sorties#index', as: :bon_de_sorties
   post 'bon_de_sorties/search', to: "bon_de_sorties#search", as: :bon_de_sorties_search
 
+  get  'bon_de_sorties/printpdf/:id', to: "bon_de_sorties#prout", defaults: { format: :pdf }, as: :bon_de_sortie_pdf
   #post  '/search', to: "producteurs#search", as: :producteurs_search
 
   post 'destinataires/search', to: "companies#search", as: :destinataires_search

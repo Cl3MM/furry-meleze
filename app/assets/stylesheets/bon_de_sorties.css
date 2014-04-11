@@ -1,6 +1,6 @@
-#destinationGroup {
+.input-super-group {
   padding-left: 20px;
 }
-#destinationAutre {
-  width: 315px;
+.input-super-autre {
+  width: 315px !important;
 }

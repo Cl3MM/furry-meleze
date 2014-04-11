@@ -11,6 +11,8 @@
         = fa_link_to new_bon_de_sortie_path, "Créer un nouveau bon de sortie", "sign-out lg"
       %li
         = fa_link_to bon_de_sorties_path, "Voir les bons de sortie", "sign-out lg"
+      %li
+        = fa_link_to bon_de_sortie_pdf_path(@bds), "Imprimer le bon de sortie", "file lg"
 
 - if @bds.ebsdds.any?
   %table.table.table-striped

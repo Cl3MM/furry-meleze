@@ -6,21 +6,68 @@ class EbsddPdf < Prawn::Document
   WHITE = "FFFFFF"
   SUPER_PINK = "FF11FF"
 
-  def initialize(ebsdd, status)
+  def initialize(ebsdd, status, bds)
     @ebsdd = ebsdd
+    @bds = bds
     @status = status
-    path = File.join(Rails.root, "vendor", "assets", "cerfa.jpg")
+    path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-    #stroke_axis at: [500, 800], :step_length => 20, :color => 'FF00'
 
     self.font_size = 9
-    if @ebsdd.status == :nouveau || @status == :first_part
+    if @ebsdd.nil? || @status == :bon_de_sortie
+      producteur = Producteur.find_by(nom: /Valespace/i)
+      collecteur = Collecteur.find_by(nom: /TRIALP/i)
+      destinataire = Destinataire.find_by(nom: /Valespace/i)
+      @ebsdd = Ebsdd.new(
+        producteur_id: producteur.id,
+        destinataire_id: destinataire.id,
+        bordereau_poids: @bds.poids,
+        collecteur_id: collecteur.id,
+        destination_id: @bds.destination.id,
+        super_denomination: @bds.denomination_id.to_s,
+        emetteur_nom: producteur.nom,
+        emetteur_siret: producteur.siret,
+        emetteur_adresse: producteur.adresse,
+        emetteur_tel: producteur.tel,
+        codedr: @bds.codedr_cadre12,
+        bid: @bds.id,
+        bordereau_date_transport: @bds.created_at,
+        code_operation: @bds.codedr_cadre12,
+        traitement_prevu: CodeDr[@bds.codedr_cadre12]
+      )
+      @ebsdd.status = :bidon
+      path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
       image path, at: [0, here], width: 210.mm
       erase_all
       checkboxes
       page_num
+      cadre0
+      cadre1
+      cadre2
+      cadre3
+      cadre4
+      cadre5
+      cadre6
+      cadre8
+      cadre9
+      cadre10
+      cadre11
+      cadre12
 
+      1.upto(52).each_slice(5) do | annexe |
+        annexe_en_tete
+        annexe.each_with_index do | ebsdd, i |
+          e = @bds.ebsdds.first
+          annexe_line_item e, i
+        end
+      end
+
+    elsif @ebsdd.status == :nouveau || @status == :first_part
+      image path, at: [0, here], width: 210.mm
+      erase_all
+      checkboxes
+      page_num
       cadre0
       cadre1
       cadre2
@@ -66,6 +113,76 @@ class EbsddPdf < Prawn::Document
     #cadre11
     #cadre12
   end
+
+  def annexe_line_item ebsdd, position
+    height = position * 104.5
+    ###### Table 1
+    # effacage
+    erase 100, 595 - height, width: 150 #siret
+    erase 370, 595 - height, width: 100, height: 22 #rubrique déchet
+    erase 360, 530 - height, width: 50, height: 20 #Date de remise
+    # Expediteur initial (num_cap)
+    my_text_box ebsdd.num_cap, [150, 609 - height], width: 100, height: 15
+    # Bordereau original
+    my_text_box ebsdd.bid, [400, 609 - height], width: 150, height: 15
+
+    prod = ebsdd.producteur
+    # siret
+    my_text_box prod.siret, [106, 596 - height], width: 150, height: 15
+    # Nom
+    my_text_box prod.nom, [85, 584 - height], width: 150, height: 15
+    # Adresse
+    my_text_box "#{prod.try(:adresse)}\n#{prod.try(:cp)} #{prod.try(:ville)}", [95, 570 - height], width: 150, height: 15
+
+    # tel
+    my_text_box prod.try(:tel), [78, 550 - height], width: 50, height: 15
+    # fax
+    my_text_box prod.try(:fax), [185, 550 - height], width: 50, height: 15
+    # email
+    my_text_box prod.try(:email), [78, 560 - height], width: 50, height: 150
+    # Contact
+    my_text_box prod.try(:responsable), [55, 517 - height], width: 230, height: 15
+
+    # Rubrique dechet
+    my_text_box "#{ebsdd.dechet_denomination.to_s.gsub(/(.{2})(?=.)/, '\1 \2')} *", [360, 584 - height], width: 80, height: 15
+    # Denomination Usuelle
+    my_text_box ebsdd.denomination_cadre_3, [283, 563 - height], width: 200, height: 15
+    # Poids
+    my_text_box ebsdd.poids_en_tonnes_pdf, [422, 550 - height], width: 40, height: 15, align: :center
+    # Quantité réelle
+    checkbox 323.7, 550 - height
+
+    # Date de remise
+    my_text_box ebsdd.bordereau_date_transport.strftime("%d/%m/%y"), [360, 527 - height], width: 50, height: 15, align: :center
+
+  end
+
+  def annexe_en_tete
+    start_new_page
+    path = File.join(Rails.root, "vendor", "assets", "cerfa-annexe2.jpg")
+    image path, at: [0, cursor], width: 210.mm
+    #stroke_axis at: [50, 30], :step_length => 20, :color => 'FF00'
+
+    # bordereau de rattachement
+    my_text_box @bds.id, [240, 691], width: 250, height: 15
+    erase 100, 665, width: 150
+    dest = @bds.ebsdds.first.destinataire
+    # bds siret
+    my_text_box dest.siret, [106, 667], width: 150, height: 15
+    # Nom
+    my_text_box dest.nom, [85, 655], width: 150, height: 15
+    # Adresse
+    my_text_box "#{dest.adresse}\n#{dest.cp} #{dest.ville}", [95, 641], width: 150, height: 15
+    # Contact
+    my_text_box dest.responsable, [375, 667], width: 120, height: 15
+    # tel
+    my_text_box dest.tel, [310, 655], width: 50, height: 15
+    # Fax
+    my_text_box dest.fax, [400, 655], width: 50, height: 15
+    # Email
+    my_text_box dest.email, [310, 643], width: 150, height: 15
+
+  end
   def log text
     my_text_box text, [200, 746.5], width: 150, height: 10
   end
@@ -78,7 +195,7 @@ class EbsddPdf < Prawn::Document
   end
   def cadre12
     erase 85, 63, width: 160
-    my_text_box @ebsdd.traitement_prevu, [155, 72], width: 200, height: 10
+    my_text_box @ebsdd.traitement_prevu, [155, 73], width: 350, height: 12
     my_text_box @ebsdd.destination.siret, [90, 61], width: 200, height: 10
     my_text_box @ebsdd.destination.nom, [75, 50.5], width: 200, height: 10
     my_text_box "#{@ebsdd.destination.adresse}, #{@ebsdd.destination.cp} #{@ebsdd.destination.ville}", [80, 40], width: 200, height: 10
@@ -139,11 +256,11 @@ class EbsddPdf < Prawn::Document
   end
   def cadre6
     #if(@ebsdd.new_record?)
-      ## Estimée
-      #checkbox 168.5, 472
+    ## Estimée
+    #checkbox 168.5, 472
     #else
-      ## Réelle
-      checkbox 111, 471.5
+    ## Réelle
+    checkbox 111, 471.5
     #end
     my_text_box @ebsdd.poids_en_tonnes_pdf.to_s, [212.5, 472], width: 31, height: 10, align: :right unless @ebsdd.status == :nouveau
   end
@@ -215,9 +332,9 @@ class EbsddPdf < Prawn::Document
     draw_text "R13", at: [510, 570.5]
   end
   def my_text_box text, at, options = {}
-    options.merge!({ width: 200, height: 12, overflow: :shrink_to_fit, valign: :center, align: :left }) { |key, v1, v2| v1 }
+    options.merge!({ width: 200, height: 12, overflow: :shrink_to_fit, valign: :center, align: :left, color: BLACK }) { |key, v1, v2| v1 }
     text = "" if text.nil?
-    text_box text, at: at, height: options[:height], width: options[:width], overflow: options[:overflow], valign: options[:valign], align: options[:align]
+    text_box text, at: at, height: options[:height], width: options[:width], overflow: options[:overflow], valign: options[:valign], align: options[:align], color: options[:color]
   end
   def erase_all
     [[85, 642, 140], [340, 672, 140], [170, 558.5, 100], [88, 376, 100]].each do | e |

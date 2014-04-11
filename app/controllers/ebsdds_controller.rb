@@ -183,6 +183,7 @@ class EbsddsController < ApplicationController
       denomination = params[:denomination]
       @ebsdds = Ebsdd.where(status: :attente_sortie).and(super_denomination: denomination)
       @destinataire = DechetDenomination.reborn[denomination.to_i][6]
+      @codedr = DechetDenomination.reborn[denomination.to_i][5]
       respond_to do | format |
         format.js
       end

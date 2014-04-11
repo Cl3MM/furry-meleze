@@ -28,14 +28,26 @@
       %th Id
       %th # eBSDDs
       %th Destination
+      %th Poids
+      %th Traitement
       %th Créé le
+      %th.actions Actions
     %tbody
     - @bds.each do | bd |
       %tr
         %td= link_to bd.id, bon_de_sortie_path(bd)
         %td= bd.ebsdds.count
         %td= bd.destination.nom
+        %td
+          = bd.poids
+          kg
+        %td= bd.codedr_cadre12
         %td= bd.created_at.strftime("%d/%m/%y")
+        %td.actions
+          .center-block.text-center
+            = link_to(fa_icon("file lg", text: ""), bon_de_sortie_pdf_path(bd),
+              class: "btn btn-info touletip btn-xs", role: "button", 
+              title: "Imprimer le bon de sortie")
 
 - else
   .alert.alert-info

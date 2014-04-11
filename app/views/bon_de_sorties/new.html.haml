@@ -1,6 +1,8 @@
+
 = javascript_include_tag "spin.min.js"
 = javascript_include_tag "jquery.spin.js"
 = stylesheet_link_tag "bon_de_sorties.css"
+
 %h2.page-header 
   Créer un nouveau bon de sortie
   %a.btn.btn-success.pull-right#createBds{href: "#"}
@@ -28,14 +30,21 @@
     .form-group
       %label.control-label.col-sm-3 Destination Finale
       .col-md-9
-        = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...",
-          disabled: true,  "data-destinations" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[6], text: r[6] } unless ( a.map{|c| c[:text]}.include?(r[6]) || r[6].blank? ) ; a  }.to_json
-        .input-group#destinationGroup
+        = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...", disabled: true,  "data-destinations" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[6], text: r[6] } unless ( a.map{|c| c[:text]}.include?(r[6]) || r[6].blank? ) ; a  }.to_json
+        .input-group.input-super-group
           %span.input-group-addon Ou
-          = text_field_tag 'destinationAutre', nil, class: "form-control col-sm-2", placeholder: "Sélectionnez une autre destination"
+          = text_field_tag 'destinationAutre', nil, class: "input-super-autre form-control col-sm-2", placeholder: "Sélectionnez un autre destination"
+    .form-group
+      %label.control-label.col-sm-3 Traitement prévu
+      .col-md-9
+        = hidden_field_tag "codedr", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le traitement prévu...", disabled: true,  "data-codedr" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[5], text: r[5] } unless ( a.map{|c| c[:text]}.include?(r[5]) || r[5].blank? ) ; a  }.to_json
+        .input-group.input-super-group
+          %span.input-group-addon Ou
+          = text_field_tag 'codedrAutre', nil, class: "input-super-autre form-control col-sm-2", placeholder: "Sélectionnez un autre traitement..."
         -#%span.prout ou
     .alert.alert-info#alert-poids{style: "display: none;"}
       %p.text-center
+        = hidden_field_tag "poidsHidden", nil
         %strong
           Poids total du bon de sortie :
           %span#poids

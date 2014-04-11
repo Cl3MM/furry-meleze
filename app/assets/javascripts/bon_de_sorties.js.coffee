@@ -33,6 +33,12 @@ jQuery ->
       width: 400
       data: $("#destinataire").data("destinations")
 
+    console.log $("#codedr").data("codedr")
+    $("#codedr").select2
+      allowClear: true
+      width: 400
+      data: $("#codedr").data("codedr")
+
     $("#destinataire").select2("enable", false)
 
     url = $("#bon-de-sortie").data('url')
@@ -94,3 +100,4 @@ jQuery ->
           console.log poids
           console.log poidsTotal
       $("#poids").text(poidsTotal)
+      $("#poidsHidden").val(poidsTotal)

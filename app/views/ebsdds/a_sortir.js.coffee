@@ -1,8 +1,9 @@
 jQuery ->
   $("#spinner").spin(false)
   $("#destinataire").select2("enable", true)
-  console.log "destinataires: <%= @destinataire %>"
   $("#destinataire").select2('val', '<%= @destinataire %>')
+  $("#codedr").select2("enable", true)
+  $("#codedr").select2('val', '<%= @codedr %>')
   ebsdds = '<%= j render partial: "bon_de_sorties/choisir_ebsdds", locals: { ebsdds: @ebsdds } %>'
   if !!ebsdds
     $("#ebsdds_list tbody").replaceWith(ebsdds)

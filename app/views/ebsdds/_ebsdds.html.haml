@@ -23,7 +23,7 @@
                 = link_to truncate(ebsdd.producteur.nom.titleize, length: 25), producteur_path(ebsdd.producteur), class:"touletip", title: ebsdd.producteur.nom.titleize
               -#%td= ebsdd.destinataire_nom.titleize
               %td.text-center
-                - if ebsdd.produit.nom.nil?
+                - if ebsdd.produit.nil? || ebsdd.produit.nom.nil?
                   \-
                 - else
                   .touletip{title: "#{ ebsdd.libelle.titleize }" }

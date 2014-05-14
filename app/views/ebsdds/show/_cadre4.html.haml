@@ -1,7 +1,7 @@
 .col-md-12
   %label
     Mention au titre des règlements :
-    - if ebsdd.produit.mention.nil?
+    - if ebsdd.produit.nil? || ebsdd.produit.nom.nil?
       Aucune
     - else
       = ebsdd.produit.mention

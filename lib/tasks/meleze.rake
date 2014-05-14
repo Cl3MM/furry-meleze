@@ -71,6 +71,7 @@ namespace :mlz do
   task :update_ebsdds_produits => :environment do
     Ebsdd.skip_before_update_callback
     Ebsdd.all.each do | e |
+      next if e.status == :incomplet
       begin
       unless e.super_denomination.blank?
         sd = e.super_denomination.to_i

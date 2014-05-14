@@ -76,7 +76,6 @@
                           %span#dest-poids-total
 
             #dest{"data-dest" => "#{@dest.to_json}" }
-            #prout{"data-prout" => "#{BonDeSortie.destinations(Destination.find_by(nom: "TREDI").id).to_json}" }
       - if @alertes.any?
         .panel.panel-default
           .panel-heading

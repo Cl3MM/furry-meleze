@@ -15,7 +15,7 @@ class BonDeSortie
 
   attr_accessible :poids, :codedr_cadre12, :codedr_cadre2
 
-  def self.destinations dest_id, date_min = (Date.today - 3.months).beginning_of_month, date_max = Date.today.end_of_month
+  def self.destinations dest_id, date_min = Date.today.beginning_of_month, date_max = Date.today.end_of_month
 
     date_min, date_max = date_max, date_min if date_min > date_max
     map = %Q{

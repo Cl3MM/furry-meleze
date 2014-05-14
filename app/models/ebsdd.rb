@@ -51,10 +51,6 @@ class Ebsdd
       self[:status] = :complet
     end
   end
-  def set_denomination
-    self[:libelle] = DechetDenomination.reborn[@ebsdd.dechet_denomination][3]
-    self[:dechet_denomination_tmp] = DechetDenomination.reborn[@ebsdd.dechet_denomination].first
-  end
   def set_bordereau_id
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
   end
@@ -64,7 +60,9 @@ class Ebsdd
     self[:mode_transport] = collecteur.mode_transport
   end
   def set_is_ecodds
-    self[:is_ecodds] = producteur.nom =~ /eco dds/i
+    val = (producteur.nom =~ /eco dds/i) == nil ? false : true
+    set(:is_ecodds, val)
+    true
   end
   def set_num_cap
     self[:num_cap] = num_cap_auto if num_cap.blank?
@@ -77,9 +75,10 @@ class Ebsdd
   #belongs_to :prout
   belongs_to :collecteur, inverse_of: :ebsdds
   belongs_to :bon_de_sortie, inverse_of: :ebsdds
+  belongs_to :produit, inverse_of: :ebsdds
 
   belongs_to :destination, inverse_of: :destination
-  belongs_to :attachment #, :inverse_of => :ebsdds
+  belongs_to :attachment
   #accepts_nested_attributes_for :producteur
   #accepts_nested_attributes_for :collecteur
   accepts_nested_attributes_for :destination
@@ -246,7 +245,7 @@ class Ebsdd
   field :exported, type: Integer, default: 0
   field :bid, type: String
 
-  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination,
+  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination, :produit_id,
     :destination_id, :destination_attributes, :collecteur_id, :bon_de_sortie_id,
     :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,
@@ -293,11 +292,11 @@ class Ebsdd
     :ligne_flux_date_remise, :ligne_flux_poids,
     :immatriculation, :exported, :ecodds_id
 
-    validates_presence_of :collecteur_id, :producteur_id,
+    validates_presence_of :collecteur_id, :producteur_id, :produit_id,
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 
     #:collecteur_tel, :collecteur_responsable, 
     :bordereau_date_transport,
-    :super_denomination, :dechet_consistance, :dechet_nomenclature,
+    :dechet_consistance, :dechet_nomenclature,
     :type_quantite, :emetteur_nom,
     :code_operation, :traitement_prevu, :mode_transport, :transport_multimodal
     #:destination_ult_siret, :destination_ult_nom, :destination_ult_adresse, :destination_ult_cp,
@@ -431,8 +430,8 @@ class Ebsdd
   def complete_new
     # evite les problèmes en cas d'import
     unless self[:status] == :incomplet
-      self[:libelle] = DechetDenomination.reborn[self[:super_denomination].to_i][3] 
-      self[:dechet_denomination] = DechetDenomination.reborn[self[:super_denomination].to_i ].first
+      self[:libelle] = produit.nom
+      self[:dechet_denomination] = produit.code_rubrique.to_i
       self[:status] = :nouveau
     end
     self[:bordereau_date_creation] = Time.now
@@ -443,6 +442,12 @@ class Ebsdd
   end
   def is_nouveau?
     status == :nouveau
+  end
+  def is_clos?
+    status == :clos
+  end
+  def is_complete?
+    status == :complet
   end
   def is_incomplete?
     status == :incomplet
@@ -472,14 +477,14 @@ class Ebsdd
     end
   end
   def denomination_cadre_3
-    DechetDenomination.reborn[self[:super_denomination].to_i ][3]
+    produit.nom
   end
   def denomination_ecodds
-      self[:super_denomination] = DechetDenomination.reborn.values.select{ |v| v.first == dechet_denomination }.flatten[2].to_s if super_denomination.nil?
-      "#{"%02d" % DechetDenomination.reborn[self[:super_denomination].to_i ][2]}-#{DechetDenomination.reborn[self[:super_denomination].to_i ][3]}"
+      self[:super_denomination] = produit.index if super_denomination.nil?
+      "#{"%02d" % produit.index}-#{produit.nom}"
   end
   def denomination_cadre_4
-    DechetDenomination.reborn[self[:super_denomination].to_i ][8]
+    produit.mention
   end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
@@ -499,7 +504,7 @@ class Ebsdd
       csv << ["00", ecodds_id, bordereau_id, nil]
       csv << ["01", 4, emetteur_siret, emetteur_nom, emetteur_adresse, emetteur_cp, emetteur_ville, emetteur_tel, emetteur_fax, emetteur_email, emetteur_responsable, nil]
       csv << ["02", :code_ligne_flux_original, bordereau_id, ligne_flux_siret, ligne_flux_nom, ligne_flux_adresse, ligne_flux_cp, ligne_flux_ville, ligne_flux_tel,
-              ligne_flux_fax, ligne_flux_email, ligne_flux_responsable, ligne_flux_conditionnement_ult, 1, DechetDenomination[dechet_denomination],
+              ligne_flux_fax, ligne_flux_email, ligne_flux_responsable, ligne_flux_conditionnement_ult, 1, produit.denomination_ecodds,
               type_quantite_ult, poids_en_tonnes_ult, ligne_flux_date_remise ,nil]
       # TODO: Attention à la dernière ligne qui contient des infos prise dans les autres cadres
     end
@@ -521,8 +526,8 @@ class Ebsdd
                 producteur.try(:fax).try(:truncate, 35, omission: ""), producteur.try(:email).try(:truncate, 50, omission: ""),
                 producteur.try(:responsable).try(:truncate, 35, omission: ""), nil]
       csv << ["02", (entreposage_provisoire ? 1 : 0), (destinataire.siret || "").truncate(14, omission: ""), (destinataire.nom || "").truncate(60, omission: ""), (destinataire.adresse || "").truncate(100, omission: ""), (destinataire.cp || "").truncate(5, omission: ""), (destinataire.ville || "").truncate(45, omission: ""), (destinataire.tel || "").truncate(35, omission: ""), (destinataire.fax || "").truncate(35, omission: ""), (destinataire.email || "").truncate(50, omission: ""), (destinataire.responsable || "").truncate(35, omission: ""), num_cap.truncate(35, omission: ""), "R13", nil]
-      csv << ["03", dechet_denomination.to_s.truncate(6, omission: ""), 1, denomination_ecodds.truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
-      csv << ["04", denomination_cadre_4.truncate(255, omission: ""), nil ]
+      csv << ["03", produit.code_rubrique.to_s.truncate(6, omission: ""), 1, produit.denomination_ecodds.truncate(100, omission: ""), dechet_consistance.to_s.truncate(10, omission: ""), nil ]
+      csv << ["04", produit.mention.truncate(255, omission: ""), nil ]
       csv << ["05", dechet_conditionnement.truncate(6, omission: ""), dechet_nombre_colis.to_s.truncate(6, omission: ""), nil ]
       csv << ["06", type_quantite.truncate(1, omission: ""), poids_en_tonnes.truncate(8, omission: ""), nil ]
       csv << ["08", (collecteur.siret || "").truncate(14, omission: ""), (collecteur.nom || "").truncate(60, omission: ""),
@@ -710,6 +715,7 @@ class Ebsdd
   end
   def self.search params
     if params.has_key?(:status)
+      params[:status] = "closs" if params[:status] == "clos"
       Ebsdd.where(status: params[:status].singularize).exists(archived: false).order_by(created_at: :desc)
     else
       Ebsdd.exists(archived: false).order_by(created_at: :desc)
@@ -747,7 +753,7 @@ class Ebsdd
       y = Time.now.strftime("%Y")
       s = producteur.siret.gsub(/ |-|\./, "")[0..8]
 
-      p = case super_denomination.to_i
+      p = case produit.index.to_i
       when 1
         "PE"
       when 2
@@ -772,6 +778,57 @@ class Ebsdd
 
       "#{y}#{p}#{s}"
     end
+  end
+  def self.seuils
+    map = %Q{
+      function() {
+        emit( this.produit_id, this.bordereau_poids );
+      };
+    }
+
+    reduce = %Q{
+      function(id, poids) {
+        return Array.sum(poids);
+      };
+    }
+    mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
+    mr.entries.reduce([]) do |a, e|
+      produit = Produit.find e["_id"]
+      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"] }
+      a
+    end.sort_by do | h |
+      h[:nom]
+    end
+  end
+  def self.camions date_min = Date.today.beginning_of_month, date_max = Date.today.end_of_month
+
+    date_min, date_max = date_max, date_min if date_min > date_max
+    map = %Q{
+      function() {
+        emit( this.immatriculation, this.bordereau_poids );
+      };
+    }
+
+    reduce = %Q{
+      function(id, poids) {
+        return Array.sum(poids);
+      };
+    }
+    mr = Ebsdd.in(status: [:attente_sortie, :clos, :complet]).between(created_at: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+
+    data = mr.entries.reduce([]) do |a, e|
+      immat = Immatriculation.find e["_id"]
+      a << { nom: immat.valeur, poids: e["value"] }
+      a
+    end.sort_by do | h |
+      h[:poids]
+    end
+
+    {
+      du: date_min.strftime("%d/%m/%y"),
+      au: date_max.strftime("%d/%m/%y"),
+      data: data
+    }
   end
 end
 

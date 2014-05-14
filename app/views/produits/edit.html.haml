@@ -1,0 +1,8 @@
+%h1.page-header
+  = fa_icon "user"
+  Modifier #{ @produit.nom || "" }
+.row
+  .col-md-12
+    .panel.panel-default
+      #new.panel-body
+        = render 'form'

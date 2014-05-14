@@ -19,6 +19,13 @@ class Destination
   field :email, type: String, default: nil
   field :responsable, type: String
 
+
+  def self.to_select
+    Destination.all.map do | d |
+      { text: d.nom, id: d.id }
+    end.sort_by { |h| h[:text] }
+  end
+
   #validates_presence_of :recepisse,# :bordereau_limite_validite,
     #if: -> { self[:mode_transport] == 1 }
 

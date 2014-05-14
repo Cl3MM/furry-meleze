@@ -1,0 +1,90 @@
+%h1.underline
+  = fa_icon "dashboard "
+  Statistiques
+.row.panel-fd
+  .col-md-12
+    #accordion.panel-group
+      .panel.panel-default
+        .panel-heading
+          %h4.panel-title
+            %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseTwo"}
+              %strong
+                %i.fa.fa-truck
+                Volume par camion du
+              %span#ca-du
+              au
+              %span#ca-au
+
+            %form.form-inline.pull-right{:role => "form", action: "/statistiques/camions", method: "post"}
+              Du
+              .form-group
+                %label.sr-only
+                %input#ca-date-min.form-control.input-sm
+              au
+              .form-group
+                %label.sr-only
+                %input#ca-date-max.form-control.input-sm
+              %button.btn.btn-primary.input-sm#ca-show
+                %i.fa.fa-search
+            %span.clearfix
+        #collapseTwo.panel-collapse.collapse.in
+          .panel-body
+            = render partial: 'camions', object: @camions
+      .panel.panel-default
+        .panel-heading
+          %h4.panel-title
+            %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseThree"}
+              %i.fa.fa-building-o
+              Statistiques Destinations ultérieures
+        #collapseThree.panel-collapse.collapse.in
+          .panel-body
+            .row
+              .col-md-12
+                .well
+                  %form.form-inline{:role => "form", action: "/statistiques/destinations", method: "post"}
+                    %p.pull-left Destinations
+                    .form-group.col-xs-4
+                      %label.sr-only
+                      %input#dest-select.form-control.input-sm
+                    du
+                    .form-group
+                      %label.sr-only
+                      %input#dest-date-min.form-control.input-sm
+                    au
+                    .form-group
+                      %label.sr-only
+                      %input#dest-date-max.form-control.input-sm
+                    %button.btn.btn-primary.input-sm#dest-show
+                      %i.fa.fa-search
+            .row#dest-result
+              .col-md-12
+                .well.well-sm
+                  .row
+                    .col-md-4
+                      %p
+                        %strong
+                          Destination
+                          %span#dest-nom
+                    .col-md-8
+                      %p
+                        %strong
+                          Poids total sur la période du
+                          %span#dest-du
+                          au
+                          %span#dest-au
+                          = ":"
+                          %span#dest-poids-total
+
+            #dest{"data-dest" => "#{@dest.to_json}" }
+            #prout{"data-prout" => "#{BonDeSortie.destinations(Destination.find_by(nom: "TREDI").id).to_json}" }
+      - if @alertes.any?
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title
+              %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne"}
+                %i.fa.fa-exclamation-circle
+                Seuils d'alertes
+          #collapseOne.panel-collapse.collapse
+            .panel-body
+              = render partial: 'dashboard/alertes', object: @alertes
+

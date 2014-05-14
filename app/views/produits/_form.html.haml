@@ -1,0 +1,79 @@
+= content_for :search do
+  = form_tag( produits_search_path, class: "navbar-form navbar-right", role: :search ) do | f |
+    .form-group
+      = text_field_tag :query, nil, placeholder: "Nom du produit", class: "form-control"
+    %span.form-group-btn
+      %button.btn.btn-default{ type: :submit }
+        = fa_icon "search lg"
+= custom_form (@produit) do |f|
+  - if @produit.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          #error_explanation
+            %h2
+              Merci de corriger
+              - if @produit.errors.count > 1
+                les #{@produit.errors.count} erreurs suivantes :
+              - else
+                l'erreur suivante :
+            %ul
+              - @produit.errors.full_messages.each do |msg|
+                %li= msg
+
+  .row
+    .col-md-12
+      .form-group
+        = f.label :nom
+        = f.text_field :nom
+  .row
+    .col-md-8
+      .form-group
+        = f.label :references
+        %br
+        = f.text_field :references, value: @produit.references.map(&:to_s).join(",")
+
+    .col-md-4
+      .form-group
+        = f.label :seuil_alerte
+        = f.text_field :seuil_alerte
+
+  .row
+    .col-md-12
+      .form-group
+        = f.label :mention
+        = f.text_field :mention
+  .row
+    .col-md-4
+      .form-group
+        = f.label :consistance
+        = f.select :consistance, { "Solide" => 0, "Liquide" => 1, "Gazeux" => 2 }, include_blank: 'Sélectionnez ...'
+    .col-md-4
+      .form-group
+        = f.label :code_dr_reception
+        = f.select :code_dr_reception, 1.upto(15).reduce({}){ |h,v| h["D#{v}"] = "D#{v}" ; h }.merge( 1.upto(13).reduce({}){ |h,v| h["R#{v}"] = "R#{v}" ; h } ), include_blank: 'Sélectionnez ...'
+    .col-md-4
+      .form-group
+        = f.label :code_dr_expedition
+        = f.select :code_dr_expedition, 1.upto(15).reduce({}){ |h,v| h["D#{v}"] = "D#{v}" ; h }.merge( 1.upto(13).reduce({}){ |h,v| h["R#{v}"] = "R#{v}" ; h } ), include_blank: 'Sélectionnez ...'
+  .row
+    .col-md-6.col-md-offset-4
+      .form-group
+        = f.label :is_ecodds, "Produit EcoDDS ?"
+        %br
+        = f.radio_button :is_ecodds, true
+        = f.label :is_ecodds, "oui"
+        = f.radio_button :is_ecodds, false
+        = f.label :is_ecodds, "non"
+
+  %hr
+  .row
+    .col-md-12
+      .actions
+        = link_to 'Retour', produits_path, class: "btn btn-default"
+        = content_tag :button, type: :submit, class: "btn btn-primary" do
+          Enregistrer les modifications&nbsp;
+          = fa_icon "save lg"
+        = link_to 'Voir le produit', @produit, class: "btn btn-default"
+

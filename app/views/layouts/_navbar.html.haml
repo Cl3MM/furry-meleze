@@ -36,6 +36,11 @@
             = fa_link_to destinations_path, "Gérer les destinations (cadre 12)", "building-o lg"
           %li
             = fa_link_to destinataires_path, "Gérer les destinataires", "truck lg"
+          - if current_utilisateur.is_admin?
+            %li
+              = fa_link_to produits_path, "Gérer les produits", "briefcase lg"
+          %li
+            = fa_link_to statistiques_path, "Statistiques", "bar-chart-o lg"
           %li.divider
           - if utilisateur_signed_in?
             %li.dropdown-header{ role: :presentation }

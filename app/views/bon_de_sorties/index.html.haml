@@ -26,7 +26,9 @@
   %table.table.table-stripped
     %thead
       %th Id
-      %th # eBSDDs
+      %th Type de Déchet
+      %th.text-center ecodds ?
+      %th.text-center # eBSDDs
       %th Destination
       %th Poids
       %th Traitement
@@ -36,7 +38,15 @@
     - @bds.each do | bd |
       %tr
         %td= link_to bd.id, bon_de_sortie_path(bd)
-        %td= bd.ebsdds.count
+        %td= bd.produit.nom
+        %td.text-center
+          - if bd.ebsdds.first.is_ecodds
+            %label.label.label-success
+              oui
+          - else
+            %label.label.label-warning
+              non
+        %td.text-center= bd.ebsdds.count
         %td= bd.destination.nom
         %td
           = bd.poids

@@ -4,9 +4,9 @@
 
 
 jQuery ->
-  $("#destination_nomenclatures").select2
-    tags: $("#destination_nomenclatures").val()
-    width: 906
+  $("#produit_references").select2
+    tags: $("#produit_references").val()
+    width: 524
     allowClear: true
-    placeholder: "Ajouter les nomemnclatures de déchets..."
-    tokenSeparators: [",", " "]
+    placeholder: "Ajouter les références du produit..."
+    tokenSeparators: [",", " ", ";"]

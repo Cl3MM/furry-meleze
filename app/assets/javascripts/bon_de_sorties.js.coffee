@@ -4,23 +4,16 @@ jQuery ->
     # clic sur le bouton creer un bon de sortie
     # Appel l'action 'create' du controller
     $("#createBds").on 'click', (e) ->
-      console.log 'prout'
       e.preventDefault()
       form = $("form#bon-de-sortie")
       url = form.prop('action')
-      console.log url
       ids = []
       $(".selectEbsdd").each (e) ->
-        ids.push $(this).val()
+        ids.push $(this).val() if $(this).prop("checked")
 
-      console.log ids
-      console.log form.prop('method')
       if ids.length
-        console.log "not ok"
         authenticityToken = $("meta[name='csrf-token']").attr("content")
         form.append('<input name="authenticity_token" type="hidden" value="' + authenticityToken + '">')
-        console.log form
-        #alert "Désolé, cette fonction n'est pas encore active"
         form.submit()
       else
         console.log "not ok"
@@ -30,13 +23,13 @@ jQuery ->
     console.log $("#destinataire").data("destinations")
     $("#destinataire").select2
       allowClear: true
-      width: 400
+      width: 780
       data: $("#destinataire").data("destinations")
 
     console.log $("#codedr").data("codedr")
     $("#codedr").select2
       allowClear: true
-      width: 400
+      width: 780
       data: $("#codedr").data("codedr")
 
     $("#destinataire").select2("enable", false)
@@ -58,7 +51,7 @@ jQuery ->
           console.log(data)
           results: data
 
-    $("#type_dechet").on 'change', (e) ->
+    $("#type_dechet").on 'select2-selecting', (e) ->
       console.log e.val
       $("#chauffe").prop('checked', false)
       $("#alert-poids").fadeOut(400)
@@ -68,8 +61,11 @@ jQuery ->
         #url = $("#ebsdds_list").data('url').split("/").slice(0,-1).join('/') + '/' + e.val
         $("#spinner").spin()
         url = $("#ebsdds_list").data('url')
+        data = 
+          produit_id: e.val
+          is_ecodds: $("#ecodds").prop("checked")
         console.log url
-        $.post(url, denomination: e.val).fail(clamerde)
+        $.post(url, data).fail(clamerde)
 
     displayEbsdds = (d,s) ->
       console.log d

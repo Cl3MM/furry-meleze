@@ -13,14 +13,15 @@
     %ul.dropdown-menu{role: "menu"}
       %li
         = fa_link_to edit_ebsdd_path(@ebsdd), "Modifier cet eBSDD", "edit lg"
-      - unless @ebsdd.is_incomplete?
+      - if (@ebsdd.is_complete? || @ebsdd.is_clos?) && @ebsdd.is_ecodds
         %li
           = fa_link_to ebsdd_annexe_path, "Exporter l'Annexe 2", "cloud-download lg"
         %li
           = fa_link_to ebsdd_download_path, "Exporter au format ECODDS", "cloud-download lg"
+      -#- unless @ebsdd.is_incomplete? || @ebsdd.status == :nouveau
       %li.divider
       %li
-        = fa_link_to ebsdd_printpdf_path(@ebsdd), "Télécharger le fichier PDF", "download lg"
+        = fa_link_to ebsdd_printpdf_path(@ebsdd, status: :nouveau ), "Télécharger le fichier PDF", "download lg"
       %li
         = fa_link_to new_ebsdd_path, "Créer un nouvel eBSDD", "sign-in lg"
       %li

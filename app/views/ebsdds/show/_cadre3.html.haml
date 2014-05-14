@@ -2,10 +2,10 @@
   .col-md-12
     %label
       Dénomination usuelle du déchet :
-    - if ebsdd.dechet_denomination.nil?
+    - if ebsdd.produit.nom.nil?
       Aucune
     - else
-      = DechetDenomination[ebsdd.dechet_denomination]
+      = ebsdd.produit.nom
     %br
 
   .col-md-12

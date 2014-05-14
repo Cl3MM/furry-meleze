@@ -1,7 +1,7 @@
 .col-md-12
   %label
     Mention au titre des règlements :
-    - if ebsdd.dechet_nomenclature.nil?
+    - if ebsdd.produit.mention.nil?
       Aucune
     - else
-      = DechetDenomination[ebsdd.dechet_nomenclature]
+      = ebsdd.produit.mention

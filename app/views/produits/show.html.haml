@@ -1,0 +1,36 @@
+= content_for :search do
+  = form_tag( produits_search_path, class: "navbar-form navbar-right", role: :search ) do | f |
+    .form-group
+      = text_field_tag :query, nil, placeholder: "Nom du produit", class: "form-control"
+    %span.form-group-btn
+      %button.btn.btn-default{ type: :submit }
+        = fa_icon "search lg"
+
+%h1.page-header
+  = fa_icon "briefcase"
+  Détails du produit
+  %small= @produit.nom
+.row
+  .col-md-12
+    .panel.panel-default
+      #new.panel-body
+        %dl.dl-horizontal
+          %dt Nom :
+          %dd= @produit.nom
+          %dt Mention au titre des règlements :
+          %dd= @produit.mention
+          %dt Consistance :
+          %dd= @produit.consistance_to_human
+          %dt Code DR Reception :
+          %dd= @produit.code_dr_reception
+          %dt Produit EcoDDS :
+          %dd= raw @produit.ecodds
+          %dt Code DR Expédition :
+          %dd= @produit.code_dr_expedition
+          %dt Réferences :
+          %dd= @produit.references.join(", ")
+
+        .row.text-center
+          .col-md-12
+            = link_to 'Modifier', edit_produit_path(@produit), class: "btn btn-primary"
+            = link_to 'Retour', produits_path, class: "btn btn-default"

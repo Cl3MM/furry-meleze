@@ -1,0 +1,21 @@
+#alertes{"data-alertes" => "#{alertes.to_json}" }
+%table.table.table-striped
+  %thead
+    %th Nom
+    %th.text-center Poids
+    %th Seuil
+  %tbody
+    - alertes.each do | al |
+      %tr
+        %td
+          - if al[:poids] > al[:seuil]
+            %p.text-danger
+              %i.fa.fa-warning
+              = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
+          - else
+            = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
+        %td.text-center
+          %label.label{class: "#{al[:poids] < al[:seuil] ? "label-success" : "label-danger" }"}
+            = al[:poids]
+        %td
+          = al[:seuil]

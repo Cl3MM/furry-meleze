@@ -1,9 +1,9 @@
 .row
-  .col-md-6
+  .col-md-4
     .form-group
       = f.label :bordereau_poids, "Poids en kilogrammes"
       = f.text_field :bordereau_poids, placeholder: "Poids"
-  .col-md-6
+  .col-md-4
     .form-group
       = f.label :type_quantite, "Type de quantité"
       %br
@@ -13,3 +13,9 @@
       %label.radio-inline
         = f.radio_button :type_quantite, "E", checked: true
         Estimée
+  .col-md-4
+    .form-group
+      %label Créer un nouveau eBSDD basé sur celui-ci
+      %btn#split-ebsdd.btn.btn-success
+        %i.fa.fa-share-square
+        Nouveau eBSDD

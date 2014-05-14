@@ -32,11 +32,12 @@
         = fa_link_to ebsdds_selection_path, "Créer un fichier multi eBSDDs pour EcoDDS", "cloud-upload lg"
 
 %ol.breadcrumb
-  %li{ class: "#{@status == :empty ? "active" : ""}" }
-    - if @status == :empty
-      Tous
-    - else
-      = link_to "Tous", ebsdds_path
+  -if current_utilisateur.is_admin?
+    %li{ class: "#{@status == :tous ? "active" : ""}" }
+      - if @status == :tous
+        Tous
+      - else
+        = link_to "Tous", ebsdds_path
 
   %li{ class: "#{@status == :nouveau ? "active" : ""}" }
     - if @status == :nouveau
@@ -60,7 +61,7 @@
     - if @status == :clos
       Archivés
     - else
-      = link_to "Archivés", ebsdd_status_path(status: :closs)
+      = link_to "Archivés", ebsdd_status_path(status: :clos)
 
   %li{ class: "#{@status == :incomplets ? "active" : ""}" }
     - if @status == :incomplets

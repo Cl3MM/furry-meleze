@@ -9,10 +9,11 @@ class BonDeSortiesController < ApplicationController
   end
   def new
     @bds = BonDeSortie.new
+    @dispo = Ebsdd.where(status: :attente_sortie).count
   end
 
   def prout
-    bd = BonDeSortie.find_by(id: params[:id])
+    bd = BonDeSortie.find(params[:id])
     respond_to do |format|
       format.pdf do
         pdf = EbsddPdf.new nil, :bon_de_sortie, bd
@@ -32,8 +33,8 @@ class BonDeSortiesController < ApplicationController
       @bds = BonDeSortie.new(
         poids: params[:poidsHidden],
         codedr_cadre12: params[:codedr],
-        codedr_cadre2: "R13",
-        denomination_id: params[:type_dechet] )
+        codedr_cadre2: "R13")
+      @bds.produit = Produit.find params[:type_dechet]
       @bds.destination = @destination
       params[:ids].each do |bid|
         e = Ebsdd.find_by(bid: bid)
@@ -48,7 +49,7 @@ class BonDeSortiesController < ApplicationController
         render action: 'new'
       end
     else
-      flash[:error] = "Impossible d'enregistrer le bon de sortie."
+      flash[:error] = "Impossible d'enregistrer le bon de sortie : la destination n'a pas été trouvé"
       render action: 'new'
       #render json: { error: "Aucun eBSDD a traiter, ou destinataire manquant"}, status: :unprocessable_entity
     end

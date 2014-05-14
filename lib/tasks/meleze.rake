@@ -59,6 +59,48 @@ namespace :mlz do
     Ebsdd.set_callback(:update, :before, :set_status)
   end
 
+  task :create_produits => :environment do
+    Produit.delete_all
+    DechetDenomination.reborn.each_pair do | k,v |
+      is_ecodds = k < 10 ? true : false
+      puts "#{v[1]} is ecodds: #{is_ecodds}"
+      Produit.create!(code_dr_reception: v[4], code_dr_expedition: v[5], consistance: v[7], is_ecodds: is_ecodds, 
+                     nom: v[3], mention: v[8], references: [v[6]], brigitte: v[9], code_rubrique: v[1], seuil_alerte: 300)
+    end
+  end
+  task :update_ebsdds_produits => :environment do
+    Ebsdd.skip_before_update_callback
+    Ebsdd.all.each do | e |
+      begin
+      unless e.super_denomination.blank?
+        sd = e.super_denomination.to_i
+        p = Produit.find_by(index: sd)
+        puts "#{e.super_denomination} == #{p.index}"
+        e.produit = p
+        e.set_is_ecodds
+        e.save!(validate: false)
+      else
+        dd = e.dechet_denomination.to_i
+        dd = dd == 160107 ? dd + 20 : dd
+        p = Produit.find_by(code_rubrique: dd)
+        puts "#{e.dechet_denomination} == #{p.code_rubrique}"
+        e.produit = p
+        e.set_is_ecodds
+        e.save!(validate: false)
+      end
+      rescue
+        binding.pry
+      end
+    end
+    Ebsdd.set_before_update_callback
+  end
+
+  task :create_users => :environment do
+    Utilisateur.create(email: "operateur@valespace.com", password: "operateur73", password_confirmation: "operateur73", role: "utilisateur")
+    u = Utilisateur.create(email: "administrateur@valespace.com", password: "administrateur/73", password_confirmation: "administrateur/73", role: "administrateur")
+    u.set(:role, "administrateur")
+  end
+
 
   #desc "Update Emitted and Collected"
   #task :uec => :environment do

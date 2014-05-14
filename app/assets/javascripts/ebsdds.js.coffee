@@ -1,6 +1,5 @@
 jQuery.download = (url, data, method) ->
   authenticityToken = $("meta[name='csrf-token']").attr("content")
-  console.log authenticityToken
   #url and data options required
   if url and data
     #data can be string of parameters or array/object
@@ -203,11 +202,11 @@ jQuery ->
     #$("#ebsdd_dechet_nomenclature").on 'change', (evt) ->
       #denomination = $(this).val()
       #$("#code_rubrique_dechet").html denomination
-      #$("#ebsdd_super_denomination").val denomination
+      #$("#ebsdd_produit_id").val denomination
 
     # Set default value for hidden field to avoid errors
-    if $("#ebsdd_super_denomination").length and $("input#ebsdd_dechet_nomenclature").length
-      $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_super_denomination").val() )
+    if $("#ebsdd_produit_id").length and $("input#ebsdd_dechet_nomenclature").length
+      $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_produit_id").val() )
 
     # S'il y a une erreur dans la désignation, le msg est affiché 2 fois.
     # Du coup on cache un des deux messages
@@ -243,16 +242,12 @@ jQuery ->
     ## MEGA TEST pour les produits
     # {id: 2, label: "Emballages Vides Souillés (Evs)", cr: "150110", dr11: "R13", dr12: "R1"…}
     db = $("#dechets").data("data")
-    console.log db
-    console.log db[1]
 
-    $("#ebsdd_super_denomination").on 'change', (evt) ->
+    $("#ebsdd_produit_id").on 'change', (evt) ->
       denomination = $(this).val()
-      denominationInt = parseInt $(this).val()
-      console.log denomination
+      denominationInt = $(this).val()
       for l in db
         if l.id == denominationInt
-          console.log l
           $("#code_rubrique_dechet").html("#{ l.cr }*")
           $("select#ebsdd_dechet_nomenclature").val(l.id)
           # On met la valeur sélectionnée dans le champ hidden car l'attribut disabled du select empeche la validation coté serveur
@@ -265,14 +260,9 @@ jQuery ->
           $("#ebsdd_code_operation").val(l.dr11)
           $("#ebsdd_destination_id option").each (e) ->
             if $(this).text() == l.dest
-              console.log "OK"
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
               $("#ebsdd_traitement_prevu").val(l.dr12).trigger('change')
-          console.log l.cr
-          console.log contenants[l.cr]
-          console.log contenants[parseInt l.cr]
           boite = contenants[l.cr]
-          console.log boite
           $("#ebsdd_dechet_conditionnement").select2('val', boite ) #.trigger('change')
 
       # Remplis le champ contenant en fonction du code déchet
@@ -286,7 +276,7 @@ jQuery ->
 
 
     # Change le code rubrique dechet et la mention au titre des reglnt en fonction du champ dechet denomination usuelle
-    #$("#ebsdd_super_denomination").on 'change', (evt) ->
+    #$("#ebsdd_produit_id").on 'change', (evt) ->
       #denomination = $(this).val()
       #$("#code_rubrique_dechet").html("#{ denomination }*")
       #$("select#ebsdd_dechet_nomenclature").val(denomination)
@@ -373,24 +363,25 @@ jQuery ->
     initDenomination = () ->
       data = []
       data.push {text: l.label, id: l.id} for l in db
-      console.log data
-      $("#ebsdd_super_denomination").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
+      $("#ebsdd_produit_id").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()
 
     $("#ebsdd_producteur_id").on 'change', (e) ->
       $("#ebsdd_emetteur_nom").val $("#ebsdd_producteur_id option:selected").text()
       val = $(this).select2('data').text
-      console.log 'Matching'
       data = []
       for l in db
         if !!val.match(/ECO ?DDS/gi)
           data.push {text: l.label, id: l.id} if l.id < 10
         else
           data.push {text: l.label, id: l.id}
-      console.log data
-      $("#ebsdd_super_denomination").select2(data: data)
+      $("#ebsdd_produit_id").select2(data: data)
 
+    # Split d'un ebsdd
+    $("#split-ebsdd").on 'click', (e)->
+      action = $("form.edit_ebsdd").prop("action")
+      $("form.edit_ebsdd").prop("action", action + '/split').submit()
 
 
   # Traitement des nouveaux BSDs
@@ -415,15 +406,12 @@ jQuery ->
       ids = []
       $(".nouveau_pdf").each (i) ->
         ids.push $(this).closest('td').next().text() if $(this).prop('checked')
-      console.log ids
       $("#changeNouveauStatus").prop('disabled', true)
       $("#changeNouveauStatus i").removeClass("fa-file").addClass("fa-spin fa-spinner")
       url = "/ebsdds/change_nouveau_statut.json"
       $.post(url, { ids: ids }).done( nouveauStatusChanged )
 
     nouveauStatusChanged = (d,s) ->
-      console.log d
-      console.log s
       $("#changeNouveauStatus i").removeClass("fa-spin fa-spinner").addClass("fa-file")
       ids = d.data
       for id in ids
@@ -433,8 +421,6 @@ jQuery ->
 
     removeNouveauTr = ()->
       $(this).remove()
-      console.log 'removed !'
-      console.log tbody.find('tr').length
       if tbody.find('tr').length == 1 and $(".toggle_nv_pdf").length
         div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
         $(".panel .panel-body table").fadeOut(600).replaceWith(div)
@@ -448,7 +434,6 @@ jQuery ->
       #$.get("/ebsdds/nouveaux_pdfs", { ids: ids}).done(nvPdfDone).fail(nvPdfFail)
       params = ""
       params += "ids[]=#{ids[i]}&" for i in [0..ids.length-1]
-      console.log params
       $.download("/ebsdds/nouveaux_pdfs", params, 'post')
       setTimeout nvPdfDone, 1000
 
@@ -465,15 +450,20 @@ jQuery ->
 
   # bouton nouveau status (passe le status de Nouveau à En Attente)
   $(".nouveau_statut").on 'click', (e) ->
-    id = $(this).closest('tr').find('td:first').text()
+    selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
+    id = $(this).closest('tr').find("td:#{selector}").text()
+
     url = "/ebsdd/#{id}/change_nouveau_statut.json"
-    console.log url
     $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
 
   fadeNvEbsdd = (d,s) ->
     id = d.id
-    $(".panel .panel-body table tbody tr td:first-child").each (e) ->
+
+    selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
+
+    $(".panel .panel-body table tbody tr td:#{selector}").each (e) ->
       if $(this).text() == id
+        console.log $(this).closest('tr')
         $(this).closest('tr').fadeOut(700, removeNouveauEbsdd)
 
   removeNouveauEbsdd = (e) ->
@@ -485,13 +475,14 @@ jQuery ->
 
   # bouton en attente status (passe le status de En Attente à Pret à sortir)
   $(".en_attente_statut").on 'click', (e) ->
-    if $(this).first().closest('td').prev().text().trim() == "-"
-      div = "<div class='alert alert-danger'>Veuillez remplir le bsd avant de changer le statut.</div>"
+    e.preventDefault()
+    poids = $(this).first().closest('td').prev().text().trim()
+    if poids == "-" or parseFloat( poids.replace(" kg", "") ) == 0
+      div = "<div class='alert alert-danger'>Veuillez remplir le poids de l'ebbsdd avant de changer le statut.</div>"
       $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
       return false
     id = $(this).closest('tr').find('td:first').text()
     url = "/ebsdd/#{id}/change_en_attente_statut.json"
-    console.log url
     $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
 
   removeNouveauEbsdd = (e) ->

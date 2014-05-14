@@ -9,6 +9,9 @@ Meleze::Application.routes.draw do
   get  "attachments", to: "attachments#index"
   get  'attachments/:id', to: 'attachments#show', as: :attachment
   get  "dashboard", to: "dashboard#index"
+  get  "statistiques", to: "statistiques#index"
+  post "statistiques/camions", to: "statistiques#camions"
+  post "statistiques/destinations", to: "statistiques#destinations"
 
   devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
 
@@ -26,6 +29,7 @@ Meleze::Application.routes.draw do
   post 'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
   post 'ebsdds/nouveaux_pdfs', to: 'ebsdds#nouveaux_pdfs', as: :ebsdds_nouveaux_pdfs
   post 'ebsdds/change_nouveau_statut', to: 'ebsdds#change_nouveau_statut'
+  put 'ebsdds/:id/split', to: 'ebsdds#split'
   post 'ebsdd/:id/change_nouveau_statut', to: 'ebsdds#change_ebsdd_nouveau_statut'
   post 'ebsdd/:id/change_en_attente_statut', to: 'ebsdds#change_ebsdd_en_attente_statut'
 
@@ -54,6 +58,8 @@ Meleze::Application.routes.draw do
 
   resources :ebsdds
   resources :producteurs
+  resources :produits
+  post 'produits/search', to: 'produits#search', as: :produits_search
 
   root to: 'dashboard#index'
   # The priority is based upon order of creation:

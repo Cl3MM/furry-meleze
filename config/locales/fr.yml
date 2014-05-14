@@ -37,6 +37,22 @@ fr:
         destination_ult_tel: Téléphone
     errors:
       models:
+        produit:
+          attributes:
+            nom:
+              blank: ne doit pas être vide
+            mention:
+              blank: ne doit pas être vide
+            references:
+              blank: ne doit pas être vide
+            code_dr_reception:
+              blank: ne doit pas être vide
+            consistance:
+              blank: ne doit pas être vide
+            code_dr_expedition:
+              blank: ne doit pas être vide
+            seuil_alerte:
+              blank: ne doit pas être vide
         company:
           attributes:
             siret:
@@ -111,6 +127,8 @@ fr:
               blank: ne doit pas être vide
         ebsdd:
           attributes:
+            produit_id:
+              blank: ne doit pas être vide
             super_denomination:
               blank: ne doit pas être vide
             destinataire_id:

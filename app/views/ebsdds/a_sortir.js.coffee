@@ -8,3 +8,8 @@ jQuery ->
   if !!ebsdds
     $("#ebsdds_list tbody").replaceWith(ebsdds)
     $("#ebsdds_list").fadeIn(500) if $("#ebsdds_list").is(":hidden")
+  else
+    $("#ebsdds_list").fadeOut(500) if $("#ebsdds_list").is(":visible")
+    msg = "Aucun eBSDD trouvé pour cette catégorie de déchet. Veuillez sélectionner une autre catégorie."
+    div = '<div class="alert alert-danger">'+msg+'</div>'
+    $(div).hide().insertAfter($("body .container .navbar")).fadeIn(400).delay(2000).fadeOut(500)

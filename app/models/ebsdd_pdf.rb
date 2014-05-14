@@ -6,7 +6,7 @@ class EbsddPdf < Prawn::Document
   WHITE = "FFFFFF"
   SUPER_PINK = "FF11FF"
 
-  def initialize(ebsdd, status, bds)
+  def initialize(ebsdd, status, bds = nil)
     @ebsdd = ebsdd
     @bds = bds
     @status = status
@@ -25,13 +25,12 @@ class EbsddPdf < Prawn::Document
         bordereau_poids: @bds.poids,
         collecteur_id: collecteur.id,
         destination_id: @bds.destination.id,
-        super_denomination: @bds.denomination_id.to_s,
         emetteur_nom: producteur.nom,
         emetteur_siret: producteur.siret,
         emetteur_adresse: producteur.adresse,
         emetteur_tel: producteur.tel,
-        codedr: @bds.codedr_cadre12,
         bid: @bds.id,
+        produit_id: @bds.produit.id,
         bordereau_date_transport: @bds.created_at,
         code_operation: @bds.codedr_cadre12,
         traitement_prevu: CodeDr[@bds.codedr_cadre12]
@@ -55,11 +54,10 @@ class EbsddPdf < Prawn::Document
       cadre11
       cadre12
 
-      1.upto(52).each_slice(5) do | annexe |
+      @bds.ebsdds.each_slice(5) do | annexe |
         annexe_en_tete
         annexe.each_with_index do | ebsdd, i |
-          e = @bds.ebsdds.first
-          annexe_line_item e, i
+          annexe_line_item ebsdd, i
         end
       end
 
@@ -139,14 +137,14 @@ class EbsddPdf < Prawn::Document
     # fax
     my_text_box prod.try(:fax), [185, 550 - height], width: 50, height: 15
     # email
-    my_text_box prod.try(:email), [78, 560 - height], width: 50, height: 150
+    my_text_box prod.try(:email), [78, 538 - height], width: 150, height: 15
     # Contact
     my_text_box prod.try(:responsable), [55, 517 - height], width: 230, height: 15
 
     # Rubrique dechet
-    my_text_box "#{ebsdd.dechet_denomination.to_s.gsub(/(.{2})(?=.)/, '\1 \2')} *", [360, 584 - height], width: 80, height: 15
+    my_text_box "#{ebsdd.produit.code_rubrique.to_s.gsub(/(.{2})(?=.)/, '\1 \2')} *", [360, 584 - height], width: 80, height: 15
     # Denomination Usuelle
-    my_text_box ebsdd.denomination_cadre_3, [283, 563 - height], width: 200, height: 15
+    my_text_box ebsdd.produit.nom, [283, 563 - height], width: 200, height: 15
     # Poids
     my_text_box ebsdd.poids_en_tonnes_pdf, [422, 550 - height], width: 40, height: 15, align: :center
     # Quantité réelle
@@ -181,8 +179,8 @@ class EbsddPdf < Prawn::Document
     my_text_box dest.fax, [400, 655], width: 50, height: 15
     # Email
     my_text_box dest.email, [310, 643], width: 150, height: 15
-
   end
+
   def log text
     my_text_box text, [200, 746.5], width: 150, height: 10
   end
@@ -271,16 +269,16 @@ class EbsddPdf < Prawn::Document
   end
   def cadre4
     #my_text_box DechetNomenclature[@ebsdd.dechet_denomination].upcase, [45, 515], width: 430, height: 20
-    my_text_box @ebsdd.denomination_cadre_4.upcase, [45, 515], width: 430, height: 20
+    my_text_box @ebsdd.produit.mention.titleize, [45, 515], width: 430, height: 20
   end
   def cadre0
     my_text_box @ebsdd.bordereau_id.to_s, [118, 745.5], width: 150, height: 10
   end
   def cadre3
     # dénomination du déchet, on insère un espace tous les 2 caractères
-    my_text_box "#{@ebsdd.dechet_denomination.to_s.gsub(/(.{2})(?=.)/, '\1 \2')} *", [175, 557], width: 150
+    my_text_box "#{@ebsdd.produit.code_rubrique.to_s.gsub(/(.{2})(?=.)/, '\1 \2')} *", [175, 557], width: 150
     # Cadre 3 consistance
-    case @ebsdd.dechet_consistance
+    case @ebsdd.produit.consistance
     when 0
       # Solide
       checkbox 366, 559
@@ -293,7 +291,7 @@ class EbsddPdf < Prawn::Document
     end
     # Dénomination usuelle
     #my_text_box DechetDenomination[@ebsdd.dechet_denomination].upcase, [175, 536], width: 300, height: 10
-    my_text_box @ebsdd.denomination_cadre_3.upcase, [175, 536], width: 300, height: 10
+    my_text_box @ebsdd.produit.nom.titleize, [175, 536], width: 300, height: 10
   end
   def cadre1
     # siret

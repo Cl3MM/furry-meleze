@@ -88,6 +88,7 @@ class EbsddsController < ApplicationController
     end
   end
   def nouveaux_pdfs
+    binding.pry
     if params[:ids].present?
       ids, pdf_list = params[:ids], []
       path = File.join(Rails.root, "tmp", "pdfs")
@@ -96,7 +97,7 @@ class EbsddsController < ApplicationController
       ids.each_with_index do | id, ix |
         ebsdd = Ebsdd.find_by(bid: id)
         pdf_path = File.join( path, ebsdd.bid ) + ".pdf"
-        pdf = EbsddPdf.new(ebsdd)
+        pdf = EbsddPdf.new(ebsdd, :nouveau)
         pdf.render_file pdf_path
         pdf_list << pdf_path
       end
@@ -154,7 +155,9 @@ class EbsddsController < ApplicationController
   # GET /ebsdds.json
   def index
     @ebsdds = Ebsdd.search(params).paginate(page: params[:page], per_page: 15)
-    @status = (params.has_key?(:status) ? params[:status].to_sym : :empty)
+    @status = (params.has_key?(:status) ? params[:status].to_sym : :tous)
+    @status = :clos if @status == :closs
+    @status = :nouveau if @status == :tous && !current_utilisateur.is_admin?
   end
 
   # GET /ebsdds/1
@@ -174,16 +177,19 @@ class EbsddsController < ApplicationController
   end
 
   def types_dechet_a_sortir
-    types = Ebsdd.where(status: :attente_sortie).distinct(:super_denomination).map{ |s| { text: DechetDenomination.reborn[s.to_i][3], id: s.to_i } }
+    pids = Ebsdd.where(status: :attente_sortie).distinct(:produit_id)
+    types = pids.nil? ? nil : Produit.find(pids).map{ |p| {text: p.nom, id: p.id} }
     render json: types
   end
 
   def a_sortir
-    if params[:denomination].present?
-      denomination = params[:denomination]
-      @ebsdds = Ebsdd.where(status: :attente_sortie).and(super_denomination: denomination)
-      @destinataire = DechetDenomination.reborn[denomination.to_i][6]
-      @codedr = DechetDenomination.reborn[denomination.to_i][5]
+    if params[:produit_id].present?
+      is_ecodds = params.has_key?(:is_ecodds) && params[:is_ecodds] == "true" ? true : false
+      produit_id = params[:produit_id]
+      produit = Produit.find(produit_id)
+      @ebsdds = Ebsdd.where(status: :attente_sortie).and(produit_id: produit_id).and(is_ecodds: is_ecodds)
+      @destinataire = produit.try(:references).try(:first)
+      @codedr = produit.try(:code_dr_expedition)
       respond_to do | format |
         format.js
       end
@@ -229,6 +235,23 @@ class EbsddsController < ApplicationController
       else
         #@producteur = @ebsdd.producteur || Producteur.where(is_collecteur: false).build
         #@destination = @ebsdd.destination || Destination.find_by(nomenclatures: @ebsdd.dechet_denomination) || Destination.new
+        format.html { render action: 'edit' }
+        format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def split
+    params[:ebsdd][:bordereau_poids].gsub!(",", ".") if params[:ebsdd][:bordereau_poids].present? && params[:ebsdd][:bordereau_poids] =~ /,/
+    @ebsdd = Ebsdd.find(params[:id])
+    respond_to do |format|
+      if @ebsdd.update_attributes(params[:ebsdd])
+        @ebsdd = Ebsdd.new(params[:ebsdd])
+        @ebsdd.bordereau_poids = 0
+        @ebsdd.ecodds_id = nil
+        flash[:notice] = "eBsdds enregistré avec succès ! Veuillez remplir le nouveau poids."
+        format.html { render action: 'new', notice: "eBsdds enregistré avec succès ! Veuillez remplir le nouveau poids." }
+      else
         format.html { render action: 'edit' }
         format.json { render json: @ebsdd.errors, status: :unprocessable_entity }
       end

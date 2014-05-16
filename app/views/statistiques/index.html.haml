@@ -7,7 +7,7 @@
       .panel.panel-default
         .panel-heading
           %h4.panel-title
-            %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseTwo"}
+            %a{"data-toggle" => "collapse", :href => "#collapseTwo"}
               %strong
                 %i.fa.fa-truck
                 Volume par camion du
@@ -33,10 +33,10 @@
       .panel.panel-default
         .panel-heading
           %h4.panel-title
-            %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseThree"}
+            %a{"data-toggle" => "collapse", :href => "#collapseThree"}
               %i.fa.fa-building-o
               Statistiques Destinations ultérieures
-        #collapseThree.panel-collapse.collapse.in
+        #collapseThree.panel-collapse.collapse
           .panel-body
             .row
               .col-md-12
@@ -63,7 +63,7 @@
                     .col-md-4
                       %p
                         %strong
-                          Destination
+                          Destination :
                           %span#dest-nom
                     .col-md-8
                       %p
@@ -74,13 +74,14 @@
                           %span#dest-au
                           = ":"
                           %span#dest-poids-total
+                          tonnes
 
             #dest{"data-dest" => "#{@dest.to_json}" }
       - if @alertes.any?
         .panel.panel-default
           .panel-heading
             %h4.panel-title
-              %a{"data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapseOne"}
+              %a{"data-toggle" => "collapse", :href => "#collapseOne"}
                 %i.fa.fa-exclamation-circle
                 Seuils d'alertes
           #collapseOne.panel-collapse.collapse

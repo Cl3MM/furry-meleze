@@ -4,6 +4,14 @@
 
 jQuery ->
 
+  getFormattedDate = (date) ->
+    year = date.getFullYear()
+    month = (1 + date.getMonth()).toString()
+    month = if month.length > 1 then month else '0' + month
+    day = date.getDate().toString()
+    day = if day.length > 1 then day else '0' + day
+    day + '/' + month + '/' + year
+
   $("#collapseOne").on 'hide.bs.collapse', () ->
     $("#alertes").empty()
     
@@ -133,6 +141,12 @@ jQuery ->
     $("#dest-result").fadeIn(500)
     $("#dest").empty()
 
+    hoverCallback = (index, options, content)->
+      row = options.data[index]
+      date = new Date row.y
+      dateStr = getFormattedDate date
+      "<div class='morris-hover-row-label'>Jour: #{dateStr}</div><div class='morris-hover-point' style='color: #0b62a4'>Poids : #{row.a} tonnes</div>"
+
     if !d.data.length
       console.log "pas de données"
       $("#dest").html("")
@@ -143,12 +157,13 @@ jQuery ->
     else
       data = for i in d.data
         { y: i.jour, a: i.poids }
-      Morris.Line
+      Morris.Bar
         element: 'dest',
         data: data
         xkey: 'y',
         ykeys: ['a'],
-        labels: ['Series A']
+        labels: ['Poids (t)']
+        hoverCallback: hoverCallback
 
 
   initDest = (e)->

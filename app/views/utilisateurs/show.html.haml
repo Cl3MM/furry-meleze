@@ -1,0 +1,24 @@
+%p#notice= notice
+
+%h1.page-header
+  = fa_icon "briefcase"
+  Détails de l'utilisateur
+  %small= @utilisateur.email
+.row
+  .col-md-12
+    .panel.panel-default
+      #new.panel-body
+        %dl.dl-horizontal
+          %dt email :
+          %dd= @utilisateur.email
+          %dt role :
+          %dd= @utilisateur.role
+          %dt crée le :
+          %dd= @utilisateur.try(:created_at).try( :strftime, "%d/%m/%Y")
+          %dt Dernière modification le :
+          %dd= @utilisateur.try(:updated_at).try( :strftime, "%d/%m/%Y")
+
+        .row.text-center
+          .col-md-12
+            = link_to 'Modifier', edit_utilisateur_path(@utilisateur), class: "btn btn-primary"
+            = link_to 'Retour', utilisateurs_path, class: "btn btn-default"

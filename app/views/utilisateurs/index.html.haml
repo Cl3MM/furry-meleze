@@ -1,0 +1,35 @@
+%h1.page-header
+  = fa_icon "users"
+  Liste des utilisateurs
+  %span.small
+    = "(#{@utilisateurs.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_utilisateur_path, "Créer un nouvel utilisateur", "user lg"
+
+- if @utilisateurs.any?
+  %table.table.table-striped
+    %tr
+      %th Email
+      %th Role
+      %th.actions Actions
+
+    - @utilisateurs.each do |utilisateur|
+      %tr
+        %td= utilisateur.email
+        %td= utilisateur.role
+        %td.actions
+          .btn-group.text-center
+            = fa_link_to utilisateur, '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de l'utilisateur #{utilisateur.email}"
+            = fa_link_to edit_utilisateur_path(utilisateur), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de l'utilisateur #{utilisateur.email}"
+            = fa_link_to utilisateur, '', "times", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{utilisateur.email} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{utilisateur.email} ?" } if current_utilisateur.is_admin?
+- else
+  .jumbotron
+    %p.leader
+      Aucun utilisateur trouvé

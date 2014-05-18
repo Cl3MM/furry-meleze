@@ -22,6 +22,9 @@ fr:
       - day
   mongoid:
     attributes:
+      utilisateur:
+        password: Mot de passe
+        password_confirmation: Confirmation du mot de passe
       ebsdd:
         super_denomination: Dénomination du déchet
         bordereau_poids: Poids
@@ -92,6 +95,21 @@ fr:
             fax:
               blank: ne doit pas être vide
             email:
+              blank: ne doit pas être vide
+        utilisateur:
+          attributes:
+            email:
+              blank: ne doit pas être vide
+              taken: cet email existe déjà, veuillez en sélectionner un autre.
+    
+            password:
+              blank: ne doit pas être vide
+              too_short: Le mot de passe doit avoir au moins %{count} caratères
+              too_long: Le mot de passe doit avoir au maximum %{count} caratères
+              confirmation: Merci de confirmer le mot de passe
+            password_confirmation:
+              blank: ne doit pas être vide
+            role:
               blank: ne doit pas être vide
         destination:
           attributes:

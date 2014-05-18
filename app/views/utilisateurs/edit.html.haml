@@ -1,0 +1,19 @@
+%h1
+  Modification de l'utilisateur 
+  %small
+    {
+    = @utilisateur.email
+    }
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_utilisateur_path, "Créer un nouvel utilisateur", "user lg"
+      %li
+        = fa_link_to utilisateurs_path, "Voir les utilisateurs", "users lg"
+
+= render 'form'

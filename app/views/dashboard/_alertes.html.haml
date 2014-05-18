@@ -11,6 +11,8 @@
           - if al[:poids] > al[:seuil]
             %p.text-danger
               %i.fa.fa-warning
+              ATTENTION
+              %i.fa.fa-warning
               = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
           - else
             = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )

@@ -1,5 +1,6 @@
 class Utilisateur
   include Mongoid::Document
+  include Mongoid::Timestamps
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -16,6 +17,11 @@ class Utilisateur
   ## Recoverable
   field :reset_password_token,   :type => String
   field :reset_password_sent_at, :type => Time
+
+  validates :email, presence: true
+  validates :password, presence: true,length: { in: 8..20 }, if: Proc.new { |a| a.new_record? }
+  validates :password, confirmation: true, unless: Proc.new { |a| a.password.blank? }
+  validates :role, presence: true, inclusion: { in: ["utilisateur", "administrateur"] }
 
   ## Rememberable
   field :remember_created_at, :type => Time

@@ -38,7 +38,7 @@
         %td= produit.code_dr_reception
         %td= produit.code_dr_expedition
         %td.actions
-          .center-block.text-center
+          .btn-group.text-center
 
             = fa_link_to produit, '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de #{produit.nom}"
             = fa_link_to edit_produit_path(produit), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de #{produit.nom}"

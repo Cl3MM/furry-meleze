@@ -1,0 +1,39 @@
+= custom_form (@utilisateur) do |f|
+  - if @utilisateur.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          #error_explanation
+            %h2
+              Merci de corriger
+              - if @utilisateur.errors.count > 1
+                les #{@utilisateur.errors.count} erreurs suivantes :
+              - else
+                l'erreur suivante :
+            %ul
+              - @utilisateur.errors.full_messages.each do |msg|
+                %li= msg
+
+  .form-group
+    = f.label :email
+    = f.text_field :email
+  .form-group
+    = f.label :password, "Mot de passe"
+    = f.text_field :password, type: :password
+  .form-group
+    = f.label :password_confirmatio, "Confirmation du mot de passe"
+    = f.text_field :password_confirmation
+  .form-group
+    = f.label :role
+    = f.select :role, ["utilisateur", "administrateur"], as: "Sélectionnez le rôle de l'utilisateur..."
+  %hr
+  .row
+    .col-md-12
+      .actions
+        = link_to 'Retour', utilisateurs_path, class: "btn btn-default"
+        = content_tag :button, type: :submit, class: "btn btn-primary" do
+          Enregistrer les modifications&nbsp;
+          = fa_icon "save lg"
+        = link_to 'Voir l\'utilisateur', @utilisateur, class: "btn btn-default"
+

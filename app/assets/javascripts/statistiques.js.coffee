@@ -12,9 +12,11 @@ jQuery ->
     day = if day.length > 1 then day else '0' + day
     day + '/' + month + '/' + year
 
+
+  # alertes
   $("#collapseOne").on 'hide.bs.collapse', () ->
     $("#alertes").empty()
-    
+
   $("#collapseOne").on 'shown.bs.collapse', () ->
     rawData = $("#alertes").data("alertes")
     data = for i in rawData
@@ -29,6 +31,7 @@ jQuery ->
       barColors: ["#eee", "#FF0000"]
       hideHover: 'auto'
 
+  # camions
   $("#collapseTwo").on 'hide.bs.collapse', () ->
     $("#camions").empty()
 
@@ -186,6 +189,118 @@ jQuery ->
       url = $(this).closest('form').prop('action')
       console.log url
       $.post(url, {date_min: dateMin, date_max: dateMax, dest_id: dest_id }).done(displayDestinations)
+
+
+  # Quantites
+  
+  # Initialisation des date des quantites :
+
+  rawData = $("#qtes").data("qtes")
+  $("#qte-du").text rawData.du
+  $("#qte-au").text rawData.au
+  $("#qte-2-excel").hide() unless rawData.data.length
+
+  window.csv_dl = 0
+
+  $("#qte-2-excel").on 'click', (e)->
+    window.csv_dl += 1
+
+    dateMin = $("#qte-date-min").val()
+    dateMax = $("#qte-date-max").val()
+
+    $(this).prop("href", $(this).prop("href").split(".csv?")[0] + ".csv") if window.csv_dl > 1
+    url = $(this).prop("href")
+    url += "?date_min=#{dateMin}&date_max=#{dateMax}"
+    $(this).prop("href", url )
+
+    #e.preventDefault()
+    #url = "/statistiques/quantites_to_csv.csv"
+    #$.get(url, {date_min: dateMin, date_max: dateMax})
+
+  $("#collapseFour").on 'hide.bs.collapse', () ->
+    $("#quantites").empty()
+
+  $("#collapseFour").on 'shown.bs.collapse', () ->
+    initQuantites()
+
+  initQuantites = (e)->
+    $("#qtes").empty()
+    rawData = []
+    if e == undefined
+      rawData = $("#qtes").data("qtes")
+    else
+      rawData = e
+    console.log rawData
+    $("#qte-du").text rawData.du
+    $("#qte-au").text rawData.au
+
+    $("#qte-date-min").val("")
+    $("#qte-date-max").val("")
+    $("#qte-date-min").prop "placeholder", rawData.du
+    $("#qte-date-max").prop "placeholder", rawData.au
+
+    data = for i in rawData.data
+      { y: i.nom, a: i.poids }
+
+    $("#qtes-table tbody").html("")
+    if !data.length
+      console.log "pas de données"
+      $("#qte-2-excel").hide()
+      $("#qtes").html("")
+      $("#qtes-table").fadeOut(200)
+      $("#qtes-table tbody").html("")
+      err = $('<div class="alert alert-info">Aucune donnée à ces dates.</div>')
+      err.hide()
+      $("#qtes").append(err)
+      err.fadeIn(600)
+    else
+      $("#qtes-table").fadeIn(200)
+      console.log data
+      trs = ""
+      for i in data
+        trs += "<tr>
+                <td>#{i.y}</td>
+                <td>#{i.a}</td>
+              </tr>"
+      $("#qtes-table tbody").append(trs)
+      $("#qte-2-excel").show()
+
+      Morris.Bar
+        element: 'qtes',
+        data: data
+        xkey: 'y',
+        ykeys: ['a'],
+        labels: ['Poids en tonne']
+        barColors: ["#444", "#FF0000"]
+        hideHover: 'auto'
+
+  initQuantites()
+
+  $("#qte-date-min").datepicker
+    defaultDate: "+1w"
+    numberOfMonths: 1
+    dateFormat: 'dd-mm-yy'
+    onClose: (selectedDate) ->
+      $("#qte-date-max").datepicker "option", "minDate", selectedDate
+      $("#qte-date-max").datepicker('show')
+    $.datepicker.regional[ "fr" ]
+
+  $("#qte-date-max").datepicker
+    defaultDate: "+1w"
+    numberOfMonths: 1
+    dateFormat: 'dd-mm-yy'
+    onClose: (selectedDate) ->
+      $("#qte-date-min").datepicker "option", "maxDate", selectedDate
+    $.datepicker.regional[ "fr" ]
+
+
+  $("#qte-show").on 'click', (e)->
+    e.preventDefault()
+    dateMin = $("#qte-date-min").val()
+    dateMax = $("#qte-date-max").val()
+    if !!dateMin && !!dateMax
+      url = $(this).closest('form').prop('action')
+      $.post(url, {date_min: dateMin, date_max: dateMax}).done(initQuantites)
 
 
 

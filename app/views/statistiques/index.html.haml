@@ -6,16 +6,15 @@
     #accordion.panel-group
       .panel.panel-default
         .panel-heading
-          %h4.panel-title
+          %h4.panel-title.statistiques
             %a{"data-toggle" => "collapse", :href => "#collapseTwo"}
-              %strong
-                %i.fa.fa-truck
-                Volume par camion du
+              %i.fa.fa-truck
+              Volume par camion du
               %span#ca-du
               au
               %span#ca-au
 
-            %form.form-inline.pull-right{:role => "form", action: "/statistiques/camions", method: "post"}
+            %form.form-inline.pull-right.statistiques{:role => "form", action: "/statistiques/camions", method: "post"}
               Du
               .form-group
                 %label.sr-only
@@ -27,7 +26,7 @@
               %button.btn.btn-primary.input-sm#ca-show
                 %i.fa.fa-search
             %span.clearfix
-        #collapseTwo.panel-collapse.collapse.in
+        #collapseTwo.panel-collapse.collapse
           .panel-body
             = render partial: 'camions', object: @camions
       .panel.panel-default
@@ -87,4 +86,34 @@
           #collapseOne.panel-collapse.collapse
             .panel-body
               = render partial: 'dashboard/alertes', object: @alertes
+      .panel.panel-default
+        .panel-heading
+          %h4.panel-title.statistiques
+            %a{"data-toggle" => "collapse", :href => "#collapseFour"}
+              %i.fa.fa-recycle
+              Quantites de dechets du
+              %span#qte-du
+              au
+              %span#qte-au
 
+            %form.form-inline.pull-right.statistiques{:role => "form", action: "/statistiques/quantites", method: "post"}
+              Du
+              .form-group
+                %label.sr-only
+                %input#qte-date-min.form-control.input-sm
+              au
+              .form-group
+                %label.sr-only
+                %input#qte-date-max.form-control.input-sm
+              %button.btn.btn-primary.input-sm.touletip#qte-show{title: "Rechercher !"}
+                %i.fa.fa-search
+              %a#qte-2-excel.btn.btn-success.btn-sm.fa.fa-file-excel-o.touletip{title: "Téléchargez les données pour la période sélectionnée...", href:"/statistiques/quantites_to_csv.csv"}
+            %span.clearfix
+        #collapseFour.panel-collapse.collapse
+          .panel-body
+            #qtes{"data-qtes" => "#{@quantites.to_json}" }
+            %table.table.table-striped#qtes-table
+              %thead
+                %th Nom
+                %th Poids (tonnes)
+              %tbody

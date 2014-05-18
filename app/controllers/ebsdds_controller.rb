@@ -36,6 +36,7 @@ class EbsddsController < ApplicationController
       ebsdd = Ebsdd.find_by(bid: params[:id])
       if ebsdd
         ebsdd.set(:status, :attente_sortie)
+        ebsdd.set(:attente_sortie_created_at, Time.now)
         respond_to do | format |
           format.json { render json: { id: params[:id] } }
         end
@@ -55,6 +56,7 @@ class EbsddsController < ApplicationController
       ebsdd = Ebsdd.find_by(bid: params[:id])
       if ebsdd
         ebsdd.set(:status, :en_attente)
+        ebsdd.set(:en_attente_created_at, Time.now)
         respond_to do | format |
           format.json { render json: { id: params[:id] } }
         end

@@ -3,6 +3,7 @@ Meleze::Application.routes.draw do
   resources :searches
 
   resources :destinations
+  resources :utilisateurs
 
   get 'destinations/find_by_nomenclature/:nomenclature', to: 'destinations#find_by_nomenclature', as: :find_by_nomenclature, format: [:js, :json]
 
@@ -12,6 +13,8 @@ Meleze::Application.routes.draw do
   get  "statistiques", to: "statistiques#index"
   post "statistiques/camions", to: "statistiques#camions"
   post "statistiques/destinations", to: "statistiques#destinations"
+  post "statistiques/quantites", to: "statistiques#quantites"
+  get  "statistiques/quantites_to_csv", to: "statistiques#quantites_to_csv", default: {format: :csv}
 
   devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
 

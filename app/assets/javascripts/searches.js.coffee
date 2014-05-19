@@ -25,3 +25,10 @@ jQuery ->
     dateFormat: 'dd-mm-yy'
     $.datepicker.regional[ "fr" ]
 
+  if $("#search-table").length
+    $("#search-table").tablesorter
+      dateFormat : "ddmmyyyy"
+      headerTemplate: '{content} {icon}'
+      onRenderHeader: (index)->
+        $(this).find('div').append("<i class='fa fa-caret-down pull-right'></i>")
+

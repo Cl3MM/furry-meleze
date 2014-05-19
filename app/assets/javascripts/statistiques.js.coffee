@@ -38,6 +38,24 @@ jQuery ->
   $("#collapseTwo").on 'shown.bs.collapse', () ->
     initCamions()
 
+  caRawData = $("#camions").data("camions")
+  $("#ca-2-excel").hide() unless caRawData.data.length
+  window.ca_csv_dl = 0
+
+  $("#ca-2-excel").on 'click', (e)->
+    window.ca_csv_dl += 1
+
+    dateMin = $("#ca-du").text()
+    dateMax = $("#ca-au").text()
+
+    console.log dateMin
+    console.log dateMax
+
+    $(this).prop("href", $(this).prop("href").split(".csv?")[0] + ".csv") if window.ca_csv_dl > 1
+    url = $(this).prop("href")
+    url += "?date_min=#{dateMin}&date_max=#{dateMax}"
+    $(this).prop("href", url )
+
   initCamions = (e)->
     $("#camions").empty()
     rawData = []
@@ -66,9 +84,10 @@ jQuery ->
       err.hide()
       $("#camions").append(err)
       err.fadeIn(600)
+      $("#ca-2-excel").hide()
     else
+      $("#ca-2-excel").show()
       $("#camions-table").fadeIn(200)
-      console.log data
       trs = ""
       for i in data
         trs += "<tr>
@@ -115,6 +134,25 @@ jQuery ->
 
 
   # Destinations Ultérieures
+  deRawData = $("#dest").data("dest")
+  $("#dest-2-excel").hide()
+  window.de_csv_dl = 0
+
+  $("#dest-2-excel").on 'click', (e)->
+    window.de_csv_dl += 1
+
+    destId = $("#dest-select").select2("val")
+    dateMin = $("#dest-du").text()
+    dateMax = $("#dest-au").text()
+
+    console.log destId
+    console.log dateMin
+    console.log dateMax
+
+    $(this).prop("href", $(this).prop("href").split(".csv?")[0] + ".csv") if window.de_csv_dl > 1
+    url = $(this).prop("href")
+    url += "?date_min=#{dateMin}&date_max=#{dateMax}&dest_id=#{destId}"
+    $(this).prop("href", url )
 
   $("#dest-date-min").datepicker
     defaultDate: "+1w"
@@ -135,8 +173,8 @@ jQuery ->
 
 
   displayDestinations = (d)->
+    console.log "resultats"
     console.log d
-
     $("#dest-du").text(d.du)
     $("#dest-au").text(d.au)
     $("#dest-nom").text(d.destination)
@@ -146,11 +184,10 @@ jQuery ->
 
     hoverCallback = (index, options, content)->
       row = options.data[index]
-      date = new Date row.y
-      dateStr = getFormattedDate date
-      "<div class='morris-hover-row-label'>Jour: #{dateStr}</div><div class='morris-hover-point' style='color: #0b62a4'>Poids : #{row.a} tonnes</div>"
+      "<div class='morris-hover-row-label'>Jour: #{row.y}</div><div class='morris-hover-point' style='color: #0b62a4'>Poids : #{row.a} tonnes</div>"
 
     if !d.data.length
+      $("#dest-2-excel").hide()
       console.log "pas de données"
       $("#dest").html("")
       err = $('<div class="alert alert-info">Aucune donnée à ces dates.</div>')
@@ -158,6 +195,7 @@ jQuery ->
       $("#dest").append(err)
       err.fadeIn(600)
     else
+      $("#dest-2-excel").show()
       data = for i in d.data
         { y: i.jour, a: i.poids }
       Morris.Bar
@@ -184,29 +222,26 @@ jQuery ->
     dateMin = $("#dest-date-min").val()
     dateMax = $("#dest-date-max").val()
     dest_id = $("#dest-select").select2("val")
-    console.log dest_id
     if !!dateMin && !!dateMax && !!dest_id
       url = $(this).closest('form').prop('action')
-      console.log url
       $.post(url, {date_min: dateMin, date_max: dateMax, dest_id: dest_id }).done(displayDestinations)
 
 
   # Quantites
-  
+
   # Initialisation des date des quantites :
 
-  rawData = $("#qtes").data("qtes")
-  $("#qte-du").text rawData.du
-  $("#qte-au").text rawData.au
-  $("#qte-2-excel").hide() unless rawData.data.length
-
+  qteRawData = $("#qtes").data("qtes")
+  $("#qte-du").text qteRawData.du
+  $("#qte-au").text qteRawData.au
+  $("#qte-2-excel").hide() unless qteRawData.data.length
   window.csv_dl = 0
 
   $("#qte-2-excel").on 'click', (e)->
     window.csv_dl += 1
 
-    dateMin = $("#qte-date-min").val()
-    dateMax = $("#qte-date-max").val()
+    dateMin = $("#qte-du").text()
+    dateMax = $("#qte-au").text()
 
     $(this).prop("href", $(this).prop("href").split(".csv?")[0] + ".csv") if window.csv_dl > 1
     url = $(this).prop("href")
@@ -230,7 +265,6 @@ jQuery ->
       rawData = $("#qtes").data("qtes")
     else
       rawData = e
-    console.log rawData
     $("#qte-du").text rawData.du
     $("#qte-au").text rawData.au
 
@@ -255,7 +289,6 @@ jQuery ->
       err.fadeIn(600)
     else
       $("#qtes-table").fadeIn(200)
-      console.log data
       trs = ""
       for i in data
         trs += "<tr>

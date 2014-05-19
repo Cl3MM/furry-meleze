@@ -1,13 +1,13 @@
 = content_for :search do
   = form_tag( produits_search_path, class: "navbar-form navbar-right", role: :search ) do | f |
     .form-group
-      = text_field_tag :query, nil, placeholder: "Nom du produit", class: "form-control"
+      = text_field_tag :query, nil, placeholder: "Nom du déchet", class: "form-control"
     %span.form-group-btn
       %button.btn.btn-default{ type: :submit }
         = fa_icon "search lg"
 %h1.page-header
   = fa_icon "users"
-  Liste des produits
+  Liste des déchets
   %span.small
     = "(#{@produits.count})"
   .btn-group.pull-right
@@ -18,12 +18,13 @@
       %span.caret
     %ul.dropdown-menu{role: "menu"}
       %li
-        = fa_link_to new_produit_path, "Créer un nouveau produit", "user lg"
+        = fa_link_to new_produit_path, "Créer un nouveau déchet", "user lg"
 
 - if @produits.any?
   %table.table.table-striped
     %tr
       %th Nom
+      %th.text-center Type
       %th Mention
       %th Consistance
       %th Code DR
@@ -33,6 +34,7 @@
     - @produits.each do |produit|
       %tr
         %td= link_to produit.nom, produit
+        %td.text-center= raw produit.type
         %td= truncate(produit.mention)
         %td= produit.consistance_to_human
         %td= produit.code_dr_reception
@@ -46,4 +48,4 @@
 - else
   .jumbotron
     %p.leader
-      Aucun produit trouvé
+      Aucun déchet trouvé

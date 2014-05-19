@@ -1,7 +1,7 @@
 = content_for :search do
   = form_tag( produits_search_path, class: "navbar-form navbar-right", role: :search ) do | f |
     .form-group
-      = text_field_tag :query, nil, placeholder: "Nom du produit", class: "form-control"
+      = text_field_tag :query, nil, placeholder: "Nom du déchet", class: "form-control"
     %span.form-group-btn
       %button.btn.btn-default{ type: :submit }
         = fa_icon "search lg"

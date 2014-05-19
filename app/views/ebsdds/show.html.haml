@@ -35,7 +35,7 @@
     %a{"data-toggle" => "tab", href: "#ebsdd_annexe2"} Annexe 2
 
 .tab-content
-  #ebsdd_main.tab-pane.fade.in.active 
+  #ebsdd_main.tab-pane.fade.in.active
     = render partial: "ebsdds/show/ebsdd_main_content", object: @ebsdd, as: :ebsdd
   #ebsdd_optional.tab-pane.fade
     = render partial: "ebsdds/show/ebsdd_second_page", object: @ebsdd, as: :ebsdd

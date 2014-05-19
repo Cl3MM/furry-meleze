@@ -5,8 +5,9 @@ gem 'pry-rails'
 gem 'rb-readline', require: false
 gem 'devise'
 
+gem 'puma'
 group :production do
-  gem 'puma'
+  #gem 'nokogiri', '~> 1.6.2.1'
 end
 
 gem 'haml-rails', group: :development

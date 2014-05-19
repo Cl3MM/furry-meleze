@@ -15,6 +15,8 @@ Meleze::Application.routes.draw do
   post "statistiques/destinations", to: "statistiques#destinations"
   post "statistiques/quantites", to: "statistiques#quantites"
   get  "statistiques/quantites_to_csv", to: "statistiques#quantites_to_csv", default: {format: :csv}
+  get  "statistiques/camions_to_csv", to: "statistiques#camions_to_csv", default: {format: :csv}
+  get  "statistiques/destinations_to_csv", to: "statistiques#destinations_to_csv", default: {format: :csv}
 
   devise_for :utilisateurs, :path => '', :path_names => {:sign_in => 'connexion', :sign_out => 'deconnexion'}
 

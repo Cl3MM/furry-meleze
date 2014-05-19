@@ -750,7 +750,23 @@ class Ebsdd
       end
     end
   end
-
+  def status_label
+    l = "<label class='label label-%s'>%s</label>"
+    case status
+    when :complet
+      l % ["primary", "Complet"]
+    when :nouveau
+      l % ["default", "Nouveau"]
+    when :en_attente
+      l % ["info", "Attente Réception"]
+    when :attente_sortie
+      l % ["warning", "En Stock"]
+    when :incomplet
+      l % ["danger", "Incomplet"]
+    when :clos
+      l % ["success", "Archivé"]
+    end
+  end
   def num_cap_auto
     unless dechet_conditionnement.nil?
       y = Time.now.strftime("%Y")
@@ -797,7 +813,7 @@ class Ebsdd
     mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
     mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
-      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"] }
+      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"], type: produit.type }
       a
     end.sort_by do | h |
       h[:nom]
@@ -829,12 +845,44 @@ class Ebsdd
     end
 
     {
-      du: date_min.strftime("%d/%m/%y"),
-      au: date_max.strftime("%d/%m/%y"),
+      du: date_min.strftime("%d/%m/%Y"),
+      au: date_max.strftime("%d/%m/%Y"),
       data: data
     }
   end
   def self.quantites date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
+    date_min, date_max = date_max, date_min if date_min > date_max
+    date_min = date_min.beginning_of_day
+    date_max = date_max.end_of_day
+
+    map = %Q{
+      function() {
+        emit( this.produit_id, this.bordereau_poids );
+      };
+    }.squish
+
+    reduce = %Q{
+      function(id, poids) {
+        return Array.sum(poids);
+      };
+    }.squish
+    # Conditions :
+    # - dont la date de reception est comprise entre les dates passées en paramètre
+    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    data = mr.entries.reduce([]) do |a, e|
+      produit = Produit.find e["_id"]
+      a << { id: produit.id, nom: produit.nom, poids: e["value"] }
+      a
+    end.sort_by do | h |
+      h[:nom]
+    end
+    {
+      du: date_min.strftime("%d/%m/%Y"),
+      au: date_max.strftime("%d/%m/%Y"),
+      data: data
+    }
+  end
+  def self.quantites_to_csv date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
     date_min, date_max = date_max, date_min if date_min > date_max
     date_min = date_min.beginning_of_day
     date_max = date_max.end_of_day
@@ -855,21 +903,23 @@ class Ebsdd
     mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
     data = mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
-      a << { id: produit.id, nom: produit.nom, poids: e["value"] }
+      a << { nom: produit.nom, poids: e["value"], codedr: produit.code_rubrique, ecodds: produit.is_ecodds ? "1" : "0", ddm: produit.is_ddm ? "1" : "0", ddi: produit.is_ddi ? "1" : "0" }
       a
     end.sort_by do | h |
       h[:nom]
     end
-    {
-      du: date_min.strftime("%d/%m/%y"),
-      au: date_max.strftime("%d/%m/%y"),
-      data: data
-    }
+
+    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
+      csv << ["Nom du déchet","Code DR", "Poids (tonnes)", "EcoDDS", "DDM", "DDI"]
+      data.each do | qte |
+        csv << [qte[:nom], qte[:codedr], qte[:poids], qte[:ecodds], qte[:ddm], qte[:ddi]]
+      end
+    end
   end
-  def self.quantites_to_csv date_min, date_max
+  def self.camions_to_csv date_min, date_max
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
       csv << ["Nom du déchet", "Poids (tonnes)"]
-      quantites(date_min, date_max)[:data].each do | qte |
+      camions(date_min, date_max)[:data].each do | qte |
         csv << [qte[:nom], qte[:poids]]
       end
     end

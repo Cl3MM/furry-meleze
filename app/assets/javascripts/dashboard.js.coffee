@@ -4,13 +4,10 @@
 
 jQuery ->
   if $("#alertes").length
-    console.log $("#alertes").data("alertes")
     rawData = $("#alertes").data("alertes")
 
     data = for i in rawData
-      console.log i
       { y: i.nom, a: i.poids, b: i.seuil }
-    console.log data
 
     Morris.Bar
       element: 'alertes',

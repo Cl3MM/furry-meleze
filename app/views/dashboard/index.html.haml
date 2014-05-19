@@ -49,6 +49,24 @@
       .panel-body
         = render partial: 'actions'
     =# Last attachments
+    -# dernières recherches
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          = fa_icon "search ccc"
+          Dernières recherches éffectuées
+      .panel-body
+        %ol
+          - Search.desc(:created_at).take(10).each do | s |
+            %li
+              = link_to s.created_at.strftime("%d/%m/%Y %H:%M"), search_path(s)
+              - if s.criteres.any?
+                %ul
+                  - s.criteres.take(3).each do | c |
+                    %li
+                      = truncate c.capitalize
+                  - if s.criteres.count > 3
+                    %li &#8230;
     .panel.panel-default
       .panel-heading
         %h3.panel-title

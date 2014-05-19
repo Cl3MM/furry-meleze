@@ -38,7 +38,7 @@
             = fa_link_to destinataires_path, "Gérer les destinataires", "truck lg"
           - if current_utilisateur.is_admin?
             %li
-              = fa_link_to produits_path, "Gérer les produits", "briefcase lg"
+              = fa_link_to produits_path, "Gérer les déchets", "recycle lg"
             %li
               = fa_link_to utilisateurs_path, "Gérer les utilisateurs", "user lg"
           %li
@@ -53,6 +53,9 @@
               = link_to destroy_utilisateur_session_path, :method => :delete do
                 = fa_icon "sign-out lg"
                 Déconnexion
+    %ul.nav.navbar-nav.pull-right
+      %li
+        = link_to "Recherche avancée", new_search_path
     - if content_for? :search
       = yield :search
     - else

@@ -3,7 +3,10 @@
     .form-group
       = f.label :producteur_id, "Producteur", class: "disabled"
       %br
-      = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
+      .input-group
+        = f.select :producteur_id, Producteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un producteur..."
+        %span.input-group-btn
+          %a.btn.btn-primary{href: "#{new_producteur_path}", target: "_blank" } Nouveau
 
 
 #producteur.panel-group

@@ -58,14 +58,32 @@
         = f.label :code_dr_expedition
         = f.select :code_dr_expedition, 1.upto(15).reduce({}){ |h,v| h["D#{v}"] = "D#{v}" ; h }.merge( 1.upto(13).reduce({}){ |h,v| h["R#{v}"] = "R#{v}" ; h } ), include_blank: 'Sélectionnez ...'
   .row
-    .col-md-6.col-md-offset-4
+    .col-md-4
       .form-group
-        = f.label :is_ecodds, "Produit EcoDDS ?"
+        = f.label :is_ecodds, "Déchet EcoDDS ?"
         %br
         = f.radio_button :is_ecodds, true
         = f.label :is_ecodds, "oui"
         = f.radio_button :is_ecodds, false
         = f.label :is_ecodds, "non"
+
+    .col-md-4
+      .form-group
+        = f.label :is_ddm, "Déchet dangereux Ménager ?"
+        %br
+        = f.radio_button :is_ddm, true
+        = f.label :is_ddm, "oui"
+        = f.radio_button :is_ddm, false
+        = f.label :is_ddm, "non"
+
+    .col-md-4
+      .form-group
+        = f.label :is_ddi, "Déchet dangereux Industriel ?"
+        %br
+        = f.radio_button :is_ddi, true
+        = f.label :is_ddi, "oui"
+        = f.radio_button :is_ddi, false
+        = f.label :is_ddi, "non"
 
   %hr
   .row
@@ -75,5 +93,5 @@
         = content_tag :button, type: :submit, class: "btn btn-primary" do
           Enregistrer les modifications&nbsp;
           = fa_icon "save lg"
-        = link_to 'Voir le produit', @produit, class: "btn btn-default"
+        = link_to 'Voir le déchet', @produit, class: "btn btn-default"
 

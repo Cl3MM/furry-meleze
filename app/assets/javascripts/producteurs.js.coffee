@@ -21,15 +21,22 @@ jQuery ->
       for attr in ['recepisse', 'mode_transport', 'limite_validite']
         $("#producteur_#{ attr }").prop('disabled', val)
 
-  Morris.Donut( {
-    element: 'monthly-stats-by-type-donut',
-    data: $("#monthly-stats-by-type-donut").data("graph")
-  } )
-
-  Morris.Bar({
-    element: 'monthly-stats-by-type-bar',
-    data: $("#monthly-stats-by-type-bar").data("graph")
-    xkey: 'y',
-    ykeys: 'x',
-    labels: 'Poids'
-  })
+  if $("#monthly-stats-by-type-donut").length and $("#monthly-stats-by-type-donut").data("graph").length
+    Morris.Donut( {
+      element: 'monthly-stats-by-type-donut',
+      data: $("#monthly-stats-by-type-donut").data("graph")
+    } )
+  else
+    msg = "<div class='alert alert-info'>Aucune donnée pour les dates sélectionnées</div>"
+    $("#monthly-stats-by-type-donut").append(msg)
+  if $("#monthly-stats-by-type-bar").length and $("#monthly-stats-by-type-bar").data("graph").length
+    Morris.Bar({
+      element: 'monthly-stats-by-type-bar',
+      data: $("#monthly-stats-by-type-bar").data("graph")
+      xkey: 'y',
+      ykeys: 'x',
+      labels: 'Poids'
+    })
+  else
+    msg = "<div class='alert alert-info'>Aucune donnée pour les dates sélectionnées</div>"
+    $("#monthly-stats-by-type-bar").append(msg)

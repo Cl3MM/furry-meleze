@@ -1,11 +1,62 @@
+%h1
+  %i.fa.fa-search
+  Recherche eBsdd avancée
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_search_path, "Nouvelle recherche avancée", "search-plus lg"
+
+%hr
 = custom_form @search, html: { role: "form" } do | f |
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
-        %h4#myModalLabel.modal-title Recherche avancée
-      .modal-body
-        = render partial: 'form', object: f, as: :f
-      .modal-footer
-        %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Fermer
-        = f.submit 'Rechercher', class: "btn btn-primary", type: "submit"
+  .row
+    .col-md-4
+      .form-group
+        %label Producteur
+        = f.select :producteur_id,  Producteur.to_select, prompt: "Sélectionnez un producteur..."
+    .col-md-4
+      .form-group
+        %label Collecteur
+        = f.select :collecteur_id,  Collecteur.to_select, prompt: "Sélectionnez un collecteur..."
+    .col-md-4
+      .form-group
+        %label Déchet
+        = f.select :produit_id,  Produit.all.map{|d| [d.nom, d.id]}, prompt: "Sélectionnez un type de déchet..."
+  .row
+    .col-md-4
+      .form-group
+        %label Date minimum
+        = f.text_field :date_min, placeholder: "Sélectionnez une date minimum..."
+    .col-md-4
+      .form-group
+        %label Date maximum
+        = f.text_field :date_max, placeholder: "Sélectionnez une date maximum..."
+    .col-md-4
+      .form-group
+        %label Statut
+        = f.select :status, [ ["Nouveau", :nouveau], ["Attente Réception", :en_attente], ["En Stock", :attente_sortie], ["Archivés", :clos], ["Complet", :complet] ], prompt: "Sélectionnez le statut..."
+
+    .col-md-4
+      .form-group
+        %label Type
+        = f.select :type, [ ["EcoDDS", :ecodds], ["Déchet Dangereux Ménager", :ddm], ["Déchet Dangereux Industriel", :ddi] ], prompt: "Sélectionnez le type..."
+    .col-md-4
+      .form-group
+        %label Destinations ultérieures
+        = f.select :destination_id,  Destination.all.map{|d| [d.nom, d.id]}, prompt: "Sélectionnez une destination ultérieure..."
+  .row
+    .col-md-4
+      .form-group
+        %label Poids minimum
+        = f.text_field :poids_min, placeholder: "Sélectionnez un poids minimum..."
+    .col-md-4
+      .form-group
+        %label Poids maximum
+        = f.text_field :poids_max, placeholder: "Sélectionnez un poids maximum..."
+
+  .well.text-center
+    = f.submit "Rechercher", class: "btn btn-primary", type: "submit"

@@ -49,13 +49,13 @@
     - if @status == :en_attente
       En Attente
     - else
-      = link_to "En Attente", ebsdd_status_path(status: :en_attente)
+      = link_to "Attente Réception", ebsdd_status_path(status: :en_attente)
 
   %li{ class: "#{@status == :attente_sortie ? "active" : ""}" }
     - if @status == :attente_sortie
       Attente sortie
     - else
-      = link_to "Attente sortie", ebsdd_status_path(status: :attente_sortie)
+      = link_to "En Stock", ebsdd_status_path(status: :attente_sortie)
 
   %li{ class: "#{@status == :clos ? "active" : ""}" }
     - if @status == :clos

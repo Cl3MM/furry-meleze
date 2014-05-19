@@ -1,42 +1,67 @@
-%p#notice= notice
+%h1
+  %i.fa.fa-search
+  Résultats de la recherche
+  %small
+    {
+    = @search.ebsdds.count
+    }
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_search_path, "Nouvelle recherche avancée", "search-plus lg"
 
-%p
-  %b Date min:
-  = @search.date_min
-%p
-  %b Date max:
-  = @search.date_max
-%p
-  %b Date:
-  = @search.date
-%p
-  %b Nom:
-  = @search.nom
-%p
-  %b Siret:
-  = @search.siret
-%p
-  %b Responsable:
-  = @search.responsable
-%p
-  %b Ville:
-  = @search.ville
-%p
-  %b Cp:
-  = @search.cp
-%p
-  %b Status:
-  = @search.status
-%p
-  %b Nomenclature:
-  = @search.nomenclature
-%p
-  %b Poids min:
-  = @search.poids_min
-%p
-  %b Poids max:
-  = @search.poids_max
+%hr
+.well
+  %h4 Critères
+  %p
+    - if @search.criteres.any?
+      %ol
+        - @search.criteres.each do | c |
+          %li
+            = c.titleize
+    - else
+      Aucun critère...
+- if @search.ebsdds.any?
 
-= link_to 'Edit', edit_search_path(@search)
-\|
-= link_to 'Back', searches_path
+  %table.table.table-striped#search-table
+    %thead
+      %tr
+        %th #
+        %th #EcoDDS
+        %th Déchet
+        %th Producteur
+        -#%th Destinataire
+        %th.text-center Type déchet
+        %th Date création
+        %th Poids
+        %th.text-center Statut
+
+    %tbody
+      - @search.ebsdds.each do | ebsdd |
+        %tr
+          %td= link_to ebsdd.bid, ebsdd_path(ebsdd)
+          %td.text-center
+            = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
+          %td= raw ebsdd.try(:produit).try(:type)
+          %td
+            = link_to truncate(ebsdd.producteur.nom.titleize, length: 25), producteur_path(ebsdd.producteur), class:"touletip", title: ebsdd.producteur.nom.titleize
+          -#%td= ebsdd.destinataire_nom.titleize
+          %td.text-center
+            - if ebsdd.produit.nil? || ebsdd.produit.nom.nil?
+              \-
+            - else
+              .touletip{title: "#{ ebsdd.libelle.titleize }" }
+                = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
+          %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+          %td
+            = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
+          %td.text-center= raw ebsdd.status_label
+
+- else
+  .alert.alert-info
+    Aucun résultat. Veuillez élargir vos critères de recherche.

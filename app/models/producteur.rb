@@ -1,12 +1,14 @@
 class Producteur < Company
 
   has_many :ebsdds, inverse_of: :producteur
-
-  def monthly_stats_by_type datemin = Date.today.beginning_of_month, datemax = Date.today.end_of_month
+  def monthly_stats_by_type datemin = Date.today.beginning_of_month.beginning_of_day, datemax = Date.today.end_of_month.end_of_day
     datemin, datemax = datemax, datemin if datemin > datemax
+    datemin = datemin.beginning_of_day
+    datemax = datemax.end_of_day
+
     map = %Q{
       function() {
-        emit(this.dechet_nomenclature, this.bordereau_poids);
+        emit(this.produit_id, this.bordereau_poids);
       }
     }.squish
 
@@ -19,14 +21,29 @@ class Producteur < Company
         return result;
       }
     }.squish
-    results = ebsdds.where(created_at: datemin..datemax).and(status: :clos).map_reduce(map, reduce).out(inline: true)
-    #results.entries.map{ |i| [DechetDenomination[i["_id"]][3..-1], i["value"].to_i ] }
+    #ebsdds.between(created_at: datemin..datemax).in(status: [:attente_sortie, :clos, :complet]).map_reduce(map, reduce).out(inline: true)
+    ebsdds.between(created_at: datemin..datemax).and(status: :clos).map_reduce(map, reduce).out(inline: true)
   end
-  def donut_stats
-    monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination.reborn[i["_id"].to_i][3], value: i["value"].to_i } }.to_json
+  def monthly_production datemin = Date.today.beginning_of_month.beginning_of_day, datemax = Date.today.end_of_month.end_of_day
+    datemin, datemax = datemax, datemin if datemin > datemax
+    datemin = datemin.beginning_of_day
+    datemax = datemax.end_of_day
+
+    ebsdds.between(created_at: datemin..datemax).order_by(updated_at: 1)
   end
-  def bar_stats
-    monthly_stats_by_type.entries.map{ |i| { y: DechetDenomination.reborn[i["_id"].to_i][3], x: i["value"].to_i } }.to_json
+  def donut_stats datemin = Date.today.beginning_of_month.beginning_of_day, datemax = Date.today.end_of_month.end_of_day
+    #monthly_stats_by_type.entries.map{ |i| { label: DechetDenomination.reborn[i["_id"].to_i][3], value: i["value"].to_i } }.to_json
+    monthly_stats_by_type(datemin, datemax).entries.map do |i|
+      p = Produit.find(i["_id"])
+      { label: p.nom, value: i["value"] }
+    end.to_json
+  end
+  def bar_stats datemin = Date.today.beginning_of_month.beginning_of_day, datemax = Date.today.end_of_month.end_of_day
+    #monthly_stats_by_type(datemin, datemax).entries.map{ |i| { y: DechetDenomination.reborn[i["_id"].to_i][3], x: i["value"].to_i } }.to_json
+    monthly_stats_by_type(datemin, datemax).entries.map do |i|
+      p = Produit.find(i["_id"])
+      { y: p.nom, x: i["value"] }
+    end.to_json
   end
   def self.check_headers headers
     attrs = [

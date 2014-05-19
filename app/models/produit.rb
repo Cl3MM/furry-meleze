@@ -6,8 +6,8 @@ class Produit # < ActiveRecord::Base
   has_many :ebsdds, autosave: false
   has_many :bon_de_sortie, autosave: true
 
-  attr_accessible :id, :nom, :references, :mention, :consistance, :code_dr_reception, :code_dr_expedition, :is_ecodds, :brigitte, :code_rubrique, :seuil_alerte
-  validates_presence_of :is_ecodds, :nom, :mention, :consistance, :code_dr_expedition, :code_dr_reception, :references, :seuil_alerte
+  attr_accessible :id, :nom, :references, :mention, :consistance, :code_dr_reception, :code_dr_expedition, :is_ecodds, :brigitte, :code_rubrique, :seuil_alerte, :is_ddi, :is_ddm
+  validates_presence_of :is_ecodds, :nom, :mention, :consistance, :code_dr_expedition, :code_dr_reception, :references, :seuil_alerte, :is_ddi, :is_ddm
 
   field :is_ecodds, type: Boolean, default: false
   field :nom, type: String
@@ -20,7 +20,18 @@ class Produit # < ActiveRecord::Base
   field :code_dr_expedition, type: String
   field :code_rubrique, type: String
   field :seuil_alerte, type: Float
+  field :is_ddm, type: Boolean, default: false
+  field :is_ddi, type: Boolean, default: false
 
+  def type
+    s = "<label class='label label-%s'>%s</label>"
+    type = []
+    type << s % ["success", "DDI"] if is_ddi
+    type << s % ["warning", "DDM"] if is_ddm
+    type << s % ["primary", "ECODDS"] if is_ecodds
+    type << s % ["default", "normal"] if type.empty?
+    type.join("&nbsp;")
+  end
   def consistance_to_human
     case consistance
     when 0

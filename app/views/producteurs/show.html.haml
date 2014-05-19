@@ -80,7 +80,7 @@
           = fa_icon "tags ccc"
           Déchets par type par poids
       .panel-body
-        #monthly-stats-by-type-donut{ "data-graph" => @producteur.donut_stats }
+        #monthly-stats-by-type-donut{ "data-graph" => @producteur.donut_stats(Date.today - 4.months, Date.today) }
 
   .col-md-12
     .panel.panel-default
@@ -89,5 +89,5 @@
           = fa_icon "tags ccc"
           Déchets par type par poids
       .panel-body
-        #monthly-stats-by-type-bar{ "data-graph" => @producteur.bar_stats }
+        #monthly-stats-by-type-bar{ "data-graph" => @producteur.bar_stats(Date.today - 4.months, Date.today)  }
 

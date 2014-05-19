@@ -19,6 +19,10 @@
 //= require select2/select2_locale_fr
 //= require raphael
 //= require morris
+//= require jquery.tablesorter.min
+//= require jquery.tablesorter.widgets.min
+//= require jquery.tablesorter.widgets-filter-formatter-select2
+//= require jquery.metadata
 //= require_self
 $(function() {
   $('.dropdown-toggle').dropdown();

@@ -2,6 +2,7 @@
 %table.table.table-striped
   %thead
     %th Nom
+    %th.text-center Type
     %th.text-center Poids
     %th Seuil
   %tbody
@@ -16,6 +17,7 @@
               = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
           - else
             = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
+        %td.text-center= raw al[:type]
         %td.text-center
           %label.label{class: "#{al[:poids] < al[:seuil] ? "label-success" : "label-danger" }"}
             = al[:poids]

@@ -3,7 +3,7 @@
 = javascript_include_tag "jquery.spin.js"
 = stylesheet_link_tag "bon_de_sorties.css"
 
-%h2.page-header 
+%h2.page-header
   Créer un nouveau bon de sortie
   %small
     {
@@ -27,7 +27,7 @@
 
 #spinner
   -#= custom_form @bds, class: "form-horizontal", id: "bon-de-sortie", role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}"  do | f |
-  %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}" }
+  %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_path}" }
     .form-group
       %label.control-label.col-sm-3 Type de déchet à sortir
       .col-md-9

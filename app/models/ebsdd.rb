@@ -409,7 +409,7 @@ class Ebsdd
     if: -> { self[:mode_transport] == 1 }
 
   validates_presence_of :immatriculation,# :bordereau_limite_validite,
-    if: -> { self.collecteur.nom == "TRIALP" }
+    if: -> { !new_record? && self.collecteur.nom == "TRIALP" }
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false
@@ -812,6 +812,7 @@ class Ebsdd
     }
     mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
     mr.entries.reduce([]) do |a, e|
+      #binding.pry
       produit = Produit.find e["_id"]
       a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"], type: produit.type }
       a

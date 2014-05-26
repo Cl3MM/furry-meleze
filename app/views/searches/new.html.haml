@@ -16,6 +16,15 @@
   .row
     .col-md-4
       .form-group
+        %label Numéro de bordereau
+        = f.text_field :bordereau_id, placeholder: "Entrez un numéro de BSD..."
+    .col-md-4
+      .form-group
+        %label Numéro ECODDS
+        = f.text_field :ecodds_id, placeholder: "Entrez un numéro de BSD ECODDS..."
+  .row
+    .col-md-4
+      .form-group
         %label Producteur
         = f.select :producteur_id,  Producteur.to_select, prompt: "Sélectionnez un producteur..."
     .col-md-4

@@ -18,7 +18,7 @@ class Search
   field :destination_id, type: String
   field :destinataire_id, type: String
 
-  attr_accessible :bordereau_id, :producteur_id, :collecteur_id, :produit_id, :date_min, :date_max, :status, :type, :poids_min, :poids_max, :destinataire_id, :status, :type
+  attr_accessible :bordereau_id, :producteur_id, :collecteur_id, :produit_id, :date_min, :date_max, :status, :type, :poids_min, :poids_max, :destinataire_id, :status, :type, :ecodds_id
 
   validates :status, inclusion: {in: ["nouveau", "en_attente", "attente_sortie", "complet", "clos"]} unless Proc.new {|p| p.status.blank?}
   validates :type, inclusion: {in: ["ecodds", "ddm", "ddi"] } unless Proc.new {|p| p.type.blank?}
@@ -32,6 +32,8 @@ class Search
 
   def criteres
     s = []
+    s << "Numéro de bordereau : #{bordereau_id}" if bordereau_id.present?
+    s << "Numéro ECODDS : #{ecodds_id}" if ecodds_id.present?
     s << "date minimum : #{date_min.strftime("%d/%m/%Y")}" if date_min.present?
     s << "date maximum : #{date_max.strftime("%d/%m/%Y")}" if date_max.present?
     s << "poids minimum : #{poids_min.to_i} kg" if poids_min.present?
@@ -75,7 +77,8 @@ class Search
   private
 
   def find_ebsdds
-    ebsdds = Ebsdd.all
+    ebsdds = bordereau_id.present? ? Ebsdd.where(bid: bordereau_id) : Ebsdd.all
+    ebsdds = ebsdds.where(ecodds_id: ecodds_id) if ecodds_id.present?
     ebsdds = ebsdds.gte(created_at: date_min) if date_min.present?
     ebsdds = ebsdds.lte(created_at: date_max) if date_max.present?
     ebsdds = ebsdds.gte(bordereau_poids: poids_min) if poids_min.present?

@@ -35,6 +35,7 @@ jQuery ->
     $("#destinataire").select2("enable", false)
 
     url = $("#bon-de-sortie").data('url')
+    #url += "&is_ecodds=1" if $("#ecodds").prop("checked") == 1
     console.log url
     $("#type_dechet").select2
       allowClear: true
@@ -61,7 +62,7 @@ jQuery ->
         #url = $("#ebsdds_list").data('url').split("/").slice(0,-1).join('/') + '/' + e.val
         $("#spinner").spin()
         url = $("#ebsdds_list").data('url')
-        data = 
+        data =
           produit_id: e.val
           is_ecodds: $("#ecodds").prop("checked")
         console.log url

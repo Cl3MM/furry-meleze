@@ -106,7 +106,7 @@ jQuery ->
   buttonBarRightMargin = () ->
     rightMargin = parseInt($("body .container").css("margin-right").replace("px", ""))
     bttw = $("#button-bar").width()
-    rightMargin - bttw
+    rightMargin + bttw
 
   display_back_to_top_arrow = () ->
     $("#floating-save").tooltip()

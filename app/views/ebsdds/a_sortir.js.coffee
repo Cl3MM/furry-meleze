@@ -10,6 +10,11 @@ jQuery ->
     $("#ebsdds_list").fadeIn(500) if $("#ebsdds_list").is(":hidden")
   else
     $("#ebsdds_list").fadeOut(500) if $("#ebsdds_list").is(":visible")
-    msg = "Aucun eBSDD trouvé pour cette catégorie de déchet. Veuillez sélectionner une autre catégorie."
+    msg = "Aucun eBSDD trouvé pour cette catégorie de déchet. Veuillez :
+      <br/
+      <ul>
+        <li>réessayer en cochant la case 'EcoDDS uniquement',</li>
+        <li>choisir une autre catégorie</li>
+      </ul>"
     div = '<div class="alert alert-danger">'+msg+'</div>'
-    $(div).hide().insertAfter($("body .container .navbar")).fadeIn(400).delay(2000).fadeOut(500)
+    $(div).hide().insertAfter($("body .container .navbar")).fadeIn(400).delay(3500).fadeOut(500)

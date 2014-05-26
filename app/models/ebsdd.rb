@@ -810,7 +810,7 @@ class Ebsdd
         return Array.sum(poids);
       };
     }
-    mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.exists(archived: false).where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
     mr.entries.reduce([]) do |a, e|
       #binding.pry
       produit = Produit.find e["_id"]
@@ -835,7 +835,7 @@ class Ebsdd
         return Array.sum(poids);
       };
     }
-    mr = Ebsdd.in(status: [:attente_sortie, :clos, :complet]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos, :complet]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
 
     data = mr.entries.reduce([]) do |a, e|
       immat = Immatriculation.find e["_id"]
@@ -869,7 +869,7 @@ class Ebsdd
     }.squish
     # Conditions :
     # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
     data = mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
       a << { id: produit.id, nom: produit.nom, poids: e["value"] }
@@ -901,7 +901,7 @@ class Ebsdd
     }
     # Conditions :
     # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
     data = mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
       a << { nom: produit.nom, poids: e["value"], codedr: produit.code_rubrique, ecodds: produit.is_ecodds ? "1" : "0", ddm: produit.is_ddm ? "1" : "0", ddi: produit.is_ddi ? "1" : "0" }

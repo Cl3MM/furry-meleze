@@ -77,7 +77,7 @@ class Search
   private
 
   def find_ebsdds
-    ebsdds = bordereau_id.present? ? Ebsdd.where(bid: bordereau_id) : Ebsdd.all
+    ebsdds = bordereau_id.present? ? Ebsdd.where(bid: bordereau_id) : Ebsdd.exists(archived: false)
     ebsdds = ebsdds.where(ecodds_id: ecodds_id) if ecodds_id.present?
     ebsdds = ebsdds.gte(created_at: date_min) if date_min.present?
     ebsdds = ebsdds.lte(created_at: date_max) if date_max.present?

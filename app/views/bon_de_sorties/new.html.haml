@@ -48,7 +48,7 @@
           -#= text_field_tag 'codedrAutre', nil, class: "input-super-autre form-control col-sm-2", placeholder: "Sélectionnez un autre traitement..."
         -#%span.prout ou
     .form-group
-      %label.control-label.col-sm-3 
+      %label.control-label.col-sm-3
       .col-md-9
         = check_box_tag "ecodds"
         %label.control-label eBsdds ecodds uniquement
@@ -59,7 +59,7 @@
           Poids total du bon de sortie :
           %span#poids
           %span kg
-    %table.table.table-striped#ebsdds_list{'data-url' => "#{ebsdds_a_sortir_url}", style: "display: none;"}
+    %table.table.table-striped#ebsdds_list{'data-url' => "#{ebsdds_a_sortir_path}", style: "display: none;"}
       %thead
         %th
           = check_box_tag "chauffe"

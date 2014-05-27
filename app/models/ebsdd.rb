@@ -13,7 +13,7 @@
 
 #Cadre 12 : Ajouter une liste pour "non ecodds"
 
-#Récipissé + limite de validité du collecteur à stocker dans le bsd 
+#Récipissé + limite de validité du collecteur à stocker dans le bsd
 
 #- Lors d'une sortie d'un déchet, on remplit l'annexe 2.
 
@@ -30,6 +30,8 @@
 class Ebsdd
   include Mongoid::Document
   include Mongoid::Timestamps
+
+  default_scope exists(archived: false)
 
   def self.per_page
     15

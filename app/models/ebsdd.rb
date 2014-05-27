@@ -611,7 +611,7 @@ class Ebsdd
       unless Attachment.where(checksum: checksum).exists?
         @document = Attachment.new( { attachment: file, checksum: checksum } )
         #@document.attachment = file
-        if @document.save
+        if @document.save!
           result = created_from_spreadsheet spreadsheet, attrs
           @document[:failed] = result[:failed]
           @document[:total] = result[:total]

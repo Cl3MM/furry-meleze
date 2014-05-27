@@ -11,6 +11,9 @@ class Attachment
   #before_save :content_type ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
 
   has_mongoid_attached_file :attachment
+
+  validates_attachment :attachment, presence: true, content_type: { content_type: ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"] }
+
   attr_accessible :attachment, :checksum, :failed, :exec_time, :total, :producteurs
   field :checksum, type: String
   field :failed, type: Array

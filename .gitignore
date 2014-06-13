@@ -20,4 +20,4 @@ pickle-email-*.html
 .project
 config/initializers/secret_token.rb
 public/assets/*
-
+config/meleze.god*

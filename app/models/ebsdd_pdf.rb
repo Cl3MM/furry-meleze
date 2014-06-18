@@ -13,7 +13,7 @@ class EbsddPdf < Prawn::Document
     path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-
+    stroke_axis
     self.font_size = 9
     if @ebsdd.nil? || @status == :bon_de_sortie
       producteur = Producteur.find_by(nom: /Valespace/i)
@@ -74,6 +74,7 @@ class EbsddPdf < Prawn::Document
       cadre6
       cadre8
       cadre9
+      cadre10
       cadre11
       cadre12
     elsif @ebsdd.status == :en_attente || @status == :second_part
@@ -126,7 +127,7 @@ class EbsddPdf < Prawn::Document
 
     prod = ebsdd.producteur
     # siret
-    my_text_box prod.siret, [106, 596 - height], width: 150, height: 15
+    my_text_box prod.siret.try(:gsub, /-/, ""), [106, 596 - height], width: 150, height: 15
     # Nom
     my_text_box prod.nom, [85, 584 - height], width: 150, height: 15
     # Adresse
@@ -166,7 +167,7 @@ class EbsddPdf < Prawn::Document
     erase 100, 665, width: 150
     dest = @bds.ebsdds.first.destinataire
     # bds siret
-    my_text_box dest.siret, [106, 667], width: 150, height: 15
+    my_text_box dest.siret.gsub(/-/, ""), [106, 667], width: 150, height: 15
     # Nom
     my_text_box dest.nom, [85, 655], width: 150, height: 15
     # Adresse
@@ -194,7 +195,7 @@ class EbsddPdf < Prawn::Document
   def cadre12
     erase 85, 63, width: 160
     my_text_box @ebsdd.traitement_prevu, [155, 73], width: 350, height: 12
-    my_text_box @ebsdd.destination.siret, [90, 61], width: 200, height: 10
+    my_text_box @ebsdd.destination.siret.gsub(/-/, ""), [90, 61], width: 200, height: 10
     my_text_box @ebsdd.destination.nom, [75, 50.5], width: 200, height: 10
     my_text_box "#{@ebsdd.destination.adresse}, #{@ebsdd.destination.cp} #{@ebsdd.destination.ville}", [80, 40], width: 200, height: 10
     my_text_box @ebsdd.destination.responsable, [380, 63], width: 200, height: 10
@@ -208,17 +209,19 @@ class EbsddPdf < Prawn::Document
   end
   def cadre10
     erase 85, 227, width: 160
-    my_text_box @ebsdd.destinataire_siret, [90, 227], width: 200, height: 10
-    my_text_box @ebsdd.destinataire_nom, [90, 217], width: 200, height: 10
-    my_text_box "#{@ebsdd.destinataire_adresse}\n#{@ebsdd.destinataire_cp} #{@ebsdd.destinataire_ville}", [90, 207], width: 200, height: 20
-    my_text_box @ebsdd.destinataire_responsable, [125, 191.5], width: 150, height: 20
-    my_text_box @ebsdd.destinataire_responsable, [125, 191.5], width: 150, height: 20
+    my_text_box @ebsdd.destinataire.try(:siret).try(:gsub, /-/, ""), [90, 227], width: 200, height: 10
+    my_text_box @ebsdd.destinataire.nom, [90, 217], width: 200, height: 10
+    my_text_box "#{@ebsdd.destinataire.adresse}\n#{@ebsdd.destinataire.cp} #{@ebsdd.destinataire.ville}", [90, 207], width: 200, height: 20
+    my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
+    my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
     my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
+    erase 80, 106.5, width: 50
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
+    my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [80, 108], width: 50, height: 20
+    #my_text_box @ebsdd.bordereau_date_reception.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
     # Cadre 10 Lot accepté
     checkbox 114.5, 155.5
-
   end
   def cadre9
     erase 225, 265, width: 50
@@ -226,7 +229,7 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [220, 261], width: 200, height: 10
   end
   def cadre8
-    my_text_box @ebsdd.collecteur.siret, [89, 375.5], width: 200, height: 10
+    my_text_box @ebsdd.collecteur.siret.gsub(/-/, ""), [89, 375.5], width: 200, height: 10
     my_text_box @ebsdd.collecteur.nom, [89, 365], width: 200, height: 10
     my_text_box "#{@ebsdd.collecteur.adresse}\n#{@ebsdd.collecteur.cp} #{@ebsdd.collecteur.ville}", [89, 355], width: 200, height: 20
     my_text_box @ebsdd.collecteur.tel, [68, 334], width: 50, height: 10
@@ -408,8 +411,6 @@ class EbsddPdf < Prawn::Document
     rectangle [i, j], options[:width], options[:width]
     fill
   end
-
-
 
   # Draws X and Y axis rulers beginning at the margin box origin. Used on
   # examples.

@@ -249,8 +249,9 @@ class Ebsdd
   field :immatriculation, type: String
   field :exported, type: Integer, default: 0
   field :bid, type: String
+  field :bordereau_date_reception, type: Date
 
-  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination, :produit_id,
+  attr_accessible :id, :bid, :bordereau_id, :producteur_id, :attachment_id, :super_denomination, :produit_id, :bordereau_date_reception,
     :destination_id, :destination_attributes, :collecteur_id, :bon_de_sortie_id,
     :destinataire_siret, :destinataire_nom, :destinataire_adresse, :destinataire_cp, :destinataire_ville, :destinataire_tel, :destinataire_fax,
     :destinataire_responsable, :nomenclature_dechet_code_nomen_c, :nomenclature_dechet_code_nomen_a,

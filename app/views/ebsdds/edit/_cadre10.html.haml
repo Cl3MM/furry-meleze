@@ -1,6 +1,7 @@
 .row
   .col-md-12
     .form-group
+      -# if ebsdd["bordereau_date_reception"]
       = f.label :bordereau_date_reception, "Date de réception à l'installation de destination :"
       = f.text_field :bordereau_date_reception, placeholder: "Date de réception à l'installation de destination", class: "datepicker", value: ebsdd.bordereau_date_reception || (Date.today + 1.day).strftime("%d-%m-%Y")
 

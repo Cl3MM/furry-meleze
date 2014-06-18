@@ -13,6 +13,10 @@
       %span.caret
     %ul.dropdown-menu{role: "menu"}
       %li
+        = fa_link_to ebsdd_compta_path, "Exporter les résultats", "file-excel-o lg"
+      %li.divider
+
+      %li
         = fa_link_to new_search_path, "Nouvelle recherche avancée", "search-plus lg"
 
 %hr
@@ -44,7 +48,9 @@
     %tbody
       - @search.ebsdds.each do | ebsdd |
         %tr
-          %td= link_to ebsdd.bid, ebsdd_path(ebsdd)
+          %td
+            %input.id{type: "hidden"}
+            = link_to ebsdd.bid, ebsdd_path(ebsdd)
           %td.text-center
             = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
           %td= raw ebsdd.try(:produit).try(:type)

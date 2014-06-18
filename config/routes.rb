@@ -23,6 +23,7 @@ Meleze::Application.routes.draw do
   post 'immatriculation/:id', to: 'immatriculation#create', as: :create_immatriculation
   get  'ebsdds/:status', to: 'ebsdds#index', as: :ebsdd_status, constraints: EbsddStatus
   get  'ebsdds/printpdf/:id', to: 'ebsdds#print_pdf', defaults: { format: :pdf }, as: :ebsdd_printpdf
+  get  'ebsdds/compta', to: 'ebsdds#compta', defaults: { format: :csv }, as: :ebsdd_compta
   get  'ebsdds/download/:id', to: 'ebsdds#download', defaults: { format: :csv }, as: :ebsdd_download
   get  'ebsdds/annexe/:id', to: 'ebsdds#annexe_export', defaults: { format: :csv }, as: :ebsdd_annexe
   #get  'ebsdds/reset', to: 'ebsdds#reset', as: :reset

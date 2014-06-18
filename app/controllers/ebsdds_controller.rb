@@ -125,6 +125,14 @@ class EbsddsController < ApplicationController
       #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end
   end
+
+  def compta
+    respond_to do |format|
+      format.html
+      format.csv { send_data @ebsdd.to_ebsdd, filename: "#{@ebsdd.id}.csv" }
+    end
+  end
+
   def download
     @ebsdd.inc_export
     respond_to do |format|

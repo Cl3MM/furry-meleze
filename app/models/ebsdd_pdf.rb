@@ -215,7 +215,9 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
-    my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
+    unless @ebsdd.bordereau_poids.nil?
+      my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
+    end
     erase 80, 106.5, width: 50
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [80, 108], width: 50, height: 20

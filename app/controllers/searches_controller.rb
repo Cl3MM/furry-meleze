@@ -20,7 +20,7 @@ class SearchesController < ApplicationController
 
   def create
     format_str = "%d-%m-%Y"
-    if params[:search].values.map{ |i| nil if i.blank? }.compact.any?
+    if params[:search].values.map{ |i| i.blank? ? nil : i}.compact.any?
       if params[:search][:date_max].present?
         params[:search][:date_max] = Date.strptime(params[:search][:date_max], format_str) rescue Date.today.beginning_of_day
       end

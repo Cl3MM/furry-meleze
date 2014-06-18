@@ -1,3 +1,5 @@
+#encoding UTF-8
+
 class SearchesController < ApplicationController
   before_filter :authenticate_utilisateur!
 

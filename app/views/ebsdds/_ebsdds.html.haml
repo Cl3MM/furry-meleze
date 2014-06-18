@@ -54,7 +54,7 @@
                   = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :second_part), class: "check-poids btn btn-success touletip btn-xs",
                     role: "button", title: "Télécharger la deuxième partie du Cerfa pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
 
-                  = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs",
+                  = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs check-poids",
                     role: "button", title: "Télécharger le Cerfa Complet pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
 
                   = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || current_utilisateur.is_admin?

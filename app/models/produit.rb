@@ -6,14 +6,15 @@ class Produit # < ActiveRecord::Base
   has_many :ebsdds, autosave: false
   has_many :bon_de_sortie, autosave: true
 
-  attr_accessible :id, :nom, :references, :mention, :consistance, :code_dr_reception, :code_dr_expedition, :is_ecodds, :brigitte, :code_rubrique, :seuil_alerte, :is_ddi, :is_ddm
-  validates_presence_of :is_ecodds, :nom, :mention, :consistance, :code_dr_expedition, :code_dr_reception, :references, :seuil_alerte, :is_ddi, :is_ddm
+  attr_accessible :id, :nom, :references, :mention, :consistance, :code_dr_reception, :code_dr_expedition, :is_ecodds, :brigitte, :code_rubrique, :seuil_alerte, :is_ddi, :is_ddm, :classe
+  validates_presence_of :is_ecodds, :nom, :mention, :consistance, :code_dr_expedition, :code_dr_reception, :references, :seuil_alerte, :is_ddi, :is_ddm, :classe
 
   field :is_ecodds, type: Boolean, default: false
   field :nom, type: String
   field :references, type: Array
   field :mention, type: String
   field :consistance, type: Integer
+  field :classe, type: String
   field :index, type: Integer, default: ->{ Produit.count + 1 }
   field :brigitte, type: String, default: ""
   field :code_dr_reception, type: String

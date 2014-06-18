@@ -23,10 +23,14 @@
                 %li= msg
 
   .row
-    .col-md-12
+    .col-md-9
       .form-group
         = f.label :nom
         = f.text_field :nom
+    .col-md-3
+      .form-group
+        = f.label :classe
+        = f.text_field :classe
   .row
     .col-md-8
       .form-group

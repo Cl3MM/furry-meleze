@@ -25,6 +25,8 @@
           %dd= @produit.code_dr_reception
           %dt Produit EcoDDS :
           %dd= raw @produit.ecodds
+          %dt Classe :
+          %dd= @produit.classe.nil? ? "-" : @produit.classe
           %dt Code DR Expédition :
           %dd= @produit.code_dr_expedition
           %dt Réferences :

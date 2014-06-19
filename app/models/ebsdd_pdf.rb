@@ -13,7 +13,7 @@ class EbsddPdf < Prawn::Document
     path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-    stroke_axis
+    #stroke_axis
     self.font_size = 9
     if @ebsdd.nil? || @status == :bon_de_sortie
       producteur = Producteur.find_by(nom: /Valespace/i)
@@ -79,7 +79,8 @@ class EbsddPdf < Prawn::Document
       cadre12
     elsif @ebsdd.status == :en_attente || @status == :second_part
       cadre5
-      cadre10
+      #cadre10 poids
+      my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
       cadre6
     else
       image path, at: [0, here], width: 210.mm

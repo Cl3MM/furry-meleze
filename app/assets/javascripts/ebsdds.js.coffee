@@ -362,7 +362,16 @@ jQuery ->
     # initialisation de la liste des produits
     initDenomination = () ->
       data = []
-      data.push {text: l.label, id: l.id} for l in db
+      #data.push {text: l.label, id: l.id} for l in db
+      val = $("#ebsdd_producteur_id").select2('data').text
+      for l in db
+        if !!val.match(/ECO ?DDS/gi)
+          data.push {text: l.label, id: l.id} if l.is_ecodds == true
+        else
+          data.push {text: l.label, id: l.id} if l.is_ecodds == false
+
+      console.log val
+      console.log data
       $("#ebsdd_produit_id").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()
@@ -373,9 +382,9 @@ jQuery ->
       data = []
       for l in db
         if !!val.match(/ECO ?DDS/gi)
-          data.push {text: l.label, id: l.id} if l.id < 10
+          data.push {text: l.label, id: l.id} if l.is_ecodds == true
         else
-          data.push {text: l.label, id: l.id}
+          data.push {text: l.label, id: l.id} if l.is_ecodds == false
       $("#ebsdd_produit_id").select2(data: data)
 
     # Split d'un ebsdd

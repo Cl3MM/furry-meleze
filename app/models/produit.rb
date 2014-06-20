@@ -63,7 +63,7 @@ class Produit # < ActiveRecord::Base
     Produit.where(is_ecodds: true).asc(:index, 1).map { |r| {id: r.id, label: r.nom, cr: r.code_rubrique, dr11: r.code_dr_reception, dr12: r.code_dr_expedition, dest: r.references.first, c6tnc: r.consistance, un: r.mention } if r.is_ecodds }.compact
   end
   def self.to_data
-    Produit.asc(:index, 1).map { |r| {id: r.id, label: r.nom, cr: r.code_rubrique, dr11: r.code_dr_reception, dr12: r.code_dr_expedition, dest: r.references.first, c6tnc: r.consistance, un: r.mention } }
+    Produit.asc(:index, 1).map { |r| {id: r.id, label: r.nom, cr: r.code_rubrique, dr11: r.code_dr_reception, dr12: r.code_dr_expedition, dest: r.references.first, c6tnc: r.consistance, un: r.mention, is_ecodds: r.is_ecodds } }
   end
 
   def self.to_destinations

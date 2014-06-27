@@ -107,10 +107,17 @@ jQuery ->
     rightMargin = parseInt($("body .container").css("margin-right").replace("px", ""))
     bttw = $("#button-bar").width()
     rightMargin + bttw
+  $("#save-ebsdd-btn").on 'click', (e)->
+    $(this).prop("disabled", true)
+    $(this).find("i.fa-save").removeClass("fa-save").addClass("fa-spin fa-spinner")
+    $(this).submit()
+    $(".panel-body > form").submit()
 
   display_back_to_top_arrow = () ->
     $("#floating-save").tooltip()
     $("#floating-save").on 'click', (e) ->
+      $(this).prop("disabled", true)
+      $(this).find("i.fa-save").removeClass("fa-save").addClass("fa-spin fa-spinner")
       $(".panel-body > form").submit()
 
     $("#button-bar").css

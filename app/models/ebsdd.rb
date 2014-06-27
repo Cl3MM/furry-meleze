@@ -86,7 +86,7 @@ class Ebsdd
   accepts_nested_attributes_for :destination
   attr_accessible :id, :_id
 
-  field :_id, type: String, default: ->{ "#{Time.now.strftime("%Y%m%d")}#{"%04d" % Ebsdd.count}" }
+  field :_id, type: String, default: ->{ "#{Time.now.strftime("%Y%m%d")}#{"%04d" % (Integer(Ebsdd.last.id.last(4)) + 1)}" }
   field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :nouveau
   field :line_number, type: Integer

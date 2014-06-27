@@ -15,7 +15,7 @@ gem 'haml-rails', group: :development
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 #gem 'sqlite3'
-gem 'mongoid', '~>3.0.4'
+gem 'mongoid'#, '~>3.0.4'
 gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'

@@ -86,7 +86,7 @@ class Ebsdd
   accepts_nested_attributes_for :destination
   attr_accessible :id, :_id
 
-  field :_id, type: String, default: ->{ "#{Time.now.strftime("%Y%m%d")}#{"%04d" % (Integer(Ebsdd.last.id.last(4)) + 1)}" }
+  field :_id, type: String, default: ->{ "#{Time.now.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.between(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1)}" }
   field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :nouveau
   field :line_number, type: Integer
@@ -773,8 +773,11 @@ class Ebsdd
   def num_cap_auto
     unless dechet_conditionnement.nil?
       y = Time.now.strftime("%Y")
-      s = producteur.siret.gsub(/ |-|\./, "")[0..8]
-
+      s = unless producteur.siret.nil?
+            producteur.siret.gsub(/ |-|\./, "")[0..8]
+          else
+            producteur.nom[0..8]
+          end
       p = case produit.index.to_i
       when 1
         "PE"

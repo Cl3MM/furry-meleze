@@ -43,4 +43,12 @@ class SearchesController < ApplicationController
       redirect_to new_search_path, alert: "Veuillez sélectionner au moins un critère"
     end
   end
+  def gestion_matiere
+    @search = Search.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.csv { send_data @search.export_gestion_matiere.encode("iso-8859-1"), filename: "Export_gestion_matiere_DD_#{Date.today.strftime("%d-%m-%Y")}.csv", type: 'text/csv; charset=iso-8859-1;' }
+    end
+  end
+
 end

@@ -17,23 +17,77 @@ class Search
   field :collecteur_id, type: String
   field :destination_id, type: String
   field :destinataire_id, type: String
+  field :bon_de_sortie_id, type: String
+  field :bons_de_sortie_inclus, type: Boolean
 
-  attr_accessible :bordereau_id, :producteur_id, :collecteur_id, :produit_id, :date_min, :date_max, :status, :type, :poids_min, :poids_max, :destinataire_id, :status, :type, :ecodds_id
+  attr_accessible :bordereau_id, :producteur_id, :collecteur_id, :produit_id, :date_min,
+    :date_max, :status, :type, :poids_min, :poids_max, :destinataire_id, :status, :type, :ecodds_id,
+    :bon_de_sortie_id, :bons_de_sortie_inclus
 
   validates :status, inclusion: {in: ["nouveau", "en_attente", "attente_sortie", "complet", "clos"]} unless Proc.new {|p| p.status.blank?}
   validates :type, inclusion: {in: ["ecodds", "ddm", "ddi"] } unless Proc.new {|p| p.type.blank?}
   validates :poids_min, numericality: true, greater_than_or_equal_to: 0 unless Proc.new {|p| p.poids_min.blank?}
   validates :poids_max, numericality: true, greater_than_or_equal_to: 0 unless Proc.new {|p| p.poids_max.blank?}
 
+  def bons_de_sortie
+    @bds ||= find_bds
+  end
+
   def ebsdds
     @ebsdds ||= find_ebsdds
   end
 
+  def column_names
+    [ "Jours", "Mois", "Année", "E/S", "N° de Bordereau", "N° ECODDS", "Nom du client", "Adresse", "Produits", "Transporteur", "Poids" ]
+  end
+  def ligne_export_matiere_ebsdd ebsdd
+    [
+      ebsdd.bordereau_date_transport.strftime("%d"),
+      ebsdd.bordereau_date_transport.strftime("%m"),
+      ebsdd.bordereau_date_transport.strftime("%Y"),
+      "E",
+      ebsdd.bid,
+      (ebsdd.is_ecodds ? ebsdd.ecodds_id : nil),
+      (ebsdd.producteur.nom.present? ? ebsdd.producteur.nom : nil),
+      (ebsdd.producteur.adresse.present? ? ebsdd.producteur.adresse : nil),
+      ebsdd.produit.nom,
+      ebsdd.collecteur.nom,
+      (ebsdd.bordereau_poids.present? ? ebsdd.bordereau_poids : nil),
+    ]
+  end
+  def ligne_export_matiere_bds bds
+    [
+      bds.created_at.strftime("%d"),
+      bds.created_at.strftime("%m"),
+      bds.created_at.strftime("%Y"),
+      "S",
+      bds.id,
+      nil,
+      (bds.type == :ecodds ? "ECODDS" : "Valespace"),
+      "928 Avenue de la Houille Blanche",
+      bds.produit.nom,
+      "Trialp",
+      bds.poids,
+    ]
+  end
+  def export_gestion_matiere
+    CSV.generate({:col_sep => ";"}) do |csv|
+      csv << column_names
+      @ebsdds.order_by(bordereau_date_transport: 1).each do | ebsdd |
+        csv << ligne_export_matiere_ebsdd(ebsdd)
+      end if ebsdds.any?
+      @bds.order_by(created_at: 1).each do | b |
+        csv << ligne_export_matiere_bds(b)
+      end if bons_de_sortie.present? && bons_de_sortie.any?
+    end
+  end
 
   def criteres
     s = []
     s << "Numéro de bordereau : #{bordereau_id}" if bordereau_id.present?
     s << "Numéro ECODDS : #{ecodds_id}" if ecodds_id.present?
+    s << "Numéro de bon de sortie : #{bon_de_sortie_id}" if bon_de_sortie_id.present?
+    s << (bons_de_sortie_inclus.present? ? "Bons de sortie Inclus" : "Bons de sortie Exclus")
     s << "date minimum : #{date_min.strftime("%d/%m/%Y")}" if date_min.present?
     s << "date maximum : #{date_max.strftime("%d/%m/%Y")}" if date_max.present?
     s << "poids minimum : #{poids_min.to_i} kg" if poids_min.present?
@@ -76,6 +130,19 @@ class Search
 
   private
 
+  def find_bds
+    if bons_de_sortie_inclus.present? || bon_de_sortie_id.present?
+      bds = bon_de_sortie_id.present? ? BonDeSortie.where(id: /#{bon_de_sortie_id}/) : BonDeSortie.all
+      bds = bds.gte(created_at: date_min) if date_min.present?
+      bds = bds.lte(created_at: date_max) if date_max.present?
+      bds = bds.gte(poids: poids_min) if poids_min.present?
+      bds = bds.lte(poids: poids_max) if poids_max.present?
+      bds = bds.where(destination_id: destination_id) if destination_id.present?
+      bds = bds.where(produit_id: produit_id) if produit_id.present?
+      bds = bds.where(type: :ecodds) if type.present?
+    end
+    bds || nil
+  end
   def find_ebsdds
     ebsdds = bordereau_id.present? ? Ebsdd.where(bid: /#{bordereau_id}/) : Ebsdd.exists(archived: false)
     ebsdds = ebsdds.where(ecodds_id: /#{ecodds_id}/) if ecodds_id.present?

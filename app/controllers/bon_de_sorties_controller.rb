@@ -42,6 +42,7 @@ class BonDeSortiesController < ApplicationController
         @bds.ebsdds << e
         #e.save!
       end
+      @bds.set_type
       if @bds.save!
         redirect_to bon_de_sortie_path(@bds), notice: "L'EBSDD a été créé avec succès !"
       else

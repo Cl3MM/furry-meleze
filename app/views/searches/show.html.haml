@@ -13,7 +13,7 @@
       %span.caret
     %ul.dropdown-menu{role: "menu"}
       %li
-        = fa_link_to ebsdd_compta_path, "Exporter les résultats", "file-excel-o lg"
+        = fa_link_to gestion_matiere_path(format: :csv), "Exporter les résultats", "file-excel-o lg"
       %li.divider
 
       %li
@@ -32,6 +32,7 @@
       Aucun critère...
 - if @search.ebsdds.any?
 
+  %h2.page-header eBSDDs
   %table.table.table-striped#search-table
     %thead
       %tr
@@ -70,4 +71,34 @@
 
 - else
   .alert.alert-info
-    Aucun résultat. Veuillez élargir vos critères de recherche.
+    Aucun ebsdd trouvé, veuillez élargir vos critères de recherche.
+
+- if @search.bons_de_sortie_inclus || @search.bon_de_sortie_id.present?
+  - if @search.bons_de_sortie.any?
+    %h2.page-header Bons de Sortie
+    %table.table.table-striped#bds
+      %thead
+        %tr
+          %th #
+          %th Déchet
+          %th.text-center Type déchet
+          %th.text-center Date création
+          %th Poids
+      %tbody
+        - @search.bons_de_sortie.each do | bds |
+          %tr
+            %td= link_to bds.id, bon_de_sortie_path(bds)
+            %td= bds.produit.nom
+            %td.text-center
+              %label
+                = bds.try(:type).try(:to_s)
+            %td.text-center= bds.created_at.strftime("%d/%m/%Y")
+            %td
+              = bds.poids
+              kg
+
+  - else
+    .alert.alert-info
+      Aucun bon de sortie trouvé, veuillez élargir vos critères de recherche.
+
+

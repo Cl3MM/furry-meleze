@@ -8,12 +8,13 @@ class BonDeSortie
 
   belongs_to :destination
   #attr_accessible :id, :_id
-  field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}BDS#{"%04d" % BonDeSortie.count}" }
+  field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}BDS#{"%04d" % (BonDeSortie.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1)}" }
   field :poids, type: Float
   field :codedr_cadre2, type: String
   field :codedr_cadre12, type: String
+  field :type, type: Symbol
 
-  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2
+  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type
 
   def self.destinations dest_id, date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
     date_min, date_max = date_max, date_min if date_min > date_max
@@ -65,6 +66,12 @@ class BonDeSortie
       destinations(dest_id, date_min, date_max)[:data].each do | qte |
         csv << [qte[:jourStr], qte[:poids]]
       end
+    end
+  end
+  def set_type
+    if ebsdds.any?
+      e = ebsdds.first
+      self[:type] = e.is_ecodds ? :ecodds : :normal
     end
   end
 end

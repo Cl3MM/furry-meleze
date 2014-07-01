@@ -728,7 +728,6 @@ class Ebsdd
     end
   end
 
-
   def normalize
     self[:recepisse] = collecteur.recepisse unless read_attribute(:mode_transport) == 1
     [ :destinataire_email].each do | attr |

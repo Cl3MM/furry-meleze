@@ -17,7 +17,7 @@ class EbsddsController < ApplicationController
   def annexe_export
     respond_to do |format|
       format.html
-      format.csv { send_data @ebsdd.annexe_2_to_csv, filename: "#{@ebsdd.id}_annexe_2.csv" }
+      format.csv { send_data @ebsdd.annexe_2_to_csv.encode("iso-8859-1"), type: 'text/csv; charset=iso-8859-1;', filename: "#{@ebsdd.id}_annexe_2.csv" }
     end
   end
   def selection
@@ -29,7 +29,7 @@ class EbsddsController < ApplicationController
     #end
   end
   def export
-    send_data Ebsdd.to_multi(params), filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
+    send_data Ebsdd.to_multi(params).encode("iso-8859-1"), type: 'text/csv; charset=iso-8859-1;', filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
   end
   def change_ebsdd_en_attente_statut
     if params[:id].present?
@@ -126,18 +126,11 @@ class EbsddsController < ApplicationController
     end
   end
 
-  def compta
-    respond_to do |format|
-      format.html
-      format.csv { send_data @ebsdd.to_ebsdd, filename: "#{@ebsdd.id}.csv" }
-    end
-  end
-
   def download
     @ebsdd.inc_export
     respond_to do |format|
       format.html
-      format.csv { send_data @ebsdd.to_ebsdd, filename: "#{@ebsdd.id}.csv" }
+      format.csv { send_data @ebsdd.to_ebsdd.encode("iso-8859-1"), type: 'text/csv; charset=iso-8859-1;', filename: "#{@ebsdd.id}.csv" }
       #format.xls # { send_data @products.to_csv(col_sep: "\t") }
     end
   end

@@ -1,4 +1,4 @@
-%h1
+%h1.page-header
   %i.fa.fa-search
   Recherche eBsdd avancée
   .btn-group.pull-right
@@ -11,7 +11,6 @@
       %li
         = fa_link_to new_search_path, "Nouvelle recherche avancée", "search-plus lg"
 
-%hr
 = custom_form @search, html: { role: "form" } do | f |
   .row
     .col-md-4
@@ -22,6 +21,11 @@
       .form-group
         %label Numéro ECODDS
         = f.text_field :ecodds_id, placeholder: "Entrez un numéro de BSD ECODDS..."
+    .col-md-4
+      .form-group
+        %label Numéro de bon de sortie
+        = f.text_field :bon_de_sortie_id, placeholder: "Entrez un numéro Bon de sortie"
+
   .row
     .col-md-4
       .form-group
@@ -57,6 +61,11 @@
       .form-group
         %label Destinations ultérieures
         = f.select :destination_id,  Destination.all.map{|d| [d.nom, d.id]}, prompt: "Sélectionnez une destination ultérieure..."
+    .col-md-4
+      .form-group
+        %br
+        = f.check_box :bons_de_sortie_inclus
+        %label Inclure les bons de sortie
   .row
     .col-md-4
       .form-group

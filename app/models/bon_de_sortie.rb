@@ -8,7 +8,22 @@ class BonDeSortie
 
   belongs_to :destination
   #attr_accessible :id, :_id
-  field :_id, type: String, default: ->{ "#{Time.now.strftime("%y%m%d")}BDS#{"%04d" % (BonDeSortie.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1)}" }
+
+    # default: ->{ "#{Time.now.strftime("%y%m%d")}BDS#{"%04d" % (BonDeSortie.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1)}" }
+  field :_id, type: String, default: -> do
+    counter = 1
+    now = Time.now.strftime("%Y%m%d")
+    start = Date.today.beginning_of_day
+    fin = Date.today.end_of_day
+    tmp = ""
+    loop do
+      tmp = "#{now}BDS#{"%04d" % (Ebsdd.between(created_at: start..fin).count + counter)}"
+      counter += 1
+      break unless Ebsdd.where(id: tmp).exists?
+    end
+    tmp
+  end
+
   field :poids, type: Float
   field :codedr_cadre2, type: String
   field :codedr_cadre12, type: String

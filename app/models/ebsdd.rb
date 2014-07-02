@@ -37,7 +37,7 @@ class Ebsdd
     15
   end
 
-  before_create :normalize, :complete_new
+  before_create :normalize, :complete_new, :set_infos_from_collecteur
   before_update :set_status, :set_num_cap, :set_infos_from_collecteur, :set_is_ecodds
 
   def self.skip_before_update_callback
@@ -86,7 +86,20 @@ class Ebsdd
   accepts_nested_attributes_for :destination
   attr_accessible :id, :_id
 
-  field :_id, type: String, default: ->{ "#{Time.now.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.between(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1)}" }
+  field :_id, type: String, default: -> do
+    counter = 1
+    now = Time.now.strftime("%Y%m%d")
+    start = Date.today.beginning_of_day
+    fin = Date.today.end_of_day
+    tmp = ""
+    loop do
+      tmp = "#{now}#{"%04d" % (Ebsdd.between(created_at: start..fin).count + counter)}"
+      counter += 1
+      break unless Ebsdd.where(id: tmp).exists?
+    end
+    tmp
+  end
+
   field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :nouveau
   field :line_number, type: Integer
@@ -241,7 +254,7 @@ class Ebsdd
   field :dechet_nombre_colis_ult, type: Integer
   field :type_quantite_ult, type: String
   field :valorisation_prevue, type: String, default: "R13"
-  field :recepisse, type: String, default: ->{ id }
+  field :recepisse, type: String, default: "123"
   field :mode_transport, type: Integer, default: 1
   field :bordereau_limite_validite, type: Date, default: ->{ 10.days.from_now }
 
@@ -468,7 +481,7 @@ class Ebsdd
   end
   def long_bid
     lbid = read_attribute(:bordereau_id)
-    unless lbid.nil? 
+    unless lbid.nil?
       "%.0f" % lbid
     else
       "#"

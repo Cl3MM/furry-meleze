@@ -37,7 +37,7 @@ class Ebsdd
     15
   end
 
-  before_create :normalize, :complete_new, :set_infos_from_collecteur
+  before_create :normalize, :complete_new, :set_infos_from_collecteur, :set_is_ecodds
   before_update :set_status, :set_num_cap, :set_infos_from_collecteur, :set_is_ecodds
 
   def self.skip_before_update_callback
@@ -52,6 +52,7 @@ class Ebsdd
     elsif self[:status] == :incomplet
       self[:status] = :complet
     end
+    true
   end
   def set_bordereau_id
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
@@ -60,6 +61,7 @@ class Ebsdd
     self[:recepisse] = collecteur.recepisse
     self[:limite_validite] = collecteur.limite_validite
     self[:mode_transport] = collecteur.mode_transport
+    true
   end
   def set_is_ecodds
     val = (producteur.nom =~ /eco dds/i) == nil ? false : true
@@ -68,6 +70,7 @@ class Ebsdd
   end
   def set_num_cap
     self[:num_cap] = num_cap_auto if num_cap.blank?
+    true
   end
 
   #belongs_to :emitted, polymorphic: true, class_name: "Producteur", inverse_of: :emitted

@@ -40,19 +40,19 @@ class Search
   def column_names
     [ "Jours", "Mois", "Année", "E/S", "N° de Bordereau", "N° ECODDS", "Nom du client", "Adresse", "Produits", "Transporteur", "Poids" ]
   end
-  def ligne_export_matiere_ebsdd ebsdd
+  def ligne_export_matiere_ebsdd bsd
     [
-      ebsdd.bordereau_date_transport.strftime("%d"),
-      ebsdd.bordereau_date_transport.strftime("%m"),
-      ebsdd.bordereau_date_transport.strftime("%Y"),
+      bsd.bordereau_date_transport.strftime("%d"),
+      bsd.bordereau_date_transport.strftime("%m"),
+      bsd.bordereau_date_transport.strftime("%Y"),
       "E",
-      ebsdd.bid,
-      (ebsdd.is_ecodds ? ebsdd.ecodds_id : nil),
-      (ebsdd.producteur.nom.present? ? ebsdd.producteur.nom : nil),
-      (ebsdd.producteur.adresse.present? ? ebsdd.producteur.adresse : nil),
-      ebsdd.produit.nom,
-      ebsdd.collecteur.nom,
-      (ebsdd.bordereau_poids.present? ? ebsdd.bordereau_poids : nil),
+      bsd.id,
+      (bsd.ecodds_id.present? ? bsd.ecodds_id : nil),
+      (bsd.producteur.nom.present? ? bsd.producteur.nom : nil),
+      (bsd.producteur.adresse.present? ? bsd.producteur.adresse : nil),
+      bsd.produit.nom,
+      bsd.collecteur.nom,
+      (bsd.bordereau_poids.present? ? bsd.bordereau_poids : nil),
     ]
   end
   def ligne_export_matiere_bds bds
@@ -133,8 +133,8 @@ class Search
   def find_bds
     if bons_de_sortie_inclus.present? || bon_de_sortie_id.present?
       bds = bon_de_sortie_id.present? ? BonDeSortie.where(id: /#{bon_de_sortie_id}/) : BonDeSortie.all
-      bds = bds.gte(created_at: date_min) if date_min.present?
-      bds = bds.lte(created_at: date_max) if date_max.present?
+      bds = bds.gte(created_at: date_min.beginning_of_day) if date_min.present?
+      bds = bds.lte(created_at: date_max.end_of_day) if date_max.present?
       bds = bds.gte(poids: poids_min) if poids_min.present?
       bds = bds.lte(poids: poids_max) if poids_max.present?
       bds = bds.where(destination_id: destination_id) if destination_id.present?
@@ -144,10 +144,10 @@ class Search
     bds || nil
   end
   def find_ebsdds
-    ebsdds = bordereau_id.present? ? Ebsdd.where(bid: /#{bordereau_id}/) : Ebsdd.exists(archived: false)
+    ebsdds = bordereau_id.present? ? Ebsdd.where(bid: /#{bordereau_id}/) : Ebsdd.all.exists(archived: false)
     ebsdds = ebsdds.where(ecodds_id: /#{ecodds_id}/) if ecodds_id.present?
-    ebsdds = ebsdds.gte(created_at: date_min) if date_min.present?
-    ebsdds = ebsdds.lte(created_at: date_max) if date_max.present?
+    ebsdds = ebsdds.gte(created_at: date_min.beginning_of_day) if date_min.present?
+    ebsdds = ebsdds.lte(created_at: date_max.end_of_day) if date_max.present?
     ebsdds = ebsdds.gte(bordereau_poids: poids_min) if poids_min.present?
     ebsdds = ebsdds.lte(bordereau_poids: poids_max) if poids_max.present?
     ebsdds = ebsdds.where(producteur_id: producteur_id) if producteur_id.present?
@@ -156,11 +156,9 @@ class Search
     ebsdds = ebsdds.where(produit_id: produit_id) if produit_id.present?
     ebsdds = ebsdds.where(destinataire_id: destinataire_id) if destinataire_id.present?
     ebsdds = ebsdds.where(status: status) if status.present?
-
-    if type.present?
+    ebsdds = ebsdds.where(:ecodds_id.nin => ["", nil]) if type.present? && type == :ecodds
+    if type.present? && type != :ecodds
       pids = case type
-              when :ecodds
-                Produit.where(is_ecodds: 1).map(&:id)
               when :ddm
                 Produit.where(is_ddm: 1).map(&:id)
               when :ddi

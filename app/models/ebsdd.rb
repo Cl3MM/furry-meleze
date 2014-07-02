@@ -515,6 +515,13 @@ class Ebsdd
       csv << attributes.values_at(*column_names)
     end
   end
+  def ecodds_label
+    if is_ecodds
+      "<label class='label label-primary'>ECODDS</label>"
+    else
+      "<label class='label label-default'>Normal</label>"
+    end
+  end
   def default_ecodds_id
     "#{Time.now.strftime("%y")}#{id[-6..-1]}"
   end

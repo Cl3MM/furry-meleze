@@ -56,7 +56,7 @@
     .col-md-4
       .form-group
         %label Type
-        = f.select :type, [ ["EcoDDS", :ecodds], ["Déchet Dangereux Ménager", :ddm], ["Déchet Dangereux Industriel", :ddi] ], prompt: "Sélectionnez le type..."
+        = f.select :type, [ ["EcoDDS", :ecodds], ["Non EcoDDS", :hors_ecodds], ["Déchet Dangereux Ménager", :ddm], ["Déchet Dangereux Industriel", :ddi] ], prompt: "Sélectionnez le type..."
     .col-md-4
       .form-group
         %label Destinations ultérieures

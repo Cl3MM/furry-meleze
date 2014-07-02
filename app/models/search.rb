@@ -25,7 +25,7 @@ class Search
     :bon_de_sortie_id, :bons_de_sortie_inclus
 
   validates :status, inclusion: {in: ["nouveau", "en_attente", "attente_sortie", "complet", "clos"]} unless Proc.new {|p| p.status.blank?}
-  validates :type, inclusion: {in: ["ecodds", "ddm", "ddi"] } unless Proc.new {|p| p.type.blank?}
+  validates :type, inclusion: {in: ["ecodds", "hors_ecodds", "ddm", "ddi"] } unless Proc.new {|p| p.type.blank?}
   validates :poids_min, numericality: true, greater_than_or_equal_to: 0 unless Proc.new {|p| p.poids_min.blank?}
   validates :poids_max, numericality: true, greater_than_or_equal_to: 0 unless Proc.new {|p| p.poids_max.blank?}
 
@@ -121,6 +121,8 @@ class Search
     case type
     when :ecodds
       "EcoDDS"
+    when :hors_ecodds
+      "Non EcoDDS"
     when :ddm
       "Déchet Dangereux Ménager"
     when :ddi
@@ -156,15 +158,22 @@ class Search
     ebsdds = ebsdds.where(produit_id: produit_id) if produit_id.present?
     ebsdds = ebsdds.where(destinataire_id: destinataire_id) if destinataire_id.present?
     ebsdds = ebsdds.where(status: status) if status.present?
-    ebsdds = ebsdds.where(:ecodds_id.nin => ["", nil]) if type.present? && type == :ecodds
-    if type.present? && type != :ecodds
-      pids = case type
-              when :ddm
-                Produit.where(is_ddm: 1).map(&:id)
-              when :ddi
-                Produit.where(is_ddi: 1).map(&:id)
-              end
-      ebsdds = ebsdds.in(produit_id: pids)
+    if type.present?
+      if [:ecodds, :hors_ecodds].include?(type)
+        ebsdds = if type == :ecodds
+                   ebsdds.where(:ecodds_id.nin => ["", nil])
+                 else
+                   ebsdds = ebsdds.where(:ecodds_id.in => ["", nil])
+                 end
+      else
+        pids = case type
+               when :ddm
+                 Produit.where(is_ddm: 1).map(&:id)
+               when :ddi
+                 Produit.where(is_ddi: 1).map(&:id)
+               end
+        ebsdds = ebsdds.in(produit_id: pids)
+      end
     end
     ebsdds
   end

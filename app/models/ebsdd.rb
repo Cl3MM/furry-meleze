@@ -742,7 +742,7 @@ class Ebsdd
     end
   end
   def self.multiebsdd_search min, max
-    @ebsdds = Ebsdd.between(bordereau_date_creation: min..max).and(status: :complet)#.order_by(:bordereau_date_creation)#.paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.where(:status.in => [:complet, :clos]).between(bordereau_date_creation: min..max)#.order_by(:bordereau_date_creation)#.paginate(page: params[:page], per_page: 15)
   end
   def self.search params
     if params.has_key?(:status)
@@ -764,7 +764,7 @@ class Ebsdd
           self[attr] = "0#{self[attr]}" if self[attr].size == 9 && self[attr].is_a
         else
           begin
-          self[attr].gsub!(/ /, "") 
+          self[attr].gsub!(/ /, "")
           rescue
             binding.pry
           end

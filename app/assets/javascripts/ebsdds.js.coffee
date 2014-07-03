@@ -376,7 +376,6 @@ jQuery ->
           data.push {text: l.label, id: l.id} if l.is_ecodds == true
         else
           data.push {text: l.label, id: l.id}
-
       $("#ebsdd_produit_id").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()

@@ -654,9 +654,11 @@ class Ebsdd
 
   def self.producteur_attr_indexes attr, headers
     h = headers.reduce( {} ) do | h, _i |
-      i = _i.downcase.strip
-      attr.each do | a |
-        h[a] = headers.index(_i) if a =~ /#{i}/
+      unless _i.nil?
+        i = _i.downcase.strip
+        attr.each do | a |
+          h[a] = headers.index(_i) if a =~ /#{i}/
+        end
       end
       h
     end
@@ -664,7 +666,7 @@ class Ebsdd
   end
 
   def self.created_from_spreadsheet spreadsheet, attrs
-    header              = spreadsheet.row(1).map{ |h| h.downcase.strip }
+    header              = spreadsheet.row(1).map{ |h| h.downcase.strip unless h.nil? }
     bordereau_id_column = header.index("bordereau_id")
     producteur_attrs = producteur_attr_indexes(attrs, header)
     failed, start, total, new_producteurs = [], Time.now, 0, []
@@ -697,7 +699,7 @@ class Ebsdd
                            cell
                          end
             cur_header = header[ index ]
-            ebsdd[cur_header.to_sym] = cur_cell unless producteur_attrs.keys.include?(cur_header.to_sym)
+            ebsdd[cur_header.to_sym] = cur_cell unless cur_header.nil? || producteur_attrs.keys.include?(cur_header.to_sym)
           end
           ebsdd.line_number = i
           ebsdd.destinataire = dest_id

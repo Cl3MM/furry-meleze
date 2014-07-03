@@ -508,6 +508,21 @@ class Ebsdd
   def denomination_cadre_4
     produit.mention
   end
+  #def status_label
+    #labels = {
+      #nouveau: "Nouveau",
+      #en_attente: "Attente Réception",
+      #attente_sortie: "En stock",
+      #clos: "Archivé",
+      #complet: "Complet",
+      #incomplet: "Incomplet"
+    #}
+    #if label.has_key status
+      #label[status]
+    #else
+      #"ERREUR STATUT"
+    #end
+  #end
   def to_csv
     CSV.generate({:col_sep => ";"}) do |csv|
       column_names = attributes.keys
@@ -742,7 +757,10 @@ class Ebsdd
     end
   end
   def self.multiebsdd_search min, max
-    @ebsdds = Ebsdd.where(:status.in => [:complet, :attente_sortie, :clos], is_ecodds: true).between(bordereau_date_creation: min..max)#.order_by(:bordereau_date_creation)#.paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.where(:status.in => [:nouveau, :en_attente, :complet, :attente_sortie, :clos],
+                            is_ecodds: true,
+                            :bordereau_poids.ne => nil)
+                .between(bordereau_date_creation: min..max).order_by(bordereau_date_creation: 1) #.paginate(page: params[:page], per_page: 15)
   end
   def self.search params
     if params.has_key?(:status)

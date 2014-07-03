@@ -56,7 +56,9 @@
               Numéro ECODDS
               %span.pull-right
                 Statut
-                %span#status.label.label-info #{@ebsdd.status.to_s.gsub("_", " ")}
+                = raw @ebsdd.status_label
+                /- if [:en_attente, :attente_sortie, :clos, :nouveau ].include? @ebsdd.status
+                /  = f.select :status, [ ["Nouveau", "nouveau"], ["Attente Réception", "en_attente"], ["En stock", "attente_sortie"], ["Archivé", "clos"], ]
           .panel-body
             .row
               .col-md-4

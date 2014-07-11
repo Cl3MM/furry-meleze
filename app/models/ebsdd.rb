@@ -458,7 +458,7 @@ class Ebsdd
     end
     self[:bordereau_date_creation] = Time.now
     self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
-    self[:bid] = long_bid
+    self[:bid] = "#{id}" #long_bid
     set_num_cap
     set_infos_from_collecteur
   end

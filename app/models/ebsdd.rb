@@ -66,6 +66,7 @@ class Ebsdd
   def set_is_ecodds
     val = (producteur.nom =~ /eco dds/i) == nil ? false : true
     set(:is_ecodds, val)
+    set(:ecodds_id_str, "#{self[:ecodds_id]}") unless self[:ecodds_id].blank?
     true
   end
   def set_num_cap
@@ -104,6 +105,7 @@ class Ebsdd
   end
 
   field :ecodds_id, type: Integer#, default: ->{ default_ecodds_id }
+  field :ecodds_id_str, type: String#, default: ->{ default_ecodds_id }
   field :status, type: Symbol, default: :nouveau
   field :line_number, type: Integer
   field :bordereau_id, type: Integer
@@ -259,7 +261,7 @@ class Ebsdd
   field :valorisation_prevue, type: String, default: "R13"
   field :recepisse, type: String, default: "123"
   field :mode_transport, type: Integer, default: 1
-  field :bordereau_limite_validite, type: Date, default: ->{ 10.days.from_now }
+  field :bordereau_limite_validite, type: Date, default: ->{ collecteur.limite_validite }
 
   field :super_denomination, type: String
   field :immatriculation, type: String
@@ -312,7 +314,7 @@ class Ebsdd
     :emetteur_fax, :emetteur_email, :emetteur_responsable,
 
     :ligne_flux_date_remise, :ligne_flux_poids,
-    :immatriculation, :exported, :ecodds_id
+    :immatriculation, :exported, :ecodds_id, :ecodds_id_str
 
     validates_presence_of :collecteur_id, :producteur_id, :produit_id,
     #:collecteur_siret, :collecteur_nom, :collecteur_adresse, :collecteur_cp, :collecteur_ville, 

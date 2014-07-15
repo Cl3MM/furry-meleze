@@ -1,5 +1,9 @@
 .row
   .col-md-6
+    .col-md-12
+      %label
+        Date de transport : 
+      = ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
     .col-md-6
       %label
         Mode de transport :
@@ -23,7 +27,7 @@
       %br
       %label
         Limite de validité du bordereau :
-      = ebsdd.bordereau_limite_validite.nil? ? "-" : ebsdd.bordereau_limite_validite.strftime("%d/%m/%Y")
+      = ebsdd.limite_validite.nil? ? "-" : ebsdd.limite_validite.strftime("%d/%m/%Y")
       %br
       %label
         Numéro de recepissé

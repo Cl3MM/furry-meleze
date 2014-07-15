@@ -78,6 +78,6 @@
 = render partial: "ebsdds/ebsdds"
 #search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
 -#= render partial: "search"
-
+- params["status"] = "clos" if params.keys.include?("status") && params["status"] == "closs"
 .center-block.tect-center
   = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

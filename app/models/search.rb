@@ -52,7 +52,7 @@ class Search
       (bsd.producteur.adresse.present? ? bsd.producteur.adresse : nil),
       bsd.produit.nom,
       bsd.collecteur.nom,
-      (bsd.bordereau_poids.present? ? bsd.bordereau_poids : nil),
+      (bsd.bordereau_poids.present? ? "#{bsd.bordereau_poids}".gsub(".",",") : nil),
     ]
   end
   def ligne_export_matiere_bds bds
@@ -67,7 +67,7 @@ class Search
       "928 Avenue de la Houille Blanche",
       bds.produit.nom,
       "Trialp",
-      bds.poids,
+      "#{bds.poids}".gsub(".",","),
     ]
   end
   def export_gestion_matiere
@@ -147,9 +147,9 @@ class Search
   end
   def find_ebsdds
     ebsdds = bordereau_id.present? ? Ebsdd.where(bid: /#{bordereau_id}/) : Ebsdd.all.exists(archived: false)
-    ebsdds = ebsdds.where(ecodds_id: /#{ecodds_id}/) if ecodds_id.present?
-    ebsdds = ebsdds.gte(created_at: date_min.beginning_of_day) if date_min.present?
-    ebsdds = ebsdds.lte(created_at: date_max.end_of_day) if date_max.present?
+    ebsdds = ebsdds.where(ecodds_id_str: /#{ecodds_id}/) if ecodds_id.present?
+    ebsdds = ebsdds.gte(bordereau_date_transport: date_min.beginning_of_day) if date_min.present?
+    ebsdds = ebsdds.lte(bordereau_date_transport: date_max.end_of_day) if date_max.present?
     ebsdds = ebsdds.gte(bordereau_poids: poids_min) if poids_min.present?
     ebsdds = ebsdds.lte(bordereau_poids: poids_max) if poids_max.present?
     ebsdds = ebsdds.where(producteur_id: producteur_id) if producteur_id.present?
@@ -158,7 +158,7 @@ class Search
     ebsdds = ebsdds.where(produit_id: produit_id) if produit_id.present?
     ebsdds = ebsdds.where(destinataire_id: destinataire_id) if destinataire_id.present?
     ebsdds = ebsdds.where(status: status) if status.present?
-    if type.present?
+    if type.present? && !ecodds_id.present?
       if [:ecodds, :hors_ecodds].include?(type)
         ebsdds = if type == :ecodds
                    ebsdds.where(:ecodds_id.nin => ["", nil])

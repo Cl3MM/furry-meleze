@@ -42,7 +42,7 @@
         %th Producteur
         -#%th Destinataire
         %th.text-center Type déchet
-        %th Date création
+        %th Date Transport
         %th Poids
         %th.text-center Statut
 
@@ -64,7 +64,7 @@
             - else
               .touletip{title: "#{ ebsdd.libelle.titleize }" }
                 = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
-          %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+          %td= ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
           %td
             = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
           %td.text-center= raw ebsdd.status_label

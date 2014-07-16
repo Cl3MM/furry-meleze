@@ -261,7 +261,7 @@ class Ebsdd
   field :valorisation_prevue, type: String, default: "R13"
   field :recepisse, type: String, default: "123"
   field :mode_transport, type: Integer, default: 1
-  field :bordereau_limite_validite, type: Date, default: ->{ collecteur.limite_validite }
+  #field :bordereau_limite_validite, type: Date, default: ->{ collecteur.limite_validite }
 
   field :super_denomination, type: String
   field :immatriculation, type: String

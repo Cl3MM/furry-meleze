@@ -94,10 +94,10 @@ class Search
     s << "poids maximum : #{poids_max.to_i} kg" if poids_max.present?
     s << "statut : #{status_pretty}" if status.present?
     s << "type : #{type_pretty}" if type.present?
-    s << "producteur : #{Producteur.find( producteur_id).nom}" if producteur_id.present?
+    s << "producteur : #{Producteur.find( producteur_id).try(:nom)}" if producteur_id.present?
     s << "collecteur : #{Collecteur.find( collecteur_id).try(:nom)}" if collecteur_id.present?
-    s << "destination : #{Destination.find( destination_id).nom}" if destination_id.present?
-    s << "destinataire : #{Destinataire.find( destinataire_id).nom}" if destinataire_id.present?
+    s << "destination : #{Destination.find( destination_id).try(:nom)}" if destination_id.present?
+    s << "destinataire : #{Destinataire.find( destinataire_id).try(:nom)}" if destinataire_id.present?
     s << "déchet : #{Produit.find(produit_id).try(:nom)}" if produit_id.present?
     s
   end

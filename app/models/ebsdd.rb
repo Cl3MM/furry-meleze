@@ -55,7 +55,7 @@ class Ebsdd
     true
   end
   def set_bordereau_id
-    self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
+    self[:bordereau_id] = "#{id}" # "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
   end
   def set_infos_from_collecteur
     self[:recepisse] = collecteur.recepisse
@@ -459,7 +459,7 @@ class Ebsdd
       self[:status] = :nouveau
     end
     self[:bordereau_date_creation] = Time.now
-    self[:bordereau_id] = "#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
+    self[:bordereau_id] = "#{id}" #"#{Date.today.strftime("%Y%m%d")}#{"%04d" % (Ebsdd.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).count + 1) }" if self[:status] == :nouveau
     self[:bid] = "#{id}" #long_bid
     set_num_cap
     set_infos_from_collecteur

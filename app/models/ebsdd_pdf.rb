@@ -124,7 +124,7 @@ class EbsddPdf < Prawn::Document
     # Expediteur initial (num_cap)
     my_text_box ebsdd.num_cap, [150, 609 - height], width: 100, height: 15
     # Bordereau original
-    my_text_box ebsdd.bid, [400, 609 - height], width: 150, height: 15
+    my_text_box ebsdd.bordereau_id, [400, 609 - height], width: 150, height: 15
 
     prod = ebsdd.producteur
     # siret

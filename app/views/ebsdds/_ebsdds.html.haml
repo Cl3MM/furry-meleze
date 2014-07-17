@@ -16,7 +16,7 @@
         %tbody
           -@ebsdds.each do | ebsdd |
             %tr
-              %td= link_to ebsdd.bid, ebsdd_path(ebsdd)
+              %td= link_to ebsdd.bordereau_id, ebsdd_path(ebsdd)
               %td.text-center
                 = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
               %td

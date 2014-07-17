@@ -9,6 +9,7 @@
       .panel-body
         %dl.dl-horizontal
           %dt Numéro de BSD
+          -#%dd= ebsdd.bordereau_id
           %dd= ebsdd.bordereau_id
           - unless ebsdd.ecodds_id.nil?
             %dt Numéro ECODDS

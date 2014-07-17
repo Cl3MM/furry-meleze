@@ -38,7 +38,7 @@
     .col-md-4
       .form-group
         %label Déchet
-        = f.select :produit_id,  Produit.all.map{|d| [d.nom, d.id]}, prompt: "Sélectionnez un type de déchet..."
+        = f.select :produit_id,  Produit.all.asc(:nom,1).map{|d| [d.nom, d.id]}, prompt: "Sélectionnez un type de déchet..."
   .row
     .col-md-4
       .form-group
@@ -60,7 +60,7 @@
     .col-md-4
       .form-group
         %label Destinations ultérieures
-        = f.select :destination_id,  Destination.all.map{|d| [d.nom, d.id]}, prompt: "Sélectionnez une destination ultérieure..."
+        = f.select :destination_id,  Destination.all.asc(:nom, 1).map{|d| [d.nom, d.id]}, prompt: "Sélectionnez une destination ultérieure..."
     .col-md-4
       .form-group
         %br

@@ -16,7 +16,7 @@ class Company
   attr_accessible :siret, :nom, :adresse, :cp, :ville, :tel, :fax, :email, :responsable
   validates_presence_of :siret, :responsable, :nom, :cp, :ville, :adresse
   def self.to_select
-    Producteur.all.map do | p |
+    Company.all.asc(:nom,1).map do | p |
       [p.nom, p.id]
     end
   end

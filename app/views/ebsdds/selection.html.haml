@@ -40,7 +40,7 @@
         %th.touletip{title: "Nombre d'exports déjà effectués"} #Ex.
         %th Producteur
         %th Type déchet
-        %th Date création
+        %th Date transport
         %th Poids
         %th.actions Actions
 
@@ -49,14 +49,14 @@
         -@ebsdds.each do | ebsdd |
           %tr
             %td= check_box_tag "ebsdds[]", ebsdd.ecodds_id, false, class: "multiebsdd"
-            %td= ebsdd.short_bid
+            %td= ebsdd.bid
             %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
             %td.touletip{title: "Nombre d'export effectués pour l'ebsdd #{ebsdd.short_bid} : #{ebsdd.exported}"}
               = ebsdd.exported
             %td= truncate ebsdd.producteur.nom.titleize, length: 50
             -#%td= ebsdd.destinataire_nom.titleize
-            %td= ebsdd.libelle.titleize
-            %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+            %td= ebsdd.produit.denomination_ecodds.titleize
+            %td= ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
             %td= "#{ebsdd.bordereau_poids} kg"
 
             %td.actions

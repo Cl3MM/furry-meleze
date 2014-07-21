@@ -566,7 +566,7 @@ class Ebsdd
   end
   def to_ebsdd
     CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bordereau_id.to_s.truncate(35, omission: ""), nil]
+      csv << ["00", ecodds_id.to_s.truncate(8, omission: ""), bid.to_s.truncate(35, omission: ""), nil]
       csv << ["01", 4, producteur.try(:siret).try(:truncate, 14, omission: ""), producteur.try(:nom).try(:truncate, 60, omission: ""), producteur.try(:adresse).try(:truncate, 100, omission: ""),
                 producteur.try(:cp).try(:truncate, 5, omission: ""), producteur.try(:ville).try(:truncate, 45, omission: ""), producteur.try(:tel).try(:truncate, 35, omission: ""), 
                 producteur.try(:fax).try(:truncate, 35, omission: ""), producteur.try(:email).try(:truncate, 50, omission: ""),
@@ -762,7 +762,7 @@ class Ebsdd
     @ebsdds = Ebsdd.where(:status.in => [:nouveau, :en_attente, :complet, :attente_sortie, :clos],
                             is_ecodds: true,
                             :bordereau_poids.ne => nil)
-                .between(bordereau_date_creation: min..max).order_by(bordereau_date_creation: 1) #.paginate(page: params[:page], per_page: 15)
+                .between(bordereau_date_transport: min..max).order_by(bordereau_date_transport: 1) #.paginate(page: params[:page], per_page: 15)
   end
   def self.search params
     if params.has_key?(:status)

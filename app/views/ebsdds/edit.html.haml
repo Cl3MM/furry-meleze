@@ -23,7 +23,14 @@
             = fa_link_to ebsdd_download_path, "Exporter au format ECODDS", "cloud-download lg"
         %li.divider
         %li
-          = fa_link_to ebsdds_path, "Voir tous les eBSDDs", "tags lg"
+          = fa_link_to ebsdds_path(status: :nouveau), "Voir tous les nouveaux eBSDDs", "tags lg"
+        %li
+          = fa_link_to ebsdds_path(status: :en_attente), "Voir tous les eBSDDs en Attente de Réception", "tags lg"
+        %li
+          = fa_link_to ebsdds_path(status: :attente_sortie), "Voir tous les eBSDDs en Stock", "tags lg"
+        %li
+          = fa_link_to ebsdds_path(status: :clos), "Voir tous les eBSDDs Archivés", "tags lg"
+
 
 
   - if @ebsdd.errors.any?

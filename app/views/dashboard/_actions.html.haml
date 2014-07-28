@@ -1,6 +1,6 @@
 = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg", class: "btn btn-primary btn-lg btn-block", title: "Créer un nouveau eBSDD"
 = fa_link_to new_bon_de_sortie_path, "Créer un bon de sortie", "share-square-o lg", class: "btn btn-warning btn-lg btn-block", title: "Créer un nouveau bordereau de sortie"
 = fa_link_to ebsdds_import_path, "Importer depuis Excel", "file-excel-o lg", class: "btn btn-info btn-lg btn-block", title: "Importer un fichier Excel" if Attachment.all.any?
-= fa_link_to ebsdds_path, "Voir tous les eBSDD", "tags lg", class: "btn btn-primary btn-lg btn-success btn-block", title: "Voir tous les eBSDD"
+= fa_link_to ebsdds_path(status: :nouveau), "Voir tous les eBSDD", "tags lg", class: "btn btn-primary btn-lg btn-success btn-block", title: "Voir tous les eBSDD"
 = fa_link_to bon_de_sorties_path, "Voir tous les Bons de sortie", "sign-out lg", class: "btn btn-primary btn-lg btn-primary btn-block", title: "Voir tous les Bordereaux de sortie"
 -#= fa_link_to reset_path, "Réinitialiser", "warning lg", class: "btn btn-danger btn-lg btn-block touletip", title: "Réinitialise l'état de la base pour les tests"

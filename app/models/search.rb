@@ -46,7 +46,7 @@ class Search
       bsd.bordereau_date_transport.strftime("%m"),
       bsd.bordereau_date_transport.strftime("%Y"),
       "E",
-      bsd.id,
+      bsd.bid,
       (bsd.ecodds_id.present? ? bsd.ecodds_id : nil),
       (bsd.producteur.nom.present? ? bsd.producteur.nom : nil),
       (bsd.producteur.adresse.present? ? bsd.producteur.adresse : nil),

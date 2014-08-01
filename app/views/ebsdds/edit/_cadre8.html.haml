@@ -8,6 +8,11 @@
         %span.input-group-btn
           %a.btn.btn-primary{href: "#{new_collecteur_path}", target: "_blank" } Nouveau
 
+  .col-md-4
+    .form-group
+      = f.label :bordereau_date_transport, "Date de transport :"
+      = f.text_field :bordereau_date_transport, placeholder: "Date de transport", class: "datepicker", value: date_transport
+
 .row#immatriculations
   .col-md-8
     .form-group
@@ -22,8 +27,4 @@
           %button#add-immatriculation.btn.btn-default{ type: :button }
             = fa_icon :truck
             Créer
-  .col-md-4
-    .form-group
-      = f.label :bordereau_date_transport, "Date de transport :"
-      = f.text_field :bordereau_date_transport, placeholder: "Date de transport", class: "datepicker", value: date_transport
 

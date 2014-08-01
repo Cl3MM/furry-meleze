@@ -375,7 +375,7 @@ jQuery ->
         if !!val.match(/ECO ?DDS/gi)
           data.push {text: l.label, id: l.id} if l.is_ecodds == true
         else
-          data.push {text: l.label, id: l.id}
+          data.push {text: l.label, id: l.id} if l.is_ecodds == false
       $("#ebsdd_produit_id").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()
@@ -388,7 +388,7 @@ jQuery ->
         if !!val.match(/ECO ?DDS/gi)
           data.push {text: l.label, id: l.id} if l.is_ecodds == true
         else
-          data.push {text: l.label, id: l.id}
+          data.push {text: l.label, id: l.id} if l.is_ecodds == false
       $("#ebsdd_produit_id").select2(data: data)
 
     # Split d'un ebsdd

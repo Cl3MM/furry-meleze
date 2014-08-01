@@ -17,7 +17,7 @@ class BonDeSortie
     fin = Date.today.end_of_day
     tmp = ""
     loop do
-      tmp = "#{now}BDS#{"%04d" % (Ebsdd.between(created_at: start..fin).count + counter)}"
+      tmp = "#{now}BDS#{"%04d" % (BonDeSortie.between(created_at: start..fin).count + counter)}"
       counter += 1
       break unless Ebsdd.where(id: tmp).exists?
     end

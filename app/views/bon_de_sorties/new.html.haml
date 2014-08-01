@@ -2,7 +2,23 @@
 = javascript_include_tag "spin.min.js"
 = javascript_include_tag "jquery.spin.js"
 = stylesheet_link_tag "bon_de_sorties.css"
-
+- if @errors.any?
+  .alert.alert-danger
+    Impossible de créer le Bon de sortie, car le(s) ebsdd(s) suivant(s) ne sont pas conforme :
+    %br
+    %ul
+      %li
+        - @errors.each_pair do | k, v |
+          ebsdd n°
+          = k
+          %ul
+            %li
+              - v.each_pair do | key, err |
+                = Ebsdd.human_attribute_name(key)
+                - err.each do | e |
+                  %ul
+                    %li= e
+    Veuillez corriger ce(s) eBsdd(s) avant de procéder à leur ajout au Bon de sortie
 %h2.page-header
   Créer un nouveau bon de sortie
   %small
@@ -27,7 +43,7 @@
 
 #spinner
   -#= custom_form @bds, class: "form-horizontal", id: "bon-de-sortie", role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_url}"  do | f |
-  %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_path}" }
+  %form#bon-de-sortie.form-horizontal{action: "/bon_de_sorties", method: 'post', role: "role", 'data-url' => "#{ebsdds_type_dechet_a_sortir_path}", 'data-bds' => @bds.to_json  }
     .form-group
       %label.control-label.col-sm-3 Type de déchet à sortir
       .col-md-9

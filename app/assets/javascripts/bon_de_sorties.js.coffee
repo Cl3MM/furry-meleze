@@ -1,6 +1,32 @@
 jQuery ->
   if $("#bon-de-sortie").length
 
+    bds = $("#bon-de-sortie").data("bds")
+    console.log bds
+    console.log !!bds.produit_id
+    url = $("#bon-de-sortie").data('url')
+
+
+    ## TODO !!!
+    #
+    #if !!bds.produit_id
+      #console.log "YEAH"
+      #$("#type_dechet").select2
+        #allowClear: true
+        #width: 780
+        #ajax:
+          #dataType: "json"
+          #url: url
+          #quietMillis: 200
+          #type: 'post'
+          #data: (term, page) ->
+            #pageNum: page,
+            #query: term
+          #results: (data) ->
+            #console.log(data)
+            #results: data
+    #$("#type_dechet").trigger("change")
+
     # clic sur le bouton creer un bon de sortie
     # Appel l'action 'create' du controller
     $("#createBds").on 'click', (e) ->
@@ -20,13 +46,11 @@ jQuery ->
         div = '<div class="alert alert-danger">Veuillez selectionner au moins un eBSDD !</div>'
         $(div).hide().insertAfter($("body .container .navbar")).fadeIn(400).delay(2000).fadeOut(500)
 
-    console.log $("#destinataire").data("destinations")
     $("#destinataire").select2
       allowClear: true
       width: 780
       data: $("#destinataire").data("destinations")
 
-    console.log $("#codedr").data("codedr")
     $("#codedr").select2
       allowClear: true
       width: 780
@@ -34,9 +58,7 @@ jQuery ->
 
     $("#destinataire").select2("enable", false)
 
-    url = $("#bon-de-sortie").data('url')
     #url += "&is_ecodds=1" if $("#ecodds").prop("checked") == 1
-    console.log url
     $("#type_dechet").select2
       allowClear: true
       width: 780
@@ -53,7 +75,6 @@ jQuery ->
           results: data
 
     $("#type_dechet").on 'select2-selecting', (e) ->
-      console.log e.val
       $("#chauffe").prop('checked', false)
       $("#alert-poids").fadeOut(400)
       $("#poids").text(0)
@@ -65,7 +86,6 @@ jQuery ->
         data =
           produit_id: e.val
           is_ecodds: $("#ecodds").prop("checked")
-        console.log url
         $.post(url, data).fail(clamerde)
 
     displayEbsdds = (d,s) ->

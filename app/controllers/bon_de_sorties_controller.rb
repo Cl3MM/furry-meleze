@@ -9,6 +9,7 @@ class BonDeSortiesController < ApplicationController
   end
   def new
     @bds = BonDeSortie.new
+    @errors = {}
     @dispo = Ebsdd.where(status: :attente_sortie).count
   end
 
@@ -36,6 +37,15 @@ class BonDeSortiesController < ApplicationController
         codedr_cadre2: "R13")
       @bds.produit = Produit.find params[:type_dechet]
       @bds.destination = @destination
+      @errors = {}
+      params[:ids].each do |bid|
+        e = Ebsdd.find_by(bid: bid)
+        @errors[e.bid.to_sym] = e.errors.messages unless e.valid?
+      end
+      if @errors.any?
+        render 'new' and return
+      end
+      binding.pry
       params[:ids].each do |bid|
         e = Ebsdd.find_by(bid: bid)
         e.set(:status, :clos)

@@ -114,7 +114,6 @@ class EbsddsController < ApplicationController
     end
   end
   def nouveaux_pdfs
-    binding.pry
     if params[:ids].present?
       ids, pdf_list = params[:ids], []
       path = File.join(Rails.root, "tmp", "pdfs")

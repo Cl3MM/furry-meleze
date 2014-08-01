@@ -1,7 +1,7 @@
 -if @ebsdds.any?
   .panel.panel-default
     .panel-body
-      %table.table.table-striped
+      %table.table.table-striped#ebsdds{"data-status" => "#{@status}"}
         %thead
           %tr
             %th #
@@ -16,7 +16,7 @@
         %tbody
           -@ebsdds.each do | ebsdd |
             %tr
-              %td= link_to ebsdd.bordereau_id, ebsdd_path(ebsdd)
+              %td= link_to ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
               %td.text-center
                 = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
               %td
@@ -57,7 +57,7 @@
                   = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs check-poids",
                     role: "button", title: "Télécharger le Cerfa Complet pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
 
-                  = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || current_utilisateur.is_admin?
+                  = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || ebsdd.status == :en_attente || current_utilisateur.is_admin?
 
                   = fa_link_to ebsdd_download_path(ebsdd), "", "cloud-download lg", class: "btn btn-success touletip btn-xs",
                     role: "button", title: "Exporter au format ECODDS" if (ebsdd.is_complete? || ebsdd.is_clos?) && ebsdd.is_ecodds

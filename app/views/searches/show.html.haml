@@ -45,13 +45,14 @@
         %th Date Transport
         %th Poids
         %th.text-center Statut
+        %th.text-center Actions
 
     %tbody
       - @search.ebsdds.each do | ebsdd |
         %tr
           %td
             %input.id{type: "hidden"}
-            = link_to ebsdd.bid, ebsdd_path(ebsdd)
+            = link_to ebsdd.bid.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
           %td.text-center
             = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
           %td= raw ebsdd.ecodds_label
@@ -68,7 +69,36 @@
           %td
             = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
           %td.text-center= raw ebsdd.status_label
+          %td.actions
+            .text-center.btn-group
+              = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
+                role: "button", title: "Complèter") if ebsdd.is_incomplete?
 
+              = link_to(fa_icon("circle-o lg", text: ""), "#", class: "nouveau_statut btn btn-success touletip btn-xs",
+                role: "button", title: "Mettre le déchêt en Attente") if ebsdd.is_nouveau?
+
+              = link_to(fa_icon("circle-o lg", text: ""), "#", class: "en_attente_statut btn btn-success touletip btn-xs",
+                role: "button", title: "Le déchêt est près à sortir") if ebsdd.status == :en_attente
+
+              -#= link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})")
+              = link_to(fa_icon("edit lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
+                role: "button", title: "Modifier cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})") unless ebsdd.is_incomplete? || ebsdd.status == :attente_sortie
+              = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs",
+                role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} au format CSV") if ebsdd.status == :complet
+
+              = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :first_part), class: "btn btn-success touletip btn-xs",
+                role: "button", title: "Télécharger le Cerfa avant la collecte pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :nouveau
+
+              = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :second_part), class: "check-poids btn btn-success touletip btn-xs",
+                role: "button", title: "Télécharger la deuxième partie du Cerfa pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
+
+              = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs check-poids",
+                role: "button", title: "Télécharger le Cerfa Complet pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
+
+              = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || current_utilisateur.is_admin?
+
+              = fa_link_to ebsdd_download_path(ebsdd), "", "cloud-download lg", class: "btn btn-success touletip btn-xs",
+                role: "button", title: "Exporter au format ECODDS" if (ebsdd.is_complete? || ebsdd.is_clos?) && ebsdd.is_ecodds
 - else
   .alert.alert-info
     Aucun ebsdd trouvé, veuillez élargir vos critères de recherche.
@@ -100,5 +130,4 @@
   - else
     .alert.alert-info
       Aucun bon de sortie trouvé, veuillez élargir vos critères de recherche.
-
 

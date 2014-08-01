@@ -60,7 +60,6 @@ class EbsddPdf < Prawn::Document
           annexe_line_item ebsdd, i
         end
       end
-
     elsif @ebsdd.status == :nouveau || @status == :first_part
       image path, at: [0, here], width: 210.mm
       erase_all
@@ -77,11 +76,35 @@ class EbsddPdf < Prawn::Document
       cadre10
       cadre11
       cadre12
-    elsif @ebsdd.status == :en_attente || @status == :second_part
+    elsif @status == :second_part
+      ecoddsid if @ebsdd.is_ecodds
       cadre5
       #cadre10 poids
+      fs = self.font
+      size = self.font_size
+      self.font("Helvetica", :size => 12, style: :bold)
       my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
+      self.font( fs.family, size: size, style: :normal)
+
       cadre6
+    elsif @status == :full
+      image path, at: [0, here], width: 210.mm
+      erase_all
+      checkboxes
+      page_num
+      ecoddsid if ebsdd.is_ecodds
+      cadre0
+      cadre1
+      cadre2
+      cadre3
+      cadre4
+      cadre5
+      cadre6
+      cadre8
+      cadre9
+      cadre10
+      cadre11
+      cadre12
     else
       image path, at: [0, here], width: 210.mm
       erase_all
@@ -112,6 +135,13 @@ class EbsddPdf < Prawn::Document
     #cadre10 unless @ebsdd.status == :nouveau
     #cadre11
     #cadre12
+
+  end
+  def ecoddsid
+    fs = self.font_size
+    self.font_size = 10
+    my_text_box @ebsdd.ecodds_id_str, [500, 768], width: 50, height: 15
+    self.font_size = fs
   end
 
   def annexe_line_item ebsdd, position
@@ -217,7 +247,13 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
     unless @ebsdd.bordereau_poids.nil?
+
+      fs = self.font
+      size = self.font_size
+      self.font("Helvetica", :size => 12, style: :bold)
       my_text_box @ebsdd.poids_en_tonnes_pdf, [145, 181], width: 35, height: 20, align: :right
+      self.font( fs.family, size: size, style: :normal)
+
     end
     erase 80, 106.5, width: 50
     my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
@@ -266,7 +302,14 @@ class EbsddPdf < Prawn::Document
     ## Réelle
     checkbox 111, 471.5
     #end
+
+
+    fs = self.font
+    size = self.font_size
+    self.font("Helvetica", :size => 12, style: :bold)
     my_text_box @ebsdd.poids_en_tonnes_pdf.to_s, [212.5, 472], width: 31, height: 10, align: :right unless @ebsdd.status == :nouveau
+    self.font( fs.family, size: size, style: :normal)
+
   end
   def cadre5
     # Cadre 5 : Conditionnement

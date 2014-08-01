@@ -12,7 +12,11 @@
     %tbody
       -ebsdds.each do | ebsdd |
         %tr
-          %td= ebsdd.short_bid
+          %td
+            - if ebsdd.status == :complet
+              = link_to ebsdd.short_bid, ebsdd_path(ebsdd)
+            - else
+              = link_to ebsdd.bid.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
           %td
             = link_to truncate(ebsdd.producteur.nom.titleize, length: 20), producteur_path(ebsdd.producteur), class: "touletip", title: "Producteur du déchet : #{ebsdd.producteur.nom.titleize}"
           %td= truncate ebsdd.destinataire.nom.titleize, length: 18

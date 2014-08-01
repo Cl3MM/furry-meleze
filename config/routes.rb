@@ -35,6 +35,7 @@ Meleze::Application.routes.draw do
   post 'ebsdds/export', to: 'ebsdds#export', as: :ebsdds_export
   post 'ebsdds/nouveaux_pdfs', to: 'ebsdds#nouveaux_pdfs', as: :ebsdds_nouveaux_pdfs
   post 'ebsdds/change_nouveau_statut', to: 'ebsdds#change_nouveau_statut'
+  post 'ebsdds/change_en_attente_statut', to: 'ebsdds#change_en_attente_statut'
   put 'ebsdds/:id/split', to: 'ebsdds#split'
   post 'ebsdd/:id/change_nouveau_statut', to: 'ebsdds#change_ebsdd_nouveau_statut'
   post 'ebsdd/:id/change_en_attente_statut', to: 'ebsdds#change_ebsdd_en_attente_statut'

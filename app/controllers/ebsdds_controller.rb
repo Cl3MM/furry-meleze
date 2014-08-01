@@ -89,6 +89,30 @@ class EbsddsController < ApplicationController
       end
     end
   end
+  def change_en_attente_statut
+    if params[:ids].present?
+      ids = params[:ids]
+      outIds, err = [], []
+      ids.each_with_index do | id, ix |
+        ebsdd = Ebsdd.find_by(bid: id)
+        unless ebsdd.bordereau_poids.blank?
+          ebsdd.set(:status, :attente_sortie)
+          outIds << ebsdd.bid
+        else
+          err << ebsdd.bid
+        end
+      end
+      msg = { data: outIds, err: err }
+      respond_to do | format |
+        format.json { render json: msg }
+      end
+    else
+      #format.html { render action: 'new' }
+      respond_to do | format |
+        format.json { render json: { error: "aucun bsd à traiter" }, status: :unprocessable_entity }
+      end
+    end
+  end
   def nouveaux_pdfs
     binding.pry
     if params[:ids].present?
@@ -266,7 +290,7 @@ class EbsddsController < ApplicationController
   def destroy
     @ebsdd.destroy
     respond_to do |format|
-      format.html { redirect_to ebsdds_url }
+      format.html { redirect_to :back }
       format.json { head :no_content }
     end
   end

@@ -15,10 +15,14 @@
         = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
       %li
         = fa_link_to new_bon_de_sortie_path, "Créer un Bon de Sortie", "sign-out lg"
-      - if @status == :nouveau || @status == :en_attente
+      - if @status == :nouveau
         %li.divider
         %li
           = fa_link_to "#", "Imprimer les BSD pour la collecte", "truck lg", id: "nouveaux_pdfs"
+      - if @status == :en_attente
+        %li.divider
+        %li
+          = fa_link_to "#", "Mettre plusieurs eBsdd en Stock", "cubes lg", id: "nouveaux_pdfs"
         -#%li
           -#= fa_link_to "#", "Basculer en retour collecte", "check-square-o lg", id: "to_retour_collecte"
       %li.divider

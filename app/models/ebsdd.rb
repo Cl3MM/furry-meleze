@@ -767,9 +767,9 @@ class Ebsdd
   def self.search params
     if params.has_key?(:status)
       params[:status] = "closs" if params[:status] == "clos"
-      Ebsdd.exists(archived: false).where(status: params[:status].singularize).exists(archived: false).order_by(created_at: :desc)
+      Ebsdd.exists(archived: false).where(status: params[:status].singularize).exists(archived: false) #.order_by(created_at: :desc)
     else
-      Ebsdd.exists(archived: false).order_by(created_at: :desc)
+      Ebsdd.exists(archived: false) #.order_by(created_at: :desc)
     end
   end
 
@@ -975,6 +975,7 @@ class Ebsdd
       end
     end
   end
+
 end
   #p.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month)
 

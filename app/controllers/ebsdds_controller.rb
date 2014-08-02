@@ -4,6 +4,7 @@ class EbsddsController < ApplicationController
   before_filter :authenticate_utilisateur!
   before_filter :set_ebsdd, only: [:print_pdf, :annexe_export, :download, :template, :show, :edit, :update, :destroy]
   before_filter :check_incomplete, only: [:import, :upload]
+  helper_method :sort_column, :sort_direction, :find_sorted_column
 
   # GET /ebsdds/import
   def import
@@ -180,7 +181,7 @@ class EbsddsController < ApplicationController
   # GET /ebsdds
   # GET /ebsdds.json
   def index
-    @ebsdds = Ebsdd.search(params).paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.search(params).order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
     @status = (params.has_key?(:status) ? params[:status].to_sym : :tous)
     @status = :clos if @status == :closs
     @status = :nouveau if @status == :tous && !current_utilisateur.is_admin?
@@ -311,4 +312,47 @@ class EbsddsController < ApplicationController
       redirect_to root_path, alert: "Certains eBSDDs sont encore incomplets. Veuillez d'abord les compléter afin de procéder à un nouvel import."
     end
   end
+
+  def sort_column
+    case params[:sort]
+    when "# ecodds"
+      return :ecodds_id
+    when "# ebsdd"
+      return :bid
+    when "Producteur"
+      return :producteur_id
+    when "Type déchet"
+      return :produit_id
+    when "Date création"
+      return :bordereau_date_creation
+    when "Poids"
+      return :bordereau_poids
+    else
+      return :bid
+    end
+    #Ebsdd.attribute_names.include?(params[:sort]) ? params[:sort] : "bid"
+  end
+
+  def find_sorted_column
+    case sort_column
+    when :ecodds_id
+      return "# ecodds"
+    when :bid
+      return "# ebsdd"
+    when :producteur_id
+      return "Producteur"
+    when :produit_id
+      return "Type déchet"
+    when :bordereau_date_creation
+      "Date création"
+    when :bordereau_poids
+      "Poids"
+    else
+      return :bid
+    end
+  end
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+
 end

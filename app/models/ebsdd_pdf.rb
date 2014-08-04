@@ -65,6 +65,7 @@ class EbsddPdf < Prawn::Document
       erase_all
       checkboxes
       page_num
+      ecoddsid if @ebsdd.is_ecodds
       cadre0
       cadre1
       cadre2
@@ -77,7 +78,6 @@ class EbsddPdf < Prawn::Document
       cadre11
       cadre12
     elsif @status == :second_part
-      ecoddsid if @ebsdd.is_ecodds
       cadre5
       #cadre10 poids
       fs = self.font

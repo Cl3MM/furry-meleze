@@ -366,6 +366,11 @@ jQuery ->
         prout = tag
         $.get(url).done((data, success) -> updateElementInfoAttributes(data, success, {'elem': "#{tag}" })).fail(error) if(id != "")
 
+    compare = (a,b)->
+      return -1 if a.text < b.text
+      return 1 if a.text > b.text
+      return 0
+
     # initialisation de la liste des produits
     initDenomination = () ->
       data = []
@@ -376,7 +381,8 @@ jQuery ->
           data.push {text: l.label, id: l.id} if l.is_ecodds == true
         else
           data.push {text: l.label, id: l.id} if l.is_ecodds == false
-      $("#ebsdd_produit_id").select2(data: data, width: 339, placeholder: "Sélectionnez une dénomination..." )
+
+      $("#ebsdd_produit_id").select2(data: data.sort(compare), width: 339, placeholder: "Sélectionnez une dénomination..." )
 
     initDenomination()
 

@@ -34,7 +34,7 @@
   .row
     .col-md-8
       .form-group
-        = f.label :references
+        = f.label :references, "Destinations Ultérieures"
         %br
         = f.text_field :references, value: @produit.references.map(&:to_s).join(",")
 
@@ -43,6 +43,11 @@
         = f.label :seuil_alerte
         = f.text_field :seuil_alerte
 
+  .row
+    .col-md-12
+      .form-group
+        = f.label :code_rubrique
+        = f.text_field :code_rubrique
   .row
     .col-md-12
       .form-group

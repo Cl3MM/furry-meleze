@@ -59,6 +59,8 @@
               class: "btn btn-info touletip btn-xs", role: "button", 
               title: "Imprimer le bon de sortie")
 
+  .center-block.tect-center
+    = will_paginate @bds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
 - else
   .alert.alert-info
     Aucun bon de sortie.

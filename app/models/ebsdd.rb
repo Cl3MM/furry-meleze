@@ -889,7 +889,8 @@ class Ebsdd
 
     data = mr.entries.reduce([]) do |a, e|
       immat = Immatriculation.find e["_id"]
-      a << { nom: immat.valeur, poids: e["value"] }
+      val = immat.nil? ? "Immaticulation inconnue" : immat.valeur
+      a << { nom: val, poids: e["value"] }
       a
     end.sort_by do | h |
       h[:poids]

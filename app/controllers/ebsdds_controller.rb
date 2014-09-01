@@ -204,8 +204,20 @@ class EbsddsController < ApplicationController
   end
 
   def types_dechet_a_sortir
-    pids = Ebsdd.where(status: :attente_sortie).distinct(:produit_id)
-    types = pids.nil? ? nil : Produit.find(pids).map{ |p| {text: p.nom, id: p.id} }
+    #pids = Ebsdd.where(status: :attente_sortie).distinct(:produit_id)
+    aggregate = Ebsdd.collection.aggregate( [ { "$match" => { "status" => "attente_sortie" } }, { "$group" => { "_id" => "$produit_id", count: {"$sum" =>  1} } } ])
+    types = unless aggregate.nil?
+      results = aggregate.reduce({}) { |h, ar| h[ar["_id"]] = ar["count"] ; h }
+      Produit.asc(:nom).find(results.keys).map do | p |
+        {
+          text: "#{p.nom} - #{results[p.id]} en stock",
+          id: p.id
+        }
+      end
+    else
+      nil
+    end
+    #types = pids.nil? ? nil : Produit.find(pids).map{ |p| {text: p.nom, id: p.id} }
     render json: types
   end
 

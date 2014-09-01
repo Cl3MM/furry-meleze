@@ -28,8 +28,10 @@ class BonDeSortie
   field :codedr_cadre2, type: String
   field :codedr_cadre12, type: String
   field :type, type: Symbol
+  field :date_sortie, type: Date
+  field :transporteur, type: String
 
-  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type
+  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type, :date_sortie, :transporteur
 
   def self.destinations dest_id, date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
     date_min, date_max = date_max, date_min if date_min > date_max

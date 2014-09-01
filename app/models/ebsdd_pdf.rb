@@ -17,24 +17,38 @@ class EbsddPdf < Prawn::Document
     self.font_size = 9
     if @ebsdd.nil? || @status == :bon_de_sortie
       producteur = Producteur.find_by(nom: /Valespace/i)
-      collecteur = Collecteur.find_by(nom: /TRIALP/i)
-      destinataire = Destinataire.find_by(nom: /Valespace/i)
+
+      collecteur = if @bds.transporteur.blank?
+                     Collecteur.find_by(nom: /TRIALP/i)
+                   else
+                     Collecteur.find(@bds.transporteur)
+                   end
+      date_sortie = @bds.date_sortie.nil? ? @bds.created_at : @bds.date_sortie
+      #destinataire = Destinataire.find_by(nom: /Valespace/i)
+      #destinataire = @bds.destination
       @ebsdd = Ebsdd.new(
-        producteur_id: producteur.id,
-        destinataire_id: destinataire.id,
+        producteur_id: @bds.destination.id,
+        producteur: producteur,
+        destinataire_id: @bds.destination.id,
+        destinataire: @bds.destination,
         bordereau_poids: @bds.poids,
         collecteur_id: collecteur.id,
+        collecteur: collecteur,
         destination_id: @bds.destination.id,
+        destination: @bds.destination,
         emetteur_nom: producteur.nom,
         emetteur_siret: producteur.siret,
         emetteur_adresse: producteur.adresse,
         emetteur_tel: producteur.tel,
         bid: @bds.id,
         produit_id: @bds.produit.id,
-        bordereau_date_transport: @bds.created_at,
+        bordereau_date_transport: date_sortie,
         code_operation: @bds.codedr_cadre12,
         traitement_prevu: CodeDr[@bds.codedr_cadre12]
       )
+      @ebsdd.producteur = producteur
+      @ebsdd.destinataire = @bds.destination
+      @ebsdd.collecteur = collecteur
       @ebsdd.status = :bidon
       path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
       image path, at: [0, here], width: 210.mm

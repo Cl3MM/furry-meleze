@@ -1,5 +1,6 @@
 jQuery ->
   $("#spinner").spin(false)
+  $("#transporteur").select2("enable", true)
   $("#destinataire").select2("enable", true)
   $("#destinataire").select2('val', '<%= @destinataire %>')
   $("#codedr").select2("enable", true)

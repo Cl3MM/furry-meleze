@@ -49,6 +49,15 @@
       .col-md-9
         = hidden_field_tag "type_dechet", nil,  class: "form-control col-md-9", prompt: "Sélectionnez le type de déchet à sortir...", "data-placeholder" => "Sélectionnez le type de déchet à sortir..."
     .form-group
+      %label.control-label.col-sm-3 Date de sortie
+      .col-md-9
+        = text_field_tag "date_sortie", Date.today.strftime("%d-%m-%Y"),  class: "form-control col-md-9", prompt: "Sélectionnez la date de sortie...", "data-placeholder" => "Sélectionnez la date de sortie..."
+    .form-group
+      %label.control-label.col-sm-3 Transporteur
+      .col-md-9
+        = hidden_field_tag "transporteur", nil,  class: "form-control col-md-9", prompt: "Sélectionnez le transporteur...", "data-placeholder" => "Sélectionnez le transporteur...", disabled: true, "data-transporteurs" => Collecteur.to_select2
+
+    .form-group
       %label.control-label.col-sm-3 Destination Finale
       .col-md-9
         = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...", disabled: true, "data-destinations" => Produit.to_destinations.to_json

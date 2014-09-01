@@ -25,15 +25,27 @@ class BonDeSortiesController < ApplicationController
     end
   end
   def create
+    binding.pry
+    unless params[:transporteur].present? and params[:date_sortie].present?
+      err = []
+      err << "Veuillez saisir un transporteur" unless params[:transporteur].present?
+      err << "Veuillez saisir une date de sortie" unless params[:date_sortie].present?
+      flash[:error] = err.join(", ")
+      @errors = {}
+      render action: 'new' and return
+    end
     if params[:ids].present? && params[:destinataire].present?
       @destination = Destination.find_by(nom: params[:destinataire])
       if @destination.nil?
         flash[:error] = "Impossible de trouver la destination"
+        @errors = {}
         render action: 'new' and return
       end
       @bds = BonDeSortie.new(
         poids: params[:poidsHidden],
         codedr_cadre12: params[:codedr],
+        transporteur: params[:transporteur],
+        date_sortie: Date.strptime(params[:date_sortie], "%d-%m-%Y"),
         codedr_cadre2: "R13")
       @bds.produit = Produit.find params[:type_dechet]
       @bds.destination = @destination

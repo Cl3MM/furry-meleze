@@ -10,4 +10,9 @@ class Collecteur < Company
 
   attr_accessible :recepisse, :mode_transport, :limite_validite
 
+  def self.to_select2
+    asc(:nom).all.map do | col |
+      { id: col.id, text: col.nom }
+    end.to_json
+  end
 end

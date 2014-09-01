@@ -2,10 +2,7 @@ jQuery ->
   if $("#bon-de-sortie").length
 
     bds = $("#bon-de-sortie").data("bds")
-    console.log bds
-    console.log !!bds.produit_id
     url = $("#bon-de-sortie").data('url')
-
 
     ## TODO !!!
     #
@@ -46,6 +43,16 @@ jQuery ->
         div = '<div class="alert alert-danger">Veuillez selectionner au moins un eBSDD !</div>'
         $(div).hide().insertAfter($("body .container .navbar")).fadeIn(400).delay(2000).fadeOut(500)
 
+    $("#date_sortie").datepicker
+      defaultDate: "+1w"
+      numberOfMonths: 1
+      dateFormat: 'dd-mm-yy'
+
+    $("#transporteur").select2
+      allowClear: true
+      width: 780
+      data: $("#transporteur").data("transporteurs")
+
     $("#destinataire").select2
       allowClear: true
       width: 780
@@ -71,7 +78,7 @@ jQuery ->
           pageNum: page,
           query: term
         results: (data) ->
-          console.log(data)
+          console.log data
           results: data
 
     $("#type_dechet").on 'select2-selecting', (e) ->

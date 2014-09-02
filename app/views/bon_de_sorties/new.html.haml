@@ -67,7 +67,9 @@
     .form-group
       %label.control-label.col-sm-3 Traitement prévu
       .col-md-9
-        = hidden_field_tag "codedr", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le traitement prévu...", disabled: true,  "data-codedr" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[5], text: r[5] } unless ( a.map{|c| c[:text]}.include?(r[5]) || r[5].blank? ) ; a  }.to_json
+        = hidden_field_tag "codedr", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le traitement prévu...", disabled: true, "data-codedr" => BonDeSortie.code_dr.to_json
+        =# hidden_field_tag "codedr", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le traitement prévu...",
+        -#  disabled: true, "data-codedr" => DechetDenomination.reborn.values.reduce([]) { |a, r| a << {id: r[5], text: r[5] } unless ( a.map{|c| c[:text]}.include?(r[5]) || r[5].blank? ) ; a  }.to_json
         -#.input-group.input-super-group
           -#%span.input-group-addon Ou
           -#= text_field_tag 'codedrAutre', nil, class: "input-super-autre form-control col-sm-2", placeholder: "Sélectionnez un autre traitement..."

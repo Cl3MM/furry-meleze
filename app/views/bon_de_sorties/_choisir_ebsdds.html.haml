@@ -3,9 +3,9 @@
     - ebsdds.each do | ebsdd |
       %tr
         %td
-          = check_box_tag "ids[]", ebsdd.bid, nil, class: "selectEbsdd"
+          = check_box_tag "ids[]", ebsdd.bordereau_id, nil, class: "selectEbsdd"
         %td
-          = link_to ebsdd.bid, ebsdd, target: "_blank"
+          = link_to ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd, target: "_blank"
         %td
           = ebsdd.denomination_cadre_3
         %td

@@ -13,6 +13,29 @@
         = fa_link_to bon_de_sorties_path, "Voir les bons de sortie", "sign-out lg"
       %li
         = fa_link_to bon_de_sortie_pdf_path(@bds), "Imprimer le bon de sortie", "file lg"
+.well
+  %label Traitement :
+  %span= @bds.codedr_cadre12
+  %span &nbsp;|&nbsp;
+  %label Destination Finale :
+  %span= link_to @bds.destination.nom, destination_path(@bds.destination)
+  %span &nbsp;|&nbsp;
+  %label Transporteur :
+  %span
+    - if @bds.collecteur
+      = link_to @bds.collecteur.nom, collecteur_path(@bds.collecteur)
+    - else
+      \-
+  %span &nbsp;|&nbsp;
+  %label Dechet :
+  %span= link_to @bds.produit.nom, produit_path(@bds.produit)
+  %span &nbsp;|&nbsp;
+  %label Date de sortie :
+  %span
+    - if @bds.date_sortie.nil?
+      = @bds.created_at.strftime("%d/%m/%y")
+    - else
+      = @bds.date_sortie.strftime("%d/%m/%y")
 
 - if @bds.ebsdds.any?
   %table.table.table-striped

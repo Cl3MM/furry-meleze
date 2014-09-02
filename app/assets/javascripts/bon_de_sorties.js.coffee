@@ -78,7 +78,6 @@ jQuery ->
           pageNum: page,
           query: term
         results: (data) ->
-          console.log data
           results: data
 
     $("#type_dechet").on 'select2-selecting', (e) ->
@@ -121,7 +120,5 @@ jQuery ->
         if $(this).find('td:first input').prop('checked')
           poids = parseFloat($(this).find('td:eq(3)').text().replace("kg", "").trim())
           poidsTotal += poids
-          console.log poids
-          console.log poidsTotal
       $("#poids").text(poidsTotal)
       $("#poidsHidden").val(poidsTotal)

@@ -33,6 +33,12 @@ class BonDeSortie
 
   attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type, :date_sortie, :transporteur
 
+  def collecteur
+    if transporteur
+      t = Collecteur.find(transporteur)
+      return t if t
+    end
+  end
   def self.destinations dest_id, date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
     date_min, date_max = date_max, date_min if date_min > date_max
     date_min = date_min.beginning_of_day
@@ -90,5 +96,8 @@ class BonDeSortie
       e = ebsdds.first
       self[:type] = e.is_ecodds ? :ecodds : :normal
     end
+  end
+  def self.code_dr
+    1.upto(15).map { |v| {id: "D#{v}", text: "D#{v}" } } + 1.upto(13).map { |v| { id: "R#{v}", text: "R#{v}"} }
   end
 end

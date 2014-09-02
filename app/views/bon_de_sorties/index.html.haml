@@ -25,20 +25,20 @@
 - if @bds.any?
   %table.table.table-stripped
     %thead
-      %th Id
-      %th Type de Déchet
+      %th= sortable "id"
+      %th= sortable "Type de Déchet"
       %th.text-center ecodds ?
       %th.text-center # eBSDDs
-      %th Destination
-      %th Poids
-      %th Traitement
-      %th Créé le
+      %th= sortable "Destination"
+      %th= sortable "Poids"
+      %th= sortable "Traitement"
+      %th= sortable "Créé le"
       %th.actions Actions
     %tbody
     - @bds.each do | bd |
       %tr
         %td= link_to bd.id, bon_de_sortie_path(bd)
-        %td= bd.produit.nom
+        %td= link_to bd.produit.nom, produit_path(bd.produit)
         %td.text-center
           - if bd.ebsdds.try(:first).try(:is_ecodds)
             %label.label.label-success
@@ -47,12 +47,16 @@
             %label.label.label-warning
               non
         %td.text-center= bd.ebsdds.count
-        %td= bd.destination.nom
+        %td= link_to bd.destination.nom, destination_path(bd.destination)
         %td
           = bd.poids
           kg
         %td= bd.codedr_cadre12
-        %td= bd.created_at.strftime("%d/%m/%y")
+        %td
+          - unless bd.date_sortie.nil?
+            = bd.date_sortie.strftime("%d/%m/%y")
+          - else
+            = bd.created_at.strftime("%d/%m/%y")
         %td.actions
           .center-block.text-center
             = link_to(fa_icon("file lg", text: ""), bon_de_sortie_pdf_path(bd),

@@ -2,7 +2,7 @@
   = fa_icon "tags"
   eBSDD
   %span.small
-    ="##{@ebsdd.bordereau_id}"
+    ="##{@ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" ")}"
 
   .btn-group.pull-right
     %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}

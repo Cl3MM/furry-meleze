@@ -10,7 +10,7 @@
         %dl.dl-horizontal
           %dt Numéro de BSD
           -#%dd= ebsdd.bordereau_id
-          %dd= ebsdd.bordereau_id
+          %dd= ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" ")
           - unless ebsdd.ecodds_id.nil?
             %dt Numéro ECODDS
             %dd= ebsdd.ecodds_id

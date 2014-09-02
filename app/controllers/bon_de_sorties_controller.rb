@@ -3,9 +3,11 @@
 class BonDeSortiesController < ApplicationController
   before_filter :authenticate_utilisateur!
   before_filter :set_bds, only: [:show]
+  helper_method :sort_column, :sort_direction, :find_sorted_column
 
   def index
-    @bds = BonDeSortie.all.paginate(page: params[:page], per_page: 15)
+    #@ebsdds = Ebsdd.search(params).order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
+    @bds = BonDeSortie.all.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
   end
   def new
     @bds = BonDeSortie.new
@@ -66,7 +68,7 @@ class BonDeSortiesController < ApplicationController
       end
       @bds.set_type
       if @bds.save!
-        redirect_to bon_de_sortie_path(@bds), notice: "L'EBSDD a été créé avec succès !"
+        redirect_to bon_de_sortie_path(@bds), notice: "Le Bon de Sortie a été créé avec succès !"
       else
         flash[:error] = "Impossible d'enregistrer le bon de sortie."
         render action: 'new'
@@ -95,7 +97,48 @@ class BonDeSortiesController < ApplicationController
     end
   end
 
+  def sort_column
+    case params[:sort]
+    when "Traitement"
+      return :codedr_cadre12
+    when "Destination"
+      return :destination_id
+    when "id"
+      return :id
+    when "Type de Déchet"
+      return :produit_id
+    when "Créé le"
+      return :date_sortie
+    when "Poids"
+      return :poids
+    else
+      return :id
+    end
+    #Ebsdd.attribute_names.include?(params[:sort]) ? params[:sort] : "bid"
+  end
 
+  def find_sorted_column
+    case sort_column
+    when :codedr_cadre12
+      return "Traitement"
+    when :destination_id
+      return "Destination"
+    when :id
+      return "id"
+    when :produit_id
+      return "Type de Déchet"
+    when :date_sortie
+      "Créé le"
+    when :poids
+      "Poids"
+    else
+      return :id
+    end
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
   private
 
   def set_bds

@@ -45,6 +45,7 @@ class BonDeSortiesController < ApplicationController
       end
       @bds = BonDeSortie.new(
         poids: params[:poidsHidden],
+        cap: params[:cap],
         codedr_cadre12: params[:codedr],
         transporteur: params[:transporteur],
         date_sortie: Date.strptime(params[:date_sortie], "%d-%m-%Y"),

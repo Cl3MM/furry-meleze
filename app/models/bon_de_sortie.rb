@@ -30,8 +30,9 @@ class BonDeSortie
   field :type, type: Symbol
   field :date_sortie, type: Date
   field :transporteur, type: String
+  field :cap, type: String
 
-  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type, :date_sortie, :transporteur
+  attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type, :date_sortie, :transporteur, :cap
 
   def collecteur
     if transporteur

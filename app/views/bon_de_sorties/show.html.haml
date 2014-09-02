@@ -20,6 +20,9 @@
   %label Destination Finale :
   %span= link_to @bds.destination.nom, destination_path(@bds.destination)
   %span &nbsp;|&nbsp;
+  %label CAP :
+  %span= @bds.cap.nil? ? "-" : @bds.cap
+  %span &nbsp;|&nbsp;
   %label Transporteur :
   %span
     - if @bds.collecteur

@@ -49,6 +49,10 @@
       .col-md-9
         = hidden_field_tag "type_dechet", nil,  class: "form-control col-md-9", prompt: "Sélectionnez le type de déchet à sortir...", "data-placeholder" => "Sélectionnez le type de déchet à sortir..."
     .form-group
+      %label.control-label.col-sm-3 Numéro CAP
+      .col-md-9
+        = text_field_tag "cap", nil, class: "form-control col-md-9", placeholder: "Numéro CAP"
+    .form-group
       %label.control-label.col-sm-3 Date de sortie
       .col-md-9
         = text_field_tag "date_sortie", Date.today.strftime("%d-%m-%Y"),  class: "form-control col-md-9", prompt: "Sélectionnez la date de sortie...", "data-placeholder" => "Sélectionnez la date de sortie..."

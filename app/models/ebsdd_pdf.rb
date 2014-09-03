@@ -24,6 +24,8 @@ class EbsddPdf < Prawn::Document
                      Collecteur.find(@bds.transporteur)
                    end
       date_sortie = @bds.date_sortie.nil? ? @bds.created_at : @bds.date_sortie
+      num_cap = @bds.cap.nil? ? "" : @bds.cap
+
       #destinataire = Destinataire.find_by(nom: /Valespace/i)
       #destinataire = @bds.destination
       @ebsdd = Ebsdd.new(
@@ -41,6 +43,7 @@ class EbsddPdf < Prawn::Document
         emetteur_adresse: producteur.adresse,
         emetteur_tel: producteur.tel,
         bid: @bds.id,
+        num_cap: num_cap,
         produit_id: @bds.produit.id,
         bordereau_date_transport: date_sortie,
         code_operation: @bds.codedr_cadre12,

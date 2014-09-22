@@ -38,7 +38,7 @@ class Search
   end
 
   def column_names
-    [ "Jours", "Mois", "Année", "E/S", "N° de Bordereau", "N° ECODDS", "Nom du client", "Adresse", "Produits", "Transporteur", "Poids" ]
+    [ "Jours", "Mois", "Année", "E/S", "N° de Bordereau", "N° ECODDS", "Nom du client", "Adresse", "Produits", "Transporteur", "Poids", "Date Création" ]
   end
   def ligne_export_matiere_ebsdd bsd
     [
@@ -53,13 +53,15 @@ class Search
       bsd.produit.nom,
       bsd.collecteur.nom,
       (bsd.bordereau_poids.present? ? "#{bsd.bordereau_poids}".gsub(".",",") : nil),
+      bsd.bordereau_date_transport.strftime("%d/%m/%Y"),
     ]
   end
   def ligne_export_matiere_bds bds
+    date = bds.date_sortie.nil? ? bds.created_at : bds.date_sortie
     [
-      bds.created_at.strftime("%d"),
-      bds.created_at.strftime("%m"),
-      bds.created_at.strftime("%Y"),
+      date.strftime("%d"),
+      date.strftime("%m"),
+      date.strftime("%Y"),
       "S",
       bds.id,
       nil,
@@ -68,6 +70,7 @@ class Search
       bds.produit.nom,
       "Trialp",
       "#{bds.poids}".gsub(".",","),
+      bds.created_at.strftime("%d/%m/%Y")
     ]
   end
   def export_gestion_matiere

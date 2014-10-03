@@ -43,6 +43,7 @@ class EbsddPdf < Prawn::Document
         emetteur_adresse: producteur.adresse,
         emetteur_tel: producteur.tel,
         bid: @bds.id,
+        bordereau_id: @bds.id,
         num_cap: num_cap,
         produit_id: @bds.produit.id,
         bordereau_date_transport: date_sortie,
@@ -338,7 +339,7 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.produit.mention.titleize, [45, 515], width: 430, height: 20
   end
   def cadre0
-    my_text_box @ebsdd.bordereau_id.to_s, [118, 745.5], width: 150, height: 10
+    my_text_box @ebsdd.bid.to_s, [118, 745.5], width: 150, height: 10
   end
   def cadre3
     # dénomination du déchet, on insère un espace tous les 2 caractères

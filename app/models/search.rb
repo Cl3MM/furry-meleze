@@ -53,7 +53,7 @@ class Search
       bsd.produit.nom,
       bsd.collecteur.nom,
       (bsd.bordereau_poids.present? ? "#{bsd.bordereau_poids}".gsub(".",",") : nil),
-      bsd.bordereau_date_transport.strftime("%d/%m/%Y"),
+      bsd.created_at.strftime("%d/%m/%Y"),
     ]
   end
   def ligne_export_matiere_bds bds

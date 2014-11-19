@@ -9,7 +9,7 @@
   = fa_icon "users"
   Liste des déchets
   %span.small
-    = "(#{@produits.count})"
+    = "(#{@produits.total_entries})"
   .btn-group.pull-right
     %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
       = fa_icon "cogs lg"
@@ -21,7 +21,7 @@
         = fa_link_to new_produit_path, "Créer un nouveau déchet", "user lg"
 
 - if @produits.any?
-  %table.table.table-striped
+  %table.table.table-striped.table-hover
     %tr
       %th Nom
       %th.text-center Type
@@ -45,6 +45,7 @@
             = fa_link_to produit, '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de #{produit.nom}"
             = fa_link_to edit_produit_path(produit), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de #{produit.nom}"
             = fa_link_to produit, '', "times", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{produit.nom} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{produit.nom} ?" }
+  = will_paginate @produits, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
 - else
   .jumbotron
     %p.leader

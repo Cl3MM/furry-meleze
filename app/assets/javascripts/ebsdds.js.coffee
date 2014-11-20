@@ -547,3 +547,6 @@ jQuery ->
       e.preventDefault()
       return false
 
+  if $("#new").length > 0 and $("#ebsdd_traitement_prevu").length > 0
+    $("#ebsdd_traitement_prevu").val("D13" ).trigger('change')
+

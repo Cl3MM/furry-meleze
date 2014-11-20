@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class TaresController < ApplicationController
   # GET /tares
   # GET /tares.json

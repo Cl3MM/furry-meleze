@@ -1,0 +1,26 @@
+%h1.page-header
+  = fa_icon "user"
+  Détails de la tare #{ @tare.class.name }
+.row
+  .col-md-12
+    .panel.panel-default
+      .panel-body
+        .row
+          .col-md-1
+            %b
+              Nom :
+          .col-md-11
+            = @tare.nom
+        .row
+          .col-md-1
+            %b
+              Poids :
+          .col-md-11
+            ="#{@tare.poids}"
+
+        .row
+          .col-md-12
+            .block-center.center-block.text-center{style: "max-width: 500px; margin: 0 auto 10px;"}
+              .btn-group
+                = link_to 'Retour', tares_path, class: 'btn btn-default'
+                = link_to 'Modifier', edit_tare_path(@tare), class: 'btn btn-primary'

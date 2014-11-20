@@ -31,6 +31,7 @@ class Ebsdd
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Pesable
   default_scope exists(archived: false)
 
   def self.per_page
@@ -434,22 +435,6 @@ class Ebsdd
 
   def is_entreposage_provisoire?
     entreposage_provisoire || false
-  end
-  def poids_en_tonnes2 attr
-    unless attr.nil?
-      "#{"%08.3f" % (attr.to_f / 1000.0) }"
-    else
-      ""
-    end
-  end
-  def poids_en_tonnes_pdf
-    "#{"%0.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
-  end
-  def poids_en_tonnes
-    "#{"%08.3f" % (read_attribute(:bordereau_poids) / 1000.0) }"
-  end
-  def poids_en_tonnes_ult
-    "#{"%08.3f" % (read_attribute(:bordereau_poids_ult) / 1000.0) }" unless bordereau_poids_ult.nil?
   end
   def complete_new
     # evite les problèmes en cas d'import

@@ -9,36 +9,32 @@
           %h3.panel-title
             = fa_icon "tags ccc"
             Seuils d'alertes
-        .panel-body
-          = render partial: 'alertes', object: @alertes
+        = render partial: 'alertes', object: @alertes
     .panel.panel-default
       .panel-heading
         %h3.panel-title
           = fa_icon "tags ccc"
           10 Derniers eBSDDs crées
-      .panel-body
-        = render partial: 'latest', object: @nouveaux, as: 'ebsdds', locals: { status: :nouveau }
+      = render partial: 'latest', object: @nouveaux, as: 'ebsdds', locals: { status: :nouveau }
     .panel.panel-default
       .panel-heading
         %h3.panel-title
           = fa_icon "tags ccc"
           10 Derniers eBSDDs en attente
-      .panel-body
-        = render partial: 'latest', object: @en_attente, as: 'ebsdds', locals: { status: :en_attente }
-    .panel.panel-default
-      .panel-heading
-        %h3.panel-title
-          = fa_icon "tags ccc"
-          10 Derniers eBSDDs importés
-      .panel-body
-        = render partial: 'latest', object: @incomplete, as: 'ebsdds', locals: { status: :incomplets }
+      = render partial: 'latest', object: @en_attente, as: 'ebsdds', locals: { status: :en_attente }
+    -#.panel.panel-default
+      -#.panel-heading
+        -#%h3.panel-title
+          -#= fa_icon "tags ccc"
+          -#10 Derniers eBSDDs importés
+      -#.panel-body
+        -#= render partial: 'latest', object: @incomplete, as: 'ebsdds', locals: { status: :incomplets }
     .panel.panel-default
       .panel-heading
         %h3.panel-title
           = fa_icon "tags ccc"
           10 Derniers eBSDDs complets
-      .panel-body
-        = render partial: 'latest', object: @complete, as: 'ebsdds', locals: { status: :complets }
+      = render partial: 'latest', object: @complete, as: 'ebsdds', locals: { status: :complets }
   .col-md-4
     =# Action box
     .panel.panel-default

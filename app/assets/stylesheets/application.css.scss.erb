@@ -16,6 +16,7 @@
  *= require select2-bootstrap
  * require redmond/jquery-ui-1.10.3.custom.min
  *= require morris
+ *= require toastr
  */
 
 /*$navbar-default-bg: #afafaf;*/
@@ -25,6 +26,7 @@
 @import "twitter/bootstrap";
 @import "ebsdd.css.scss";
 @import "dashboard.css.scss";
+
 
 /* Navbar theme specific values */
 body {
@@ -97,9 +99,21 @@ h1 {
 
 @media (min-width: 1200px) {
   .container {
-    width: 1195px !important;
+    width: 1200px !important;
   }
 }
+@media (min-width: 1400px) {
+  .container {
+    width: 1400px !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    width: 1600px !important;
+  }
+}
+
 
 <%#.has-error .select2-container {%>
   <%#border-color: #b94a48 !important;%>
@@ -128,3 +142,6 @@ h4.statistiques {
 form.statistiques {
   margin-top: -6px !important;
 }
+
+.mg-t-15 { margin-top: 15px; }
+.mg-b-0 { margin-bottom: 0px; }

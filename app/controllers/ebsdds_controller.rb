@@ -181,7 +181,17 @@ class EbsddsController < ApplicationController
   # GET /ebsdds
   # GET /ebsdds.json
   def index
-    @ebsdds = Ebsdd.search(params).order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.search(params)
+    if sort_column == :poids
+      Pry.config.input = STDIN
+      Pry.config.output = STDOUT
+      @ebsdds = @ebsdds.to_a.sort_by(&:poids)
+      @ebsdds = @ebsdds.reverse if sort_direction == "desc"
+      @ebsdds = @ebsdds.paginate(page: params[:page], per_page: 15)
+    else
+      @ebsdds = @ebsdds.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
+    end
+
     @status = (params.has_key?(:status) ? params[:status].to_sym : :tous)
     @status = :clos if @status == :closs
     @status = :nouveau if @status == :tous && !current_utilisateur.is_admin?
@@ -261,6 +271,20 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def pesee
+    @ebsdd = Ebsdd.find(params[:id])
+    @tares = Tare.all
+  end
+
+  def delete_pesee
+    if current_utilisateur.is_admin?
+      @ebsdd = Ebsdd.find(params[:id])
+      deleted = @ebsdd.pesees.delete_all(dsd: params[:pid])
+      render json: { deleted: deleted, id: params[:pid] }
+    else
+      render json: {error: "Seuls les administrateurs sont habilités à supprimer des pesées déjà enregistrées", id: params[:pid]}, status: :unprocessable_entity
+    end
+  end
   # PATCH/PUT /ebsdds/1
   # PATCH/PUT /ebsdds/1.json
   def update
@@ -338,7 +362,7 @@ class EbsddsController < ApplicationController
     when "Date création"
       return :bordereau_date_creation
     when "Poids"
-      return :bordereau_poids
+      return :poids
     else
       return :bid
     end
@@ -357,7 +381,7 @@ class EbsddsController < ApplicationController
       return "Type déchet"
     when :bordereau_date_creation
       "Date création"
-    when :bordereau_poids
+    when :poids
       "Poids"
     else
       return :bid

@@ -1,0 +1,134 @@
+= javascript_include_tag "pesee_controller"
+= javascript_include_tag "knockout-postbox.min.js"
+%h1.underline
+  Pesée Ebsdd
+  %small
+    {
+    = @ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" ")
+    }
+  %span.pull-right
+    = link_to fa_icon("chevron-circle-left lg", text: "Retour"), :back, class: 'btn btn-default'
+.hidden#data{data: {tares: "#{@tares.to_json}", bid: "#{@ebsdd.bid}", pesees: "#{@ebsdd.pesees.to_json}", authorization: "#{current_utilisateur.is_admin? ? true : false}" } }
+
+.well.well-sm{data: { bind: "with: tareCtrl"}}
+  .row
+    .col-md-4
+      %form.form-inline
+        .form-group
+          %label.sr-only Tare
+          %select.form-control.input-sm{data: {bind: "options: tares, optionsText: 'designation', optionsCaption: 'Choisissez une tare...', value: tareSelection"}}
+        .form-group
+          %label.sr-only Tare
+          %p.form-control-static
+            ou
+        .form-group
+          %label.sr-only Tare
+          %a.touletip{title: "Créer une nouvelle tare", href: "#{new_tare_path}"}
+            %i.fa.fa-plus-circle.fa-lg
+
+    .col-md-8.text-right{data: {bind: "visible: vm.tareReady"}}
+      / ko with:vm.balanceCtrl
+      .btn-group{ role: "group", aria_label: "Réglages Balance" }
+
+        .btn-group{ role: "group" }
+          %button.btn.btn-info.btn-sm.dropdown-toggle{type: "button", data: {toggle: "dropdown"}, "aria-expanded"=>"false"}
+            Réglages Balance
+            %span.caret
+          %ul.text-left.dropdown-menu{ role: "menu" }
+            %li
+              %a{href: "#", data: {bind: "click: raz, attr: {disabled: savingPesee()}"}}
+                %i.fa.fa-arrows-h.fa-lg
+                &nbsp;Mise à Zero
+            %li
+              %a{href: "#", data: {bind: "click: doTare, attr: {disabled: savingPesee()}"}}
+                %i.fa.fa-plus-square.fa-lg
+                &nbsp;Tarer la balance
+            %li
+              %a{href: "#", data: {bind: "click: delTare, attr: {disabled: savingPesee()}"}}
+                %i.fa.fa-minus-square.fa-lg
+                &nbsp;Supprimer la Tare
+
+        %button.btn.btn-primary.btn-sm{type: "button", data: {bind: "click: pese, attr: {disabled: savingPesee()}"}}
+          %i.fa.fa-refresh.fa-lg
+          &nbsp;Récupérer le poids
+        %button.btn.btn-success.btn-sm{type: "button", data: {bind: "click: save, attr: {disabled: savingPesee()}"}}
+          %i.fa.fa-download.fa-lg
+          &nbsp;Créer la pesée
+
+      / /ko
+  .row
+    .col-md-12{data: {bind: "with: vm.balanceCtrl"}}
+      .alert.alert-info.mg-t-15.mg-b-0{data: {bind: "visible: ready"}}
+        %h4.mg-b-0.text-center
+          %strong Brut :
+          %span{data: {bind: "text: brut"}}
+          |
+          %strong Net :
+          %span{data: {bind: "text: net"}}
+          |
+          %strong Tare :
+          %span{data: {bind: "text: tare"}}
+.row{data: { bind: "with: vm.peseesCtrl"}}
+  .col-md-12.mg-t-15{data: {bind: "if: pesees().length > 0"}}
+    .panel.panel-default
+      .panel-heading
+        %h2.panel-title Récapitulatifs des produits pesés
+      .table-responsive
+        %table.table.table-striped.table-hover
+          %thead
+            %tr
+              %th #DSD
+              %th.text-center Date
+              %th.text-center Heure
+              %th Désignation Tare
+              %th Brut
+              %th.text-center Poids Tare
+              %th Net
+              %th.text-center Suppr.
+          %tbody{data: { bind: "foreach: pesees"}}
+            %tr
+              %td{data: { bind: "text:dsd"}}
+              %td.text-center{data: { bind: "text:jourJ"}}
+              %td.text-center{data: { bind: "text:heureH"}}
+              %td{data: { bind: "text:nom_tare"}}
+              %td{data: { bind: "text:brutKg()"}}
+              %td.text-center{data: { bind: "text:tareKg()"}}
+              %td{data: { bind: "text:poidsSansTareEnKilo()"}}
+              -#%td{data: { bind: "text:poidsSansTareEnKilo"}
+              %td.text-center
+                / ko ifnot: $parent.admin
+                %a.touletip.btn.btn-default.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: deleteMe, css: { 'disabled': !toAdd(), 'btn-danger': toAdd() }" }}
+                  %i.fa.fa-times
+                / /ko
+                / ko if: $parent.admin
+                %a.touletip.btn.btn-warning.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: forceDeleteMe, css: { disabled: loading(), 'btn-danger': toAdd() }" }}
+                  / ko if: loading
+                  %i.fa.fa-spin.fa-spinner
+                  / /ko
+                  / ko ifnot: loading
+                  %i.fa.fa-times
+                  / /ko
+                / /ko
+          %tfoot
+            %tr
+              %td
+              %td
+              %td
+              %td
+              %td
+                %strong{data: { bind: "text: to_s(totalBrut() )"}}
+              %td.text-center
+                %strong{data: { bind: "text: to_s(totalTare() )"}}
+              %td
+                %strong{data: { bind: "text: to_s(totalNet() )"}}
+              %td
+  .col-md-12{data: { bind: "if: onlyNew().length > 0"}}
+    .well{style: 'width: 400px; margin: 0 auto 10px;'}
+      %a.btn.btn-success.btn-lg.btn-block{href: "#", data: { bind: "click: save, css: {disabled: loading()}"}}
+        / ko ifnot: loading
+        %i.fa.fa-download.fa-lg
+        / /ko
+        / ko if: loading
+        %i.fa.fa-spin.fa-spinner.fa-lg
+        / /ko
+        %span.lead.form-control-static Enregistrer la pesée

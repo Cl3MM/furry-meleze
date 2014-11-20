@@ -144,6 +144,8 @@ jQuery ->
   display_back_to_top_arrow() if $("#button-bar")
 
   if $("#edit").length
+    if $("#ebsdd_dechet_nombre_colis").val() == ""
+      $("#ebsdd_dechet_nombre_colis").val(1)
 
     if $("#ebsdd_collecteur_id option:selected").text() == 'TRIALP'
       $("#immatriculations").show()

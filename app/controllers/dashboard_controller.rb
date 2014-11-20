@@ -10,4 +10,3 @@ class DashboardController < ApplicationController
     @alertes     = Ebsdd.seuils
   end
 end
-

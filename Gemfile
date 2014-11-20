@@ -20,6 +20,11 @@ gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
 gem 'prawn'
+gem 'knockoutjs-rails'
+gem 'toastr-rails'
+gem 'momentjs-rails'
+gem 'lodash-rails'
+gem "rails_config"
 
 #gem 'gon', '3.0.5'
 #gem 'turbolinks'

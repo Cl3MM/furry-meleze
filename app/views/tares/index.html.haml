@@ -1,0 +1,56 @@
+%h1.page-header
+  = fa_icon "users"
+  Liste des #{ @tares.name.downcase }s
+  %span.small
+    = "(#{@tares.count})"
+  .btn-group.pull-right
+    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+      = fa_icon "cogs lg"
+      &nbsp;
+      Actions
+      %span.caret
+    %ul.dropdown-menu{role: "menu"}
+      %li
+        = fa_link_to new_tare_path, "Créer une nouvelle tare", "user lg"
+
+- if @tares.any?
+  %table.table.table-striped.table-hover
+    %tr
+      %th Désignation
+      %th Poids (kg)
+      %th.actions Actions
+
+    - @tares.each do |tare|
+      %tr
+        %td= tare.nom
+        %td= tare.poids
+        %td.actions
+          .center-block.text-center
+            = fa_link_to tare_path(tare), '', "eye", class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les informations de la tare #{tare.nom}"
+            = fa_link_to edit_tare_path(tare), '', "edit", class: "btn btn-warning touletip btn-xs", role: "button", title: "Modifier les données de la tare #{tare.nom}"
+            = fa_link_to tare, '', "times", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{tare.nom} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{tare.nom} ?" }
+- else
+  .jumbotron
+    %p.leader
+      Aucune tare trouvée
+-#%h1 Listing tares
+
+-#%table
+  -#%tr
+    -#%th Nom
+    -#%th Poids
+    -#%th
+    -#%th
+    -#%th
+
+  -#- @tares.each do |tare|
+    -#%tr
+      -#%td= tare.nom
+      -#%td= tare.poids
+      -#%td= link_to 'Show', tare
+      -#%td= link_to 'Edit', edit_tare_path(tare)
+      -#%td= link_to 'Destroy', tare, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+-#%br
+
+-#= link_to 'New Tare', new_tare_path

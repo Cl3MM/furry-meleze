@@ -42,6 +42,8 @@
             %li
               = fa_link_to utilisateurs_path, "Gérer les utilisateurs", "user lg"
           %li
+            = fa_link_to tares_path, "Gérer les Tares", "cubes lg"
+          %li
             = fa_link_to statistiques_path, "Statistiques", "bar-chart-o lg"
           %li.divider
           - if utilisateur_signed_in?

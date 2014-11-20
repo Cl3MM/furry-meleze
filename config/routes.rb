@@ -1,5 +1,8 @@
 Meleze::Application.routes.draw do
 
+  resources :tares
+
+
   resources :searches
 
   resources :destinations
@@ -7,6 +10,10 @@ Meleze::Application.routes.draw do
 
   get 'destinations/find_by_nomenclature/:nomenclature', to: 'destinations#find_by_nomenclature', as: :find_by_nomenclature, format: [:js, :json]
 
+  get  "balance/pese", to: "balance#pese", as: :balance_pese
+  get  "balance/dsd", to: "balance#dsd", as: :balance_dsd
+  get  "balance/cmd/:cmd", to: "balance#cmd"
+  post "balance/save/:id", to: "balance#save", as: :balance_save
   get  "attachments", to: "attachments#index"
   get  'attachments/:id', to: 'attachments#show', as: :attachment
   get  "dashboard", to: "dashboard#index"
@@ -39,6 +46,8 @@ Meleze::Application.routes.draw do
   put 'ebsdds/:id/split', to: 'ebsdds#split'
   post 'ebsdd/:id/change_nouveau_statut', to: 'ebsdds#change_ebsdd_nouveau_statut'
   post 'ebsdd/:id/change_en_attente_statut', to: 'ebsdds#change_ebsdd_en_attente_statut'
+  get 'ebsdds/:id/pesee', to: 'ebsdds#pesee', as: :ebsdd_pesee
+  delete 'ebsdds/:id/pesees/:pid', to: 'ebsdds#delete_pesee'
 
   post  'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post  'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir

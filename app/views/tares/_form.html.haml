@@ -1,0 +1,58 @@
+= custom_form (@tare) do |f|
+  - if @tare.errors.any?
+    .row
+      .col-md-12
+        .alert.alert-danger.alert-dismissable
+          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+          #error_explanation
+            %h2
+              Merci de corriger
+              - if @tare.errors.count > 1
+                les #{@tare.errors.count} erreurs suivantes :
+              - else
+                l'erreur suivante :
+            %ul
+              - @tare.errors.full_messages.each do |msg|
+                %li= msg
+
+  .row
+    .col-md-6
+      .form-group
+        = f.label :nom, "Désignation"
+        = f.text_field :nom, placeholder: "Designation de la tare"
+    .col-md-6
+      .form-group
+        = f.label :poids, "Poids (kg)"
+        .input-group
+          = f.text_field :poids, placeholder: "Poids"
+          %span.input-group-btn
+            %button#tare.btn.btn-primary.touletip{'type' => "button", title: "Récupérer la tare depuis la balance"}
+              %i.fa.fa-plus-circle
+
+
+  .row
+    .col-md-12
+      .block-center.center-block.text-center{style: "max-width: 500px; margin: 0 auto 10px;"}
+        .btn-group
+          = link_to 'Retour', tares_path, class: "btn btn-default"
+          = content_tag :button, type: :submit, class: "btn btn-primary" do
+            Enregistrer les modifications&nbsp;
+            = fa_icon "save lg"
+          -#= link_to 'Voir le profil', polymorphic_path(@tare), class: "btn btn-default"
+
+-#= form_for @tare do |f|
+  -#- if @tare.errors.any?
+    -##error_explanation
+      -#%h2= "#{pluralize(@tare.errors.count, "error")} prohibited this tare from being saved:"
+      -#%ul
+        -#- @tare.errors.full_messages.each do |msg|
+          -#%li= msg
+
+  -#.field
+    -#= f.label :nom
+    -#= f.text_field :nom
+  -#.field
+    -#= f.label :poids
+    -#= f.text_field :poids
+  -#.actions
+    -#= f.submit 'Save'

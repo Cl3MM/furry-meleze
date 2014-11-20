@@ -1,0 +1,9 @@
+%h1.page-header
+  = fa_icon "user"
+  Nouvelle #{ @tare.class.name }
+.row
+  .col-md-12
+    .panel.panel-default
+      #new.panel-body
+        .well
+          = render 'form'

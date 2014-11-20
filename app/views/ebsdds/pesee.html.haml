@@ -100,7 +100,15 @@
                 %a.touletip.btn.btn-default.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: deleteMe, css: { 'disabled': !toAdd(), 'btn-danger': toAdd() }" }}
                   %i.fa.fa-times
                 / /ko
+
                 / ko if: $parent.admin
+
+                / ko if: toAdd
+                %a.touletip.btn.btn-danger.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: deleteMe" }}
+                  %i.fa.fa-times
+                / /ko
+
+                / ko ifnot: toAdd
                 %a.touletip.btn.btn-warning.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: forceDeleteMe, css: { disabled: loading(), 'btn-danger': toAdd() }" }}
                   / ko if: loading
                   %i.fa.fa-spin.fa-spinner
@@ -108,6 +116,7 @@
                   / ko ifnot: loading
                   %i.fa.fa-times
                   / /ko
+                / /ko
                 / /ko
           %tfoot
             %tr

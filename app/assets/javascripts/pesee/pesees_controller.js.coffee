@@ -47,7 +47,7 @@ class PeseesController
     if data.deleted > 0
       toastr.success "Pesée ##{data.id} supprimée"
     else
-      toastr.warning "Pesée ##{data.id} non supprimé"
+      toastr.warning "Pesée ##{data.id} non supprimée"
     @pesees.remove (p)->
       return p.dsd() == data.id
 

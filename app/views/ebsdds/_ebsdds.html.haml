@@ -9,7 +9,7 @@
           -#%th Destinataire
           %th.text-center
             = sortable "Type déchet"
-          %th= sortable "Date création"
+          %th= sortable "Date transport"
           %th= sortable "Poids"
           - if @status == :en_attente
             %th.text-center Pesée
@@ -30,7 +30,13 @@
               - else
                 .touletip{title: "#{ ebsdd.libelle.titleize }" }
                   = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
-            %td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+            -#%td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+            %td
+              - if ebsdd.bordereau_date_transport.nil?
+               = ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+               (création)
+              - else
+                = ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
             %td
               = ebsdd.poids_pretty
             - if ebsdd.status == :en_attente

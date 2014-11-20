@@ -63,10 +63,9 @@ class BalanceController
 
   log: =>
     console.log @poids()
-    console.end
     toastr.success "Poids net : #{@poids().netEnKilo()} <br/>
-Poids brut : #{@poids().brutEnKilo()} <br/>
-Poids tare : #{@poids().tareEnKilo()} <br/>"
+Poids brut : #{@poids().brutEnKilo()} <br/>"
+#Poids tare : #{@poids().tareEnKilo()} <br/>"
 
   save: =>
     @loading true

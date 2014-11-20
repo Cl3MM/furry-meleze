@@ -2,7 +2,6 @@ root = exports ? this
 
 class Poids
   constructor: (data) ->
-    console.log data
     ko.mapping.fromJS(data, {}, @)
 
   netEnKilo: =>

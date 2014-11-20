@@ -15,4 +15,3 @@ unless root.ViewModel
 $ ->
   root.vm = new ViewModel( $("#data").data('tares') )
   ko.applyBindings vm
-  console.log 'Pesee Vm loaded'

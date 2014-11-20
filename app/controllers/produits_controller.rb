@@ -16,7 +16,7 @@ class ProduitsController < ApplicationController
 
   def search
     if params.has_key?(:query)
-      @produits = Produit.where(nom: /#{params[:query]}/i).order_by(:nom).paginate(page: params[:page], per_page: 50)
+      @produits = Produit.where(nom: /#{params[:query]}/i).order_by(nom: 1).paginate(page: params[:page], per_page: 50)
       #binding.pry
     end
     respond_to do |format|

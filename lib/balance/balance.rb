@@ -89,7 +89,7 @@ module Balance
       @total = total
       @desc = desc || "Pas de description"
       @response = nil
-      @bi_dir = bi_dir || true
+      @bi_dir = bi_dir
       @serv = nil
     end
     def checksum

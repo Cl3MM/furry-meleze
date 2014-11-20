@@ -98,7 +98,7 @@ module Balance
       (127 & (etat + information)) == bytes[-1]
     end
     def bytes
-      @response.bytes
+      @response.bytes.to_a
     end
     def etat
       bytes[1]
@@ -114,7 +114,7 @@ module Balance
     end
     def poids
       p = Poids.new
-      p.from_bytes bytes
+      p.from_bytes bytes.to_a
       p
     end
     def has_response?

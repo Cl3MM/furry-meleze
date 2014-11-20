@@ -107,6 +107,10 @@ module Balance
       serv.putc @cmd
       if @bi_dir
         @response = serv.read(@total)
+        Rails.logger.debug "*************************"
+        Rails.logger.debug @bi_dir
+        Rails.logger.debug checksum
+        Rails.logger.debug @cmd
         raise BalanceChecksumError, "Somme de contrôle invalide" unless checksum
       end
       serv.close

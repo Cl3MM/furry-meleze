@@ -19,7 +19,7 @@ class BalanceController < ApplicationController
   end
   def dsd
     begin
-      render json: Balance::Balance.new.cmd("I").run.poids.to_json
+      return render json: Balance::Balance.new.cmd("I").run.poids.to_json
     rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT => bang
       err << "Connexion à la balance impossible"
     rescue Errno::ECONNREFUSED => bang
@@ -33,7 +33,7 @@ class BalanceController < ApplicationController
   def pese
     err = []
     begin
-      render json: Balance::Balance.new.cmd("A").run.poids.to_json
+      return render json: Balance::Balance.new.cmd("A").run.poids.to_json
     rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT => bang
       err << "Connexion à la balance impossible"
     rescue Errno::ECONNREFUSED => bang

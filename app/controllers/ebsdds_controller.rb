@@ -150,6 +150,18 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def export_pesee_pdf
+    @ebsdd = Ebsdd.find(params[:id])
+    respond_to do |format|
+      format.pdf do
+        pdf = PeseePdf.new(@ebsdd)
+        send_data pdf.render, filename: "#{@ebsdd.bordereau_id}_ticket_de_pesee_#{Date.today.strftime("%d-%m-%y")}.pdf",
+          type: "application/pdf" , disposition: "inline"
+      end
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
+  end
+
   def download
     @ebsdd.inc_export
     respond_to do |format|

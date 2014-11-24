@@ -1,10 +1,63 @@
+= javascript_include_tag "pesee_controller"
+= javascript_include_tag "knockout-postbox.min.js"
 .row
   .col-md-6
     %label
       Poids en kilogrammes :
-    = ebsdd.bordereau_poids
-    kg
+    = ebsdd.poids_pretty
   .col-md-6
     = fa_icon "#{ ebsdd.type_quantite == "R" ? "dot-circle-o" : "circle-o" } lg", text: "Poids réel"
     %br
     = fa_icon "#{ ebsdd.type_quantite == "E" ? "dot-circle-o" : "circle-o" } lg", text: "Poids estimé"
+%br
+.hidden#data{data: {pesees: "#{@ebsdd.pesees.to_json}"} }
+.row{data: {bind: "with: vm.peseesCtrl"} }
+  .col-md-12
+    .panel.panel-default
+      .panel-heading
+        %h2.panel-title.form-control-static
+          Récapitulatifs des produits pesés
+          %small.form-control-static.pull-right
+            = link_to(fa_icon("download lg", text: ""), ebsdd_pesee_path(ebsdd), class: "btn btn-primary btn-xs touletip", title: "Effectuer une pesée")
+          .clearfix
+
+      / ko ifnot: pesees().length > 0
+      .panel-body
+        Aucune pesée éffectuée. Veuillez peser les déchets ratachés à cet eBsdd
+      / /ko
+      / ko if: pesees().length > 0
+      .table-responsive
+        %table.table.table-striped.table-hover
+          %thead
+            %tr
+              %th #DSD
+              %th.text-center Date
+              %th.text-center Heure
+              %th Désignation Tare
+              %th Brut
+              %th.text-center Poids Tare
+              %th Net
+          %tbody{data: { bind: "foreach: pesees()"}}
+            %tr
+              %td{data: { bind: "text:dsd"}}
+              %td.text-center{data: { bind: "text:jourJ"}}
+              %td.text-center{data: { bind: "text:heureH"}}
+              %td{data: { bind: "text:nom_tare"}}
+              %td{data: { bind: "text:brutKg()"}}
+              %td.text-center{data: { bind: "text:tareKg()"}}
+              %td{data: { bind: "text:poidsSansTareEnKilo()"}}
+              -#%td{data: { bind: "text:poidsSansTareEnKilo"}
+          %tfoot
+            %tr
+              %td
+              %td
+              %td
+              %td
+              %td
+                %strong{data: { bind: "text: to_s(totalBrut() )"}}
+              %td.text-center
+                %strong{data: { bind: "text: to_s(totalTare() )"}}
+              %td
+                %strong{data: { bind: "text: to_s(totalNet() )"}}
+      / /ko
+

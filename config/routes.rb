@@ -48,6 +48,7 @@ Meleze::Application.routes.draw do
   post 'ebsdd/:id/change_en_attente_statut', to: 'ebsdds#change_ebsdd_en_attente_statut'
   get 'ebsdds/:id/pesee', to: 'ebsdds#pesee', as: :ebsdd_pesee
   delete 'ebsdds/:id/pesees/:pid', to: 'ebsdds#delete_pesee'
+  get  'ebsdds/:id/pesee/export', to: 'ebsdds#export_pesee_pdf', defaults: { format: :pdf }, as: :ebsdd_pesee_pdf
 
   post  'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post  'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir

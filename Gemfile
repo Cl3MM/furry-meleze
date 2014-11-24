@@ -20,6 +20,7 @@ gem "font-awesome-rails"
 gem 'execjs'
 gem 'roo'
 gem 'prawn'
+gem 'prawn-table', '~> 0.1.0'
 gem 'knockoutjs-rails'
 gem 'toastr-rails'
 gem 'momentjs-rails'

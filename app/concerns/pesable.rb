@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Pesable
   extend ActiveSupport::Concern
   included do

@@ -66,6 +66,8 @@ module Pesable
       p_date_creation = p.created_at.strftime("%d/%m/%Y %H:%M")
       [p_date_creation, p.dsd, p_brut, p_tare, p_net, p.nom_tare]
     end
+    return head unless data.any?
+
     p_brut_kg = "#{"%0.2f kg" % poids_brut}".gsub('.',',')
     p_tare_kg = "#{"%0.2f kg" % poids_tare}".gsub('.',',')
     p_net_kg = "#{"%0.2f kg" % pesee_totale}".gsub('.',',')

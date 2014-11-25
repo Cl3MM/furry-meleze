@@ -19,6 +19,7 @@
           Récapitulatifs des produits pesés
           %small.form-control-static.pull-right
             = link_to(fa_icon("download lg", text: ""), ebsdd_pesee_path(ebsdd), class: "btn btn-primary btn-xs touletip", title: "Effectuer une pesée")
+            = link_to(fa_icon("print lg", text: ""), ebsdd_pesee_pdf_path(ebsdd), class: "#{ebsdd.pesees.any? ? '': 'disabled' } btn btn-primary btn-xs touletip", title: "Imprimer le ticket de pesée")
           .clearfix
 
       / ko ifnot: pesees().length > 0

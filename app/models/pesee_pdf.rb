@@ -12,7 +12,7 @@ class PeseePdf < Prawn::Document
   def initialize(ebsdd)
     @ebsdd = ebsdd
     #path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
-    super(page_size: "A4", margin: 20, top_margin: 70, bottom_margin: 40, info: metadata)
+    super(page_size: "A4", margin: 20, top_margin: 70, bottom_margin: 50, info: metadata)
     #here = cursor
     #stroke_axis
     #move_down 20
@@ -26,11 +26,15 @@ class PeseePdf < Prawn::Document
     stroke do
       horizontal_line 0, 550
     end
-    move_down 30
+    move_down 20
+    text "Producteur : #{@ebsdd.producteur.nom}"
+    move_down 5
+    text "Type de déchet : #{@ebsdd.produit.nom}"
+    move_down 20
   end
   def footer
     repeat(:all) do
-      draw_text "Valespace - justificatif de pesée de l'eBsdd #{@ebsdd.bid}", at: [bounds.left + 3, -4]
+      draw_text "Justificatif de pesée - eBsdd #{@ebsdd.bid} - Poids total : #{@ebsdd.poids_pretty}", at: [bounds.left + 3, -4]
     end
 
     string = "Page <page> / <total>"

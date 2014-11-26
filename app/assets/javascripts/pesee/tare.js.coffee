@@ -7,6 +7,9 @@ class Tare
     @designation = ko.pureComputed( =>
       "#{@nom()} - #{@poids()} kg"
     ,@)
+    @pretty_poids = ko.pureComputed( =>
+      "#{@poids().toFixed(2)}".replace(".",",") + ' kg'
+    ,@)
 
 unless root.Tare
   root.Tare = Tare

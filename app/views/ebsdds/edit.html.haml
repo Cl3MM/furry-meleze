@@ -61,11 +61,18 @@
               =# fa_icon "tags ccc"
               %span.badge 0
               Numéro ECODDS
-              %span.pull-right
+              %span.pull-right.form-control-static
                 Statut
                 = raw @ebsdd.status_label
                 /- if [:en_attente, :attente_sortie, :clos, :nouveau ].include? @ebsdd.status
                 /  = f.select :status, [ ["Nouveau", "nouveau"], ["Attente Réception", "en_attente"], ["En stock", "attente_sortie"], ["Archivé", "clos"], ]
+                .text-center.btn-group
+                  = link_to(fa_icon("circle-o lg", text: ""), statut_precedent_path(@ebsdd), class: "btn btn-primary touletip btn-xs #{@ebsdd.status == :nouveau ? "disabled" : ""}",
+                    role: "button", title: "Passer au statut précédent") if [:nouveau,:en_attente, :attente_sortie, :clos].include? @ebsdd.status
+
+                  = link_to(fa_icon("circle-o lg", text: ""), statut_suivant_path(@ebsdd), class: "btn btn-info touletip btn-xs #{@ebsdd.status == :clos ? "disabled" : ""}",
+                    role: "button", title: "Passer au statut suivant") if [:nouveau, :en_attente, :attente_sortie, :clos].include? @ebsdd.status
+            .clearfix
           .panel-body
             .row
               .col-md-4

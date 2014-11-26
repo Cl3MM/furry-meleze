@@ -71,7 +71,44 @@
           %td
             = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
           %td.text-center= raw ebsdd.status_label
-          %td.actions
+
+
+          %td.text-center
+            .btn-toolbar{role: :toolbar}
+              .text-center.btn-group
+                = link_to(fa_icon("circle-o lg", text: ""), statut_precedent_path(ebsdd), class: "btn btn-primary touletip btn-xs #{ebsdd.status == :nouveau ? "disabled" : ""}",
+                  role: "button", title: "Passer au statut précédent") if [:nouveau,:en_attente, :attente_sortie, :clos].include? ebsdd.status
+
+                = link_to(fa_icon("circle-o lg", text: ""), statut_suivant_path(ebsdd), class: "btn btn-info touletip btn-xs #{ebsdd.status == :clos ? "disabled" : ""}",
+                  role: "button", title: "Passer au statut suivant") if [:nouveau, :en_attente, :attente_sortie, :clos].include? ebsdd.status
+
+              .text-center.btn-group
+                = link_to(fa_icon("edit lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
+                  role: "button", title: "Modifier cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})") unless ebsdd.is_incomplete? || ebsdd.status == :attente_sortie
+
+                = link_to(fa_icon("cloud-download lg", text: ""), ebsdd_download_path(ebsdd), class: "btn btn-info touletip btn-xs",
+                  role: "button", title: "Télécharger l'eBSDD ##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} au format CSV") if ebsdd.status == :complet
+
+                = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :first_part), class: "btn btn-success touletip btn-xs",
+                  role: "button", title: "Télécharger le Cerfa avant la collecte pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :nouveau
+
+                = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :second_part), class: "check-poids btn btn-success touletip btn-xs",
+                  role: "button", title: "Télécharger la deuxième partie du Cerfa pour l'eBSDD ##{ebsdd.bid}") if [:en_attente, :attente_sortie, :clos].include? ebsdd.status
+
+                = link_to(fa_icon("print lg", text: ""), ebsdd_pesee_pdf_path(ebsdd), class: "check-poids btn btn-primary touletip btn-xs #{ebsdd.pesees.any? ? '': 'disabled' }",
+                  role: "button", title: "Télécharger le ticket de pesée pour l'eBSDD ##{ebsdd.bid}") if [:en_attente, :attente_sortie, :clos].include? ebsdd.status
+
+                = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs check-poids",
+                  role: "button", title: "Télécharger le Cerfa Complet pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
+
+                = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || ebsdd.status == :en_attente || current_utilisateur.is_admin?
+
+                = fa_link_to ebsdd_download_path(ebsdd), "", "cloud-download lg", class: "btn btn-success touletip btn-xs",
+                  role: "button", title: "Exporter au format ECODDS" if (ebsdd.is_complete? || ebsdd.is_clos?) && ebsdd.is_ecodds
+
+
+
+          -#%td.actions
             .text-center.btn-group
               = link_to(fa_icon("gears lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
                 role: "button", title: "Complèter") if ebsdd.is_incomplete?

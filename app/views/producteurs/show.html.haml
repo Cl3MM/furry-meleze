@@ -69,7 +69,7 @@
           - @ebsdds.each do | em |
             -#%tr
               -#%td
-            = link_to em.bid, ebsdd_path(em)
+            = link_to em.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(em)
         - else
           %p.text-center Aucun eBSD pour le mois de #{ l(Date.today, format: :mois) }
 

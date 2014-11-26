@@ -259,6 +259,24 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def statut_precedent
+    unless params[:id].present?
+      redirect_to root_path, alert: "Veuillez spécifier un numéro eBsdd"
+      return redirect_to root_path
+    end
+    @ebsdd = Ebsdd.find( params[:id] )
+    @ebsdd.prev_status
+    redirect_to :back
+  end
+  def statut_suivant
+    unless params[:id].present?
+      redirect_to root_path, alert: "Veuillez spécifier un numéro eBsdd"
+      return redirect_to root_path
+    end
+    @ebsdd = Ebsdd.find( params[:id] )
+    @ebsdd.next_status
+    redirect_to :back
+  end
   # POST /ebsdds
   # POST /ebsdds.json
   def create
@@ -400,7 +418,7 @@ class EbsddsController < ApplicationController
     end
   end
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
 
 end

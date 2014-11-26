@@ -270,7 +270,7 @@ jQuery ->
           $("#ebsdd_destination_id option").each (e) ->
             if $(this).text() == l.dest
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
-              $("#ebsdd_traitement_prevu").val(l.dr12).trigger('change')
+              $("#ebsdd_traitement_prevu").val("D13").trigger('change')
           boite = contenants[l.cr]
           $("#ebsdd_dechet_conditionnement").select2('val', boite ) #.trigger('change')
 

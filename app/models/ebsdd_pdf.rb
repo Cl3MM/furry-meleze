@@ -13,7 +13,7 @@ class EbsddPdf < Prawn::Document
     path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-    #stroke_axis
+    stroke_axis
     self.font_size = 9
     if @ebsdd.nil? || @status == :bon_de_sortie
       producteur = Producteur.find_by(nom: /Valespace/i)
@@ -105,6 +105,7 @@ class EbsddPdf < Prawn::Document
       self.font( fs.family, size: size, style: :normal)
 
       cadre6
+      my_text_box ebsdd.bordereau_date_transport.strftime("%d/%m/%y"), [320, 159], width: 50, height: 15, align: :center
     elsif @status == :full
       image path, at: [0, here], width: 210.mm
       erase_all
@@ -123,6 +124,7 @@ class EbsddPdf < Prawn::Document
       cadre10
       cadre11
       cadre12
+      my_text_box ebsdd.bordereau_date_transport.strftime("%d/%m/%y"), [320, 159], width: 50, height: 15, align: :center
     else
       image path, at: [0, here], width: 210.mm
       erase_all
@@ -332,7 +334,7 @@ class EbsddPdf < Prawn::Document
   def cadre5
     # Cadre 5 : Conditionnement
     checkbox 322, 494
-    my_text_box @ebsdd.dechet_nombre_colis.to_s, [510, 494], width: 30, height: 10
+    my_text_box @ebsdd.dechet_nombre_colis.to_s, [485, 484], width: 30, height: 10
   end
   def cadre4
     #my_text_box DechetNomenclature[@ebsdd.dechet_denomination].upcase, [45, 515], width: 430, height: 20
@@ -402,7 +404,7 @@ class EbsddPdf < Prawn::Document
     text_box text, at: at, height: options[:height], width: options[:width], overflow: options[:overflow], valign: options[:valign], align: options[:align], color: options[:color]
   end
   def erase_all
-    [[85, 642, 140], [340, 672, 140], [170, 558.5, 100], [88, 376, 100]].each do | e |
+    [[85, 642, 140], [340, 672, 140], [170, 558.5, 100], [88, 376, 100], [320,160, 50]].each do | e |
       erase e[0], e[1], width: e[2]
     end
     ## cadre 1 : Siret

@@ -734,7 +734,26 @@ class Ebsdd
       h
     end
   end
-
+  def prev_status
+    case self[:status]
+    when :en_attente
+      set(:status, :nouveau)
+    when :attente_sortie
+      set(:status, :en_attente)
+    when :clos
+      set(:status, :attente_sortie)
+    end
+  end
+  def next_status
+    case self[:status]
+    when :attente_sortie
+      set(:status, :clos)
+    when :en_attente
+      set(:status, :attente_sortie)
+    when :nouveau
+      set(:status, :en_attente)
+    end
+  end
   def self.open_spreadsheet(file)
     case File.extname(file.original_filename)
     when ".csv" then Roo::Csv.new(file.path, nil, :ignore)

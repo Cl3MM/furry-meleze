@@ -67,8 +67,11 @@
           %strong Net :
           %span{data: {bind: "text: net"}}
           |
-          %strong Tare :
+          %strong Tare mémorisée:
           %span{data: {bind: "text: tare"}}
+          |
+          %strong Tare en cours:
+          %span{data: {bind: "text: function() { return $root.vm.tareCtrl.tare().poids() + ' kg'; }"}}
 .row{data: { bind: "with: vm.peseesCtrl"}}
   .col-md-12.mg-t-15{data: {bind: "if: pesees().length > 0"}}
     .panel.panel-default

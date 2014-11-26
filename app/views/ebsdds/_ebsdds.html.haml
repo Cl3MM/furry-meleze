@@ -65,7 +65,7 @@
                   role: "button", title: "Télécharger le Cerfa avant la collecte pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :nouveau
 
                 = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :second_part), class: "check-poids btn btn-success touletip btn-xs",
-                  role: "button", title: "Télécharger la deuxième partie du Cerfa pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
+                  role: "button", title: "Télécharger la deuxième partie du Cerfa pour l'eBSDD ##{ebsdd.bid}") if [:en_attente, :attente_sortie, :clos].include? ebsdd.status
 
                 = link_to(fa_icon("print lg", text: ""), ebsdd_pesee_pdf_path(ebsdd), class: "check-poids btn btn-primary touletip btn-xs #{ebsdd.pesees.any? ? '': 'disabled' }",
                   role: "button", title: "Télécharger le ticket de pesée pour l'eBSDD ##{ebsdd.bid}") if [:en_attente, :attente_sortie, :clos].include? ebsdd.status

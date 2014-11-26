@@ -19,7 +19,7 @@ module Balance
     def val
       return 0 if @ar.empty?
       unless ['dsd', 'date', 'heure'].include? @nom
-        @val = @ar.map(&:chr).join.to_i / 10000.0
+        @val = @ar.map(&:chr).join.to_i / 10.0
       else
         @val = @ar.map(&:chr).join
       end

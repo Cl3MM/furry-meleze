@@ -199,9 +199,9 @@ class EbsddsController < ApplicationController
       Pry.config.output = STDOUT
       @ebsdds = @ebsdds.to_a.sort_by(&:poids)
       @ebsdds = @ebsdds.reverse if sort_direction == "desc"
-      @ebsdds = @ebsdds.paginate(page: params[:page], per_page: 15)
+      @ebsdds = @ebsdds.paginate(page: params[:page], per_page: 25)
     else
-      @ebsdds = @ebsdds.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 15)
+      @ebsdds = @ebsdds.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 25)
     end
 
     @status = (params.has_key?(:status) ? params[:status].to_sym : :tous)

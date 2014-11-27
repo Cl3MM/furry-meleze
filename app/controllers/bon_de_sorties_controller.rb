@@ -27,7 +27,6 @@ class BonDeSortiesController < ApplicationController
     end
   end
   def create
-    binding.pry
     unless params[:transporteur].present? and params[:date_sortie].present?
       err = []
       err << "Veuillez saisir un transporteur" unless params[:transporteur].present?

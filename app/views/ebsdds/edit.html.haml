@@ -152,6 +152,8 @@
             %h3.panel-title
               %span.badge 6
               Quantité
+              %span.pull-right
+                = link_to(fa_icon("download lg", text: ""), ebsdd_pesee_path(@ebsdd), class: "btn btn-primary btn-xs touletip", title: "Effectuer une pesée")
           .panel-body
             = render partial: "ebsdds/edit/cadre6", object: f, as: :f, locals: { ebsdd: @ebsdd }
 

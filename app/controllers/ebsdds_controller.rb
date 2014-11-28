@@ -285,6 +285,7 @@ class EbsddsController < ApplicationController
     params[:ebsdd][:producteur_id] = nil if params[:ebsdd].has_key?(:producteur_id) && params[:ebsdd][:producteur_id].blank?
     params[:ebsdd][:destinataire_id] = nil if params[:ebsdd].has_key?(:destinataire_id) && params[:ebsdd][:destinataire_id].blank?
     @ebsdd = Ebsdd.new(params[:ebsdd])
+    #@ebsdd.bordereau_date_reception = @ebsdd.bordereau_date_transport
     respond_to do |format|
       if @ebsdd.save
         format.html { redirect_to @ebsdd, notice: "L'EBSDD a été crée avec succès !" }

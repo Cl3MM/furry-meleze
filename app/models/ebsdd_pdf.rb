@@ -266,8 +266,7 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
-    unless @ebsdd.bordereau_poids.nil?
-
+    unless @ebsdd.poids.nil?
       fs = self.font
       size = self.font_size
       self.font("Helvetica", :size => 12, style: :bold)
@@ -276,8 +275,13 @@ class EbsddPdf < Prawn::Document
 
     end
     erase 80, 106.5, width: 50
-    my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
-    my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [80, 108], width: 50, height: 20
+    unless @ebsdd.bordereau_date_reception.nil?
+      my_text_box @ebsdd.bordereau_date_reception.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
+      my_text_box @ebsdd.bordereau_date_reception.strftime("%d/%m/%Y"), [80, 108], width: 50, height: 20
+    else
+      my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
+      my_text_box @ebsdd.bordereau_date_transport.strftime("%d/%m/%Y"), [80, 108], width: 50, height: 20
+    end
     #my_text_box @ebsdd.bordereau_date_reception.strftime("%d/%m/%Y"), [125, 171], width: 50, height: 20
     # Cadre 10 Lot accepté
     checkbox 114.5, 155.5

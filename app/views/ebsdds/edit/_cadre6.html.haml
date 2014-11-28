@@ -1,8 +1,8 @@
 .row
   .col-md-4
     .form-group
-      = f.label :bordereau_poids, "Poids en kilogrammes"
-      = f.text_field :bordereau_poids, placeholder: "Poids"
+      = f.label :poids, "Poids en kilogrammes"
+      = f.text_field :poids, placeholder: "Poids", class: "disabled"
   .col-md-4
     .form-group
       = f.label :type_quantite, "Type de quantité"
@@ -11,11 +11,12 @@
         = f.radio_button :type_quantite, "R", checked: true
         Réelle
       %label.radio-inline
-        = f.radio_button :type_quantite, "E"
+        = f.radio_button :type_quantite, "E", checked: false
         Estimée
   .col-md-4
     .form-group
       %label Créer un nouveau eBSDD basé sur celui-ci
+      &nbsp;
       %btn#split-ebsdd.btn.btn-success
         %i.fa.fa-share-square
         Nouveau eBSDD

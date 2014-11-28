@@ -519,6 +519,8 @@ jQuery ->
       div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
       $(".panel .panel-body table").fadeOut(600).replaceWith(div)
 
+  $("#ebsdd_bordereau_date_transport").on "change", (e)->
+    $("#ebsdd_bordereau_date_reception").val $(this).val()
 
   # bouton en attente status (passe le status de En Attente à Pret à sortir)
   $(".en_attente_statut").on 'click', (e) ->

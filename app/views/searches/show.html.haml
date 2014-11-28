@@ -69,7 +69,7 @@
           %td= ebsdd.created_at.strftime("%d/%m/%Y")
           %td= ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
           %td
-            = ebsdd.bordereau_poids ? "#{ebsdd.bordereau_poids} kg" : "-"
+            = ebsdd.poids_pretty
           %td.text-center= raw ebsdd.status_label
 
 

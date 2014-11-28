@@ -8,10 +8,10 @@
       = f.label :type_quantite, "Type de quantité"
       %br
       %label.radio-inline
-        = f.radio_button :type_quantite, "R"
+        = f.radio_button :type_quantite, "R", checked: true
         Réelle
       %label.radio-inline
-        = f.radio_button :type_quantite, "E", checked: true
+        = f.radio_button :type_quantite, "E"
         Estimée
   .col-md-4
     .form-group

@@ -271,8 +271,11 @@ class EbsddsController < ApplicationController
   def statut_suivant
     return redirect_to :back, alert: "Veuillez spécifier un numéro eBsdd" unless params[:id].present?
     @ebsdd = Ebsdd.find( params[:id] )
-    return redirect_to :back, alert: "Impossible de trouver l'eBsdd ##{params[:id]}" unless params[:id].present?
-    return redirect_to :back, alert: "Impossible de changer de statut : le poids ne peut être vide" if @ebsdd.status == :en_attente && @ebsdd.pesees.empty?
+    err = []
+    err << "Impossible de trouver l'eBsdd ##{params[:id]}" unless params[:id].present?
+    err << "Impossible de changer de statut : le poids ne peut être vide" if @ebsdd.status == :en_attente && @ebsdd.pesees.empty?
+    err << "Impossible de changer de statut : le type de conditionnement ne peut être vide" if @ebsdd.status == :en_attente && @ebsdd.dechet_conditionnement.nil?
+    return redirect_to :back, alert: err.join(" ") if err.any?
     @ebsdd.next_status
     redirect_to :back
   end

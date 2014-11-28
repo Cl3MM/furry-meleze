@@ -523,9 +523,17 @@ jQuery ->
   # bouton en attente status (passe le status de En Attente à Pret à sortir)
   $(".en_attente_statut").on 'click', (e) ->
     e.preventDefault()
-    poids = $(this).first().closest('td').prev().text().trim()
+    elem = $(this).first().closest('tr').find(".poids")
+    data = elem.data('cdt')
+    poids = elem.text().trim()
+    err = []
     if poids == "-" or parseFloat( poids.replace(" kg", "") ) == 0
-      div = "<div class='alert alert-danger'>Veuillez remplir le poids de l'ebbsdd avant de changer le statut.</div>"
+      err.push "Veuillez remplir le poids de l'ebbsdd avant de changer le statut."
+    err.push "Veuillez remplir le conditionnement avant de mettre cet eBsdd en attente" unless data
+
+    if err.length > 0
+      msg = ("<p>#{e}</p>" for e in err)
+      div = "<div class='alert alert-danger'>#{msg.join("")}</div>"
       $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
       return false
     id = $(this).closest('tr').find('td:first').text()

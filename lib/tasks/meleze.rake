@@ -2,6 +2,17 @@
 
 namespace :mlz do
 
+  # Mets à jour les poids des peséess
+  desc "Update bordereau_poids"
+  task :update_poids => :environment do
+    ar = []
+    Ebsdd.collection.find({ "pesees.0" => { "$exists" => true } }).each { |e| ar << e["bid"] }
+    ar.each do |id|
+      ebsdd = Ebsdd.find(id)
+      ebsdd.set(:bordereau_poids, ebsdd.pesee_totale)
+    end
+  end
+
 
   # Ajoute le champ bid si celui ci n'existe pas
   desc "Update bordereau_id"

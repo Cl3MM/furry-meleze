@@ -38,7 +38,8 @@
               - else
                 = ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
             %td
-              = ebsdd.poids_pretty
+              %span.poids{data: { cdt: "#{ebsdd.dechet_conditionnement.blank? ? false : true}" }}
+                = ebsdd.poids_pretty
             - if ebsdd.status == :en_attente
               %td.text-center
                 = link_to(fa_icon("dropbox lg", text: ""), ebsdd_pesee_path(ebsdd), class: "btn btn-primary touletip btn-xs",

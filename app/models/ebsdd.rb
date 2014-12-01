@@ -395,10 +395,10 @@ class Ebsdd
   attr_accessible :destinataire_id
   validates_presence_of :destinataire_id
   #validates_presence_of :bordereau_id
-  validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, :bordereau_poids,
+  validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, #, :bordereau_poids,
     unless: -> { new_record? || is_nouveau?  }
-  validates_numericality_of :bordereau_poids, greater_than: 0,
-    unless: -> { new_record?  || is_nouveau? }
+  #validates_numericality_of :bordereau_poids, greater_than: 0,
+    #unless: -> { new_record?  || is_nouveau? }
 
   def self.en_cours_stock date = Date.today
     map = %Q{

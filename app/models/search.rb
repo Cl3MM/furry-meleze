@@ -40,20 +40,20 @@ class Search
   def column_names
     [ "Jours", "Mois", "Année", "E/S", "N° de Bordereau", "N° ECODDS", "Nom du client", "Adresse", "Produits", "Transporteur", "Poids", "Date Création" ]
   end
-  def ligne_export_matiere_ebsdd bsd
+  def ligne_export_matiere_ebsdd ebsdd
     [
-      bsd.bordereau_date_transport.strftime("%d"),
-      bsd.bordereau_date_transport.strftime("%m"),
-      bsd.bordereau_date_transport.strftime("%Y"),
+      ebsdd.bordereau_date_transport.strftime("%d"),
+      ebsdd.bordereau_date_transport.strftime("%m"),
+      ebsdd.bordereau_date_transport.strftime("%Y"),
       "E",
-      bsd.bid,
-      (bsd.ecodds_id.present? ? bsd.ecodds_id : nil),
-      (bsd.producteur.nom.present? ? bsd.producteur.nom : nil),
-      (bsd.producteur.adresse.present? ? bsd.producteur.adresse : nil),
-      bsd.produit.nom,
-      bsd.collecteur.nom,
-      (bsd.bordereau_poids.present? ? "#{bsd.bordereau_poids}".gsub(".",",") : nil),
-      bsd.created_at.strftime("%d/%m/%Y"),
+      ebsdd.bid,
+      (ebsdd.ecodds_id.present? ? ebsdd.ecodds_id : nil),
+      (ebsdd.producteur.nom.present? ? ebsdd.producteur.nom : nil),
+      (ebsdd.producteur.adresse.present? ? ebsdd.producteur.adresse : nil),
+      ebsdd.produit.nom,
+      ebsdd.collecteur.nom,
+      "#{ebsdd.poids}".gsub(".",","),
+      ebsdd.created_at.strftime("%d/%m/%Y"),
     ]
   end
   def ligne_export_matiere_bds bds

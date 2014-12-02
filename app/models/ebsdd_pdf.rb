@@ -266,7 +266,7 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
-    unless @ebsdd.poids.nil?
+    unless @ebsdd.status == :nouveau
       fs = self.font
       size = self.font_size
       self.font("Helvetica", :size => 12, style: :bold)

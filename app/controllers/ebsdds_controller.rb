@@ -322,7 +322,12 @@ class EbsddsController < ApplicationController
   # PATCH/PUT /ebsdds/1.json
   def update
     # Si l'opérateur tape une virgule à la place d'un point dans le poids
-    params[:ebsdd][:bordereau_poids].gsub!(",", ".") if params[:ebsdd][:bordereau_poids].present? && params[:ebsdd][:bordereau_poids] =~ /,/
+    params[:ebsdd][:poids].gsub!(",", ".") if params[:ebsdd][:poids].present? && params[:ebsdd][:poids] =~ /,/
+    if params[:ebsdd][:poids].present?
+      unless params[:ebsdd][:poids].to_f <= 0
+        params[:ebsdd][:bordereau_poids] =  params[:ebsdd][:poids]
+      end
+    end
     @ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
       if @ebsdd.update_attributes(params[:ebsdd])

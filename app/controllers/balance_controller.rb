@@ -15,7 +15,7 @@ class BalanceController < ApplicationController
         end
       end
     end
-    ebsdd.update_attribute(bordereau_poids, ebsdd.pesee_totale)
+    ebsdd.update_attribute(:bordereau_poids, ebsdd.pesee_totale)
     render json: pesees, status: :ok
   end
   def dsd

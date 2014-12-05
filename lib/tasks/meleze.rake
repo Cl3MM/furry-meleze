@@ -9,7 +9,7 @@ namespace :mlz do
     Ebsdd.collection.find({ "pesees.0" => { "$exists" => true } }).each { |e| ar << e["bid"] }
     ar.each do |id|
       ebsdd = Ebsdd.find(id)
-      ebsdd.set(:bordereau_poids, ebsdd.pesee_totale)
+      ebsdd.update_attribute(:bordereau_poids, ebsdd.pesee_totale)
     end
   end
 

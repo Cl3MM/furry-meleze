@@ -763,10 +763,11 @@ class Ebsdd
     end
   end
   def self.multiebsdd_search min, max
-    @ebsdds = Ebsdd.where(:status.in => [:nouveau, :en_attente, :complet, :attente_sortie, :clos],
-                            is_ecodds: true,
-                            :bordereau_poids.ne => nil)
-                .between(bordereau_date_transport: min..max).order_by(bordereau_date_transport: 1) #.paginate(page: params[:page], per_page: 15)
+    #@ebsdds = Ebsdd.where(:status.in => [:nouveau, :en_attente, :complet, :attente_sortie, :clos],
+                            #is_ecodds: true,
+                            #:bordereau_poids.ne => nil)
+                #.between(bordereau_date_transport: min..max).order_by(bordereau_date_transport: 1) #.paginate(page: params[:page], per_page: 15)
+    @ebsdds = Ebsdd.between(bordereau_date_transport: min..max).where(is_ecodds: true).order_by(bordereau_date_transport: 1).and( :bordereau_poids.ne => nil) # }, {:pesees.gt => 0})
   end
   def self.search params
     if params.has_key?(:status)

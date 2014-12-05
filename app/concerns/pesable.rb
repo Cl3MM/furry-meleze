@@ -33,12 +33,15 @@ module Pesable
     end
   end
   def pesee_totale
+    return -666 unless pesees.any?
     poids_brut - poids_tare
   end
   def poids_brut
+    return -666 unless pesees.any?
     pesees.map(&:brut).reduce(:+)
   end
   def poids_tare
+    return -666 unless pesees.any?
     pesees.map(&:poids_tare).reduce(:+)
   end
   def poids_en_tonnes2 attr

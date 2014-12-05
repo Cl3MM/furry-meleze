@@ -30,7 +30,7 @@
     = @min.strftime("%d/%m/%Y")
     au
     = @max.strftime("%d/%m/%Y")
-  %table.table.table-striped
+  %table.table.table-striped.table-hover
     %thead
       %tr
         %th
@@ -42,14 +42,15 @@
         %th Type déchet
         %th Date transport
         %th Poids
+        %th Statut
         %th.actions Actions
 
     %tbody
-      = form_tag ebsdds_export_path, id: "to_export", role: :form do 
+      = form_tag ebsdds_export_path, id: "to_export", role: :form do
         -@ebsdds.each do | ebsdd |
           %tr
             %td= check_box_tag "ebsdds[]", ebsdd.ecodds_id, false, class: "multiebsdd"
-            %td= ebsdd.bid
+            %td= link_to ebsdd.bid, ebsdd_path(ebsdd)
             %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id
             %td.touletip{title: "Nombre d'export effectués pour l'ebsdd #{ebsdd.short_bid} : #{ebsdd.exported}"}
               = ebsdd.exported
@@ -57,7 +58,8 @@
             -#%td= ebsdd.destinataire_nom.titleize
             %td= ebsdd.produit.denomination_ecodds.titleize
             %td= ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
-            %td= "#{ebsdd.bordereau_poids} kg"
+            %td= ebsdd.poids_pretty
+            %td= raw ebsdd.status_label
 
             %td.actions
               .center-block.text-center

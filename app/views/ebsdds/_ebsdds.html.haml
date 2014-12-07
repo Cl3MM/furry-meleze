@@ -1,8 +1,14 @@
 -if @ebsdds.any?
-  .panel.panel-default
+  =# render partial: "ebsdds_with_status", object: @ebsdds, as: :ebsdds if @status == :en_attente
+  %span#model.hidden{data: {bids: "#{@ebsdds.map(&:bid).to_json}", status: "#{@status}" } }
+    = javascript_include_tag "status_controller.js" if [:en_attente, :nouveau].include? @status
+
+  .panel.panel-default{ data: {bind: "with: vm"} }
     %table.table.table-striped.table-hover#ebsdds{"data-status" => "#{@status}"}
       %thead
         %tr
+          %th.hidden.deleteme
+            %input{value: "false", type: :checkbox, data: {bind: "checked: check"}}
           %th= sortable "# ebsdd"
           %th= sortable "# ecodds"
           %th= sortable "Producteur"
@@ -13,11 +19,18 @@
           %th= sortable "Poids"
           - if @status == :en_attente
             %th.text-center Pesée
-          %th.text-center Actions
+          %th.text-center
+            Actions
+            - if [:en_attente, :nouveau].include? @status
+              | &nbsp;
+              %a.btn.btn-xs.btn-danger{ data: {bind: "click: selectForDeleteAll"} }
+                %i.fa.fa-times
 
       %tbody
         -@ebsdds.each do | ebsdd |
-          %tr
+          %tr{id: "#{ebsdd.bid}" }
+            %td.hidden.deleteme
+              %input{ value: ebsdd.bid, type: :checkbox, data: {bind: "checked: ebsdedes"} }
             %td= link_to ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
             %td.text-center
               = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
@@ -78,6 +91,12 @@
 
                 = fa_link_to ebsdd_download_path(ebsdd), "", "cloud-download lg", class: "btn btn-success touletip btn-xs",
                   role: "button", title: "Exporter au format ECODDS" if (ebsdd.is_complete? || ebsdd.is_clos?) && ebsdd.is_ecodds
+      %tfoot.hidden.deleteme
+        %tr
+          %td{colspan: 3}
+            %a.btn.btn-xs.btn-danger{ data: {bind: "click: deleteAll"} }
+              %i.fa.fa-times
+              Supprimer la sélection
 -else
   .center-block
     %p.text-center

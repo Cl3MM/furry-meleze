@@ -1,11 +1,12 @@
 //= require knockout
 //= require knockout.mapping
+//= require knockout-postbox.min.js
 //= require toastr
 //= require moment
 //= require moment/fr.js
 //= require lodash
 //= require underscore-ko-1.6.0
-//= require_tree ./pesee
+//= require_tree ./status
 //
 toastr.options = {
   "closeButton": true,
@@ -22,3 +23,4 @@ toastr.options = {
   "showMethod": "fadeIn",
   "hideMethod": "fadeOut"
 }
+

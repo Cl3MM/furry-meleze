@@ -32,6 +32,17 @@ class EbsddsController < ApplicationController
   def export
     send_data Ebsdd.to_multi(params).encode("iso-8859-1"), type: 'text/csv; charset=iso-8859-1;', filename: "Export_EcoDDS_multi_ebsdds_du_#{Time.now.strftime("%d-%m-%Y")}.csv"
   end
+  def mark_as_deleted
+    return render json: { error: errors  }, status: 500 unless params[:bids].present?
+    ids = []
+    Ebsdd.in(bid: params[:bids]).each do | b |
+      b.update_attribute(:status, :deleted)
+      b.update_attribute(:deleted_at, Time.now)
+      ids << b.bid
+    end
+
+    render json: ids
+  end
   def change_ebsdd_en_attente_statut
     if params[:id].present?
       ebsdd = Ebsdd.find_by(bid: params[:id])

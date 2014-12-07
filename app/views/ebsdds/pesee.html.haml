@@ -101,11 +101,6 @@
               -#%td{data: { bind: "text:poidsSansTareEnKilo"}
               %td.text-center
                 - if @ebsdd.status == :en_attente
-                  / ko ifnot: $parent.admin
-                  %a.touletip.btn.btn-default.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: deleteMe, css: { 'disabled': !toAdd(), 'btn-danger': toAdd() }" }}
-                    %i.fa.fa-times
-                  / /ko
-
                   / ko if: $parent.admin
 
                   / ko if: toAdd
@@ -123,6 +118,11 @@
                     / /ko
                   / /ko
                   / /ko
+                  =#/ ko ifnot: $parent.admin
+                  =#%a.touletip.btn.btn-default.btn-xs{href: "#", title: "Supprimer cette pesée", data: { bind: "click: deleteMe, css: { 'disabled': !toAdd(), 'btn-danger': toAdd() }" }}
+                  =#  %i.fa.fa-times
+                  =#/ /ko
+
           %tfoot
             %tr
               %td

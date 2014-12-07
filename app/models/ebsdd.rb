@@ -112,6 +112,7 @@ class Ebsdd
   field :bordereau_id, type: Integer
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
+  field :deleted_at, type: DateTime
 
   field :attente_sortie_created_at, type: DateTime
   field :en_attente_created_at, type: DateTime

@@ -1,0 +1,30 @@
+= javascript_include_tag "status_controller.js"
+%span#model.hidden{data: {ebsdds: "#{ebsdds.to_json}", status: "#{@status}" } }
+
+/ ko ifnot: vm.ebsdds().length > 0
+.alert.alert-info.alert-dismissable
+  %button.close{type: "button", data: {dismiss: "alert"}, aria_hidden: "true"} &times;
+  Aucun ebsdds
+/ /ko
+/ ko if: vm.ebsdds().length > 0
+.panel.panel-default
+  .table-responsive{ data: {bind: "with: vm"} }
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th= sortable "# ebsdd"
+          %th= sortable "# ecodds"
+          %th= sortable "Producteur"
+          -#%th Destinataire
+          %th.text-center
+            = sortable "Type déchet"
+          %th= sortable "Date transport"
+          %th= sortable "Poids"
+          - if @status == :en_attente
+            %th.text-center Pesée
+          %th.text-center Actions
+      %tbody{ data: {bind: "foreach: ebsdds"} }
+        %tr
+          %td{ data: {bind: "text: bid"} }
+
+/ /ko

@@ -51,6 +51,7 @@ Meleze::Application.routes.draw do
   get  'ebsdds/:id/pesee/export', to: 'ebsdds#export_pesee_pdf', defaults: { format: :pdf }, as: :ebsdd_pesee_pdf
   get  'ebsdds/:id/statut_suivant', to: 'ebsdds#statut_suivant', as: :statut_suivant
   get  'ebsdds/:id/statut_precedent', to: 'ebsdds#statut_precedent', as: :statut_precedent
+  delete 'ebsdds/mark_as_deleted', to: 'ebsdds#mark_as_deleted'
 
   post  'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post  'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir

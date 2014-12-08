@@ -8,7 +8,6 @@ class StatusController
     @bids = data
     @check = ko.observable(false)
     @check.subscribe(@checkAll)
-    @noMore = ko.observable(false)
     return
 
   pretty_status: =>

@@ -13,7 +13,7 @@ class EbsddPdf < Prawn::Document
     path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
     here = cursor
-    stroke_axis
+    #stroke_axis
     self.font_size = 9
     if @ebsdd.nil? || @status == :bon_de_sortie
       producteur = Producteur.find_by(nom: /Valespace/i)

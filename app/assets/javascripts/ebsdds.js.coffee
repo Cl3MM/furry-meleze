@@ -436,7 +436,7 @@ jQuery ->
       e.preventDefault()
       ids = []
       $(".nouveau_pdf").each (i) ->
-        ids.push $(this).closest('td').next().text().replace( /( )/g, "") if $(this).prop('checked')
+        ids.push $(this).closest('tr').prop('id') if $(this).prop('checked')
       $("#changeNouveauStatus").prop('disabled', true)
       $("#changeNouveauStatus i").removeClass("fa-file").addClass("fa-spin fa-spinner")
       status = $("#ebsdds").data("status")
@@ -454,10 +454,11 @@ jQuery ->
         $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
       ids = d.data
       for id in ids
-        $(".nouveau_pdf").each (i) ->
-          _id = $(this).closest('td').next().text().replace( /( )/g, "")
-          if _id == id
-            $(this).closest('tr').fadeOut(600, removeNouveauTr)
+        $("##{id}").closest('tr').fadeOut(600, removeNouveauTr)
+        #$(".nouveau_pdf").each (i) ->
+          #_id = $(this).closest('td').next().text().replace( /( )/g, "")
+          #if _id == id
+            #$(this).closest('tr').fadeOut(600, removeNouveauTr)
 
     removeNouveauTr = ()->
       $(this).remove()
@@ -470,8 +471,9 @@ jQuery ->
       ids = []
       $(".nouveau_pdf").each (i) ->
         if $(this).prop('checked')
-          id = $(this).closest('td').next().text()
-          id = id.replace(/( )/g, "")
+          #id = $(this).closest('td').next().text()
+          #id = id.replace(/( )/g, "")
+          id = $(this).closest('tr').prop('id')
           ids.push id
       $("#export_nv_bsds").prop('disabled', true)
       $("#export_nv_bsds i").removeClass("fa-file").addClass("fa-spin fa-spinner")
@@ -495,27 +497,28 @@ jQuery ->
   # bouton nouveau status (passe le status de Nouveau à En Attente)
   $(".nouveau_statut").on 'click', (e) ->
     e.preventDefault()
-    selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
-    id = $(this).closest('tr').find("td:#{selector}").text()
-    id = id.replace /( )/g, ""
-
+    #selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
+    #id = $(this).closest('tr').find("td:#{selector}").text()
+    #id = id.replace /( )/g, ""
+    id = $(this).closest('tr').prop('id')
+    console.log id
     url = "/ebsdd/#{id}/change_nouveau_statut.json"
     $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
 
   fadeNvEbsdd = (d,s) ->
     id = d.id
-
-    selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
-    $(".panel .panel-body table tbody tr td:#{selector}").each (e) ->
-      _id = $(this).text().replace(/( )/g, "")
-      if _id == id
-        console.log $(this).closest('tr')
-        $(this).closest('tr').fadeOut(700, removeNouveauEbsdd)
+    $("##{id}").fadeOut(700, removeNouveauEbsdd)
+    #selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
+    #$(".panel .panel-body table tbody tr td:#{selector}").each (e) ->
+      #_id = $(this).text().replace(/( )/g, "")
+      #if _id == id
+        #console.log $(this).closest('tr')
+        #$(this).closest('tr').fadeOut(700, removeNouveauEbsdd)
 
   removeNouveauEbsdd = (e) ->
     $(this).remove()
     if $(".panel .panel-body table tbody tr").length == 0
-      window.reload
+      location.reload
       div = '<div class="alert alert-info">Plus aucun BSD à traiter.</div>'
       $(".panel .panel-body table").fadeOut(600).replaceWith(div)
 
@@ -538,8 +541,7 @@ jQuery ->
       div = "<div class='alert alert-danger'>#{msg.join("")}</div>"
       $(div).insertAfter($("body .container .navbar")).fadeIn(600).delay(2000).fadeOut(600)
       return false
-    id = $(this).closest('tr').find('td:first').text()
-    id = id.replace(/( )/g, "")
+    id = $(this).closest('tr').prop('id')
     url = "/ebsdd/#{id}/change_en_attente_statut.json"
     $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
 

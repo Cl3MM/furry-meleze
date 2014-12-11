@@ -376,7 +376,9 @@ class EbsddsController < ApplicationController
   # DELETE /ebsdds/1
   # DELETE /ebsdds/1.json
   def destroy
-    @ebsdd.destroy
+    #@ebsdd.destroy
+    @ebsdd.update_attribute(:status, :deleted)
+    @ebsdd.update_attribute(:deleted_at, Time.now)
     respond_to do |format|
       format.html { redirect_to :back }
       format.json { head :no_content }

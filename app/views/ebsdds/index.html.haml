@@ -79,6 +79,14 @@
     - else
       = link_to "Complets", ebsdd_status_path(status: :complets)
 
+  -if current_utilisateur.is_admin?
+    %li{ class: "#{@status == :deleted ? "active" : ""}" }
+      - if @status == :deleted
+        Supprimés
+      - else
+        = link_to "Supprimés", ebsdd_status_path(status: :deleted)
+
+
 = render partial: "ebsdds/ebsdds"
 #search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
 -#= render partial: "search"

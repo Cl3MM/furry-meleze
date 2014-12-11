@@ -17,7 +17,7 @@
             = sortable "Type déchet"
           %th= sortable "Date transport"
           %th= sortable "Poids"
-          - if @status == :en_attente
+          - if [:en_attente, :tous].include? @status
             %th.text-center Pesée
           %th.text-center
             Actions
@@ -53,7 +53,7 @@
             %td
               %span.poids{data: { cdt: "#{ebsdd.dechet_conditionnement.blank? ? false : true}" }}
                 = ebsdd.poids_pretty
-            - if ebsdd.status == :en_attente
+            - if ebsdd.status == :en_attente || @status == :tous
               %td.text-center
                 = link_to(fa_icon("dropbox lg", text: ""), ebsdd_pesee_path(ebsdd), class: "btn btn-primary touletip btn-xs",
                   title: "Effectuer une pesée")

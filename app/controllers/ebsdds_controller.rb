@@ -36,9 +36,13 @@ class EbsddsController < ApplicationController
     return render json: { error: errors  }, status: 500 unless params[:bids].present?
     ids = []
     Ebsdd.in(bid: params[:bids]).each do | b |
-      b.update_attribute(:status, :deleted)
-      b.update_attribute(:deleted_at, Time.now)
-      ids << b.bid
+      unless b.pesees.any? || b.poids > 0
+        #b.update_attribute(:status, :deleted)
+        #b.update_attribute(:deleted_at, Time.now)
+        #ids << b.bid
+        ids << b.bid
+        b.destroy
+      end
     end
 
     render json: ids
@@ -376,9 +380,12 @@ class EbsddsController < ApplicationController
   # DELETE /ebsdds/1
   # DELETE /ebsdds/1.json
   def destroy
-    #@ebsdd.destroy
-    @ebsdd.update_attribute(:status, :deleted)
-    @ebsdd.update_attribute(:deleted_at, Time.now)
+    if @ebsdd.pesees.any? || @ebsdd.poids > 0
+      @ebsdd.update_attribute(:status, :deleted)
+      @ebsdd.update_attribute(:deleted_at, Time.now)
+    else
+      @ebsdd.destroy
+    end
     respond_to do |format|
       format.html { redirect_to :back }
       format.json { head :no_content }

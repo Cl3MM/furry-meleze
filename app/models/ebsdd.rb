@@ -32,7 +32,7 @@ class Ebsdd
   include Mongoid::Timestamps
 
   include Pesable
-  default_scope exists(archived: false)
+  default_scope exists(archived: false).where(:status.ne => :deleted)
 
   def self.per_page
     15
@@ -395,8 +395,9 @@ class Ebsdd
 
   attr_accessible :destinataire_id
   validates_presence_of :destinataire_id
+  validates_presence_of :dechet_conditionnement
   #validates_presence_of :bordereau_id
-  validates_presence_of :dechet_conditionnement, :dechet_nombre_colis, #, :bordereau_poids,
+  validates_presence_of :dechet_nombre_colis, #, :bordereau_poids,
     unless: -> { new_record? || is_nouveau?  }
   #validates_numericality_of :bordereau_poids, greater_than: 0,
     #unless: -> { new_record?  || is_nouveau? }
@@ -773,9 +774,9 @@ class Ebsdd
   def self.search params
     if params.has_key?(:status)
       params[:status] = "closs" if params[:status] == "clos"
-      Ebsdd.exists(archived: false).where(status: params[:status].singularize).exists(archived: false) #.order_by(created_at: :desc)
+      Ebsdd.where(status: params[:status].singularize) #.order_by(created_at: :desc)
     else
-      Ebsdd.exists(archived: false) #.order_by(created_at: :desc)
+      Ebsdd.all #.order_by(created_at: :desc)
     end
   end
 
@@ -866,7 +867,7 @@ class Ebsdd
         return Array.sum(poids);
       };
     }
-    mr = Ebsdd.exists(archived: false).where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
     mr.entries.reduce([]) do |a, e|
       #binding.pry
       produit = Produit.find e["_id"]
@@ -891,7 +892,7 @@ class Ebsdd
         return Array.sum(poids);
       };
     }
-    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos, :complet]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.in(status: [:attente_sortie, :clos, :complet]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
 
     data = mr.entries.reduce([]) do |a, e|
       immat = Immatriculation.find e["_id"]
@@ -926,7 +927,7 @@ class Ebsdd
     }.squish
     # Conditions :
     # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
     data = mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
       a << { id: produit.id, nom: produit.nom, poids: e["value"] }
@@ -958,7 +959,7 @@ class Ebsdd
     }
     # Conditions :
     # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.exists(archived: false).in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
+    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
     data = mr.entries.reduce([]) do |a, e|
       produit = Produit.find e["_id"]
       a << { nom: produit.nom, poids: e["value"], codedr: produit.code_rubrique, ecodds: produit.is_ecodds ? "1" : "0", ddm: produit.is_ddm ? "1" : "0", ddi: produit.is_ddi ? "1" : "0" }

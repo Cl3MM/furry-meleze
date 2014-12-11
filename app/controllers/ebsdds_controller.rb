@@ -295,6 +295,8 @@ class EbsddsController < ApplicationController
   def create
     params[:ebsdd][:producteur_id] = nil if params[:ebsdd].has_key?(:producteur_id) && params[:ebsdd][:producteur_id].blank?
     params[:ebsdd][:destinataire_id] = nil if params[:ebsdd].has_key?(:destinataire_id) && params[:ebsdd][:destinataire_id].blank?
+    params[:ebsdd][:dechet_conditionnement] = nil if params[:ebsdd].has_key?(:dechet_conditionnement) && params[:ebsdd][:dechet_conditionnement].blank?
+
     @ebsdd = Ebsdd.new(params[:ebsdd])
     #@ebsdd.bordereau_date_reception = @ebsdd.bordereau_date_transport
     respond_to do |format|
@@ -334,6 +336,7 @@ class EbsddsController < ApplicationController
   def update
     # Si l'opérateur tape une virgule à la place d'un point dans le poids
     params[:ebsdd][:poids].gsub!(",", ".") if params[:ebsdd][:poids].present? && params[:ebsdd][:poids] =~ /,/
+    params[:ebsdd][:dechet_conditionnement] = nil if params[:ebsdd].has_key?(:dechet_conditionnement) && params[:ebsdd][:dechet_conditionnement].blank?
     if params[:ebsdd][:poids].present?
       unless params[:ebsdd][:poids].to_f <= 0
         params[:ebsdd][:bordereau_poids] =  params[:ebsdd][:poids]

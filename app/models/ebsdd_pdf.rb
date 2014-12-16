@@ -70,7 +70,7 @@ class EbsddPdf < Prawn::Document
       cadre9
       cadre10
       cadre11
-      cadre12
+      #cadre12
 
       @bds.ebsdds.each_slice(5) do | annexe |
         annexe_en_tete
@@ -266,7 +266,7 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
     erase 128, 168, width: 50
-    unless @ebsdd.status == :nouveau
+    unless @ebsdd.status == :nouveau || @status == :bon_de_sortie
       fs = self.font
       size = self.font_size
       self.font("Helvetica", :size => 12, style: :bold)

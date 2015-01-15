@@ -15,28 +15,27 @@
 
 -if @destinations.any?
   .panel.panel-default
-    .panel-body
-      %table.table.table-striped
-        %thead
-          %tr
-            %th Nom
-            %th Responsable
-            %th Cp
-            %th Ville
-            %th.actions Actions
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th Nom
+          %th Responsable
+          %th Cp
+          %th Ville
+          %th.actions Actions
 
-        %tbody
-          - @destinations.each do |destination|
-            %tr
-              %td= destination.nom
-              %td= destination.responsable
-              %td= destination.cp
-              %td= destination.ville
-              %td.actions
-                .center-block.text-center
-                  = link_to(fa_icon("eye lg", text: ""), destination, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce destination")
-                  = link_to(fa_icon("gear lg", text: ""), edit_destination_path(destination), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
-                  = link_to(fa_icon("times lg", text: ""), destination, method: :delete, data: { confirm: 'Etes vous sur ?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le destination")
-              -#%td= link_to 'Show', destination
-              -#%td= link_to 'Edit', edit_destination_path(destination)
-              -#%td= link_to 'Destroy', destination, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %tbody
+        - @destinations.each do |destination|
+          %tr
+            %td= destination.nom
+            %td= destination.responsable
+            %td= destination.cp
+            %td= destination.ville
+            %td.actions
+              .center-block.text-center
+                = link_to(fa_icon("eye lg", text: ""), destination, class: "btn btn-warning touletip btn-xs", role: "button", title: "Voir les détails de ce destination")
+                = link_to(fa_icon("gear lg", text: ""), edit_destination_path(destination), class: "btn btn-primary touletip btn-xs", role: "button", title: "Modifier")
+                = link_to(fa_icon("times lg", text: ""), destination, method: :delete, data: { confirm: 'Etes vous sur ?' }, class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer le destination")
+            -#%td= link_to 'Show', destination
+            -#%td= link_to 'Edit', edit_destination_path(destination)
+            -#%td= link_to 'Destroy', destination, :method => :delete, :data => { :confirm => 'Are you sure?' }

@@ -1,34 +1,45 @@
-%p#notice= notice
+%h2.page-header
+  Information sur la destination
+.panel.panel-default
+  .panel-heading
+    .panel-title
+      .small
+        = @destination.nom
 
-%p
-  %b Nom:
-  = @destination.nom
-%p
-  %b Siret:
-  = @destination.siret
-%p
-  %b Adresse:
-  = @destination.adresse
-%p
-  %b Responsable:
-  = @destination.responsable
-%p
-  %b Cp:
-  = @destination.cp
-%p
-  %b Vile:
-  = @destination.ville
-%p
-  %b Tel:
-  = @destination.tel
-%p
-  %b Fax:
-  = @destination.fax
-%p
-  %b Email:
-  = @destination.email
-%p
-  %b Nomenclature:
-  = @destination.nomenclatures.join(", ")
+  .panel-body
+    %p#notice= notice
 
-= link_to "Modifier", edit_destination_path(@destination), class: "btn btn-primary"
+    %p
+      %b Nom:
+      = @destination.nom
+    %p
+      %b Siret:
+      = @destination.siret
+    %p
+      %b Adresse:
+      = @destination.adresse
+    %p
+      %b Responsable:
+      = @destination.responsable
+    %p
+      %b Cp:
+      = @destination.cp
+    %p
+      %b Vile:
+      = @destination.ville
+    %p
+      %b Tel:
+      = @destination.tel
+    %p
+      %b Fax:
+      = @destination.fax
+    %p
+      %b Email:
+      = @destination.email
+    %p
+      %b Nomenclature:
+      = @destination.nomenclatures.join(", ")
+
+  .panel-footer.text-center
+    = link_to "Retour", :back, class: "btn btn-default"
+    = link_to "Modifier", edit_destination_path(@destination), class: "btn btn-primary"

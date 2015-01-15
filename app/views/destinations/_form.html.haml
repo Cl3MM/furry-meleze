@@ -1,86 +1,82 @@
+- if @destination.errors.any?
+  .row
+    .col-md-12
+      .alert.alert-danger.alert-dismissable
+        %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
+        #error_explanation
+          %h2
+            Merci de corriger
+            - if @destination.errors.count > 1
+              les #{@destination.errors.count} erreurs suivantes :
+            - else
+              l'erreur suivante :
+          %ul
+            - @destination.errors.full_messages.each do |msg|
+              %li= msg
 = custom_form @destination do |f|
-  -#- if @destination.errors.any?
-    -##error_explanation
-      -#%h2= "#{pluralize(@destination.errors.count, "error")} prohibited this destination from being saved:"
-      -#%ul
-        -#- @destination.errors.full_messages.each do |msg|
-          -#%li= msg
-  - if @destination.errors.any?
-    .row
-      .col-md-12
-        .alert.alert-danger.alert-dismissable
-          %button.close{ type: "button", "data-dismiss" => "alert", "aria-hidden" => "true"} &times;
-          #error_explanation
-            %h2
-              Merci de corriger
-              - if @destination.errors.count > 1
-                les #{@destination.errors.count} erreurs suivantes :
-              - else
-                l'erreur suivante :
-            %ul
-              - @destination.errors.full_messages.each do |msg|
-                %li= msg
+  .panel.panel-default
+    .panel-body
 
+      .row
+        .col-md-6
+          .form-group
+            = f.label :nom
+            = f.text_field :nom
+        .col-md-6
+          .form-group
+            = f.label :siret
+            = f.text_field :siret
 
-  .row
-    .col-md-6
-      .form-group
-        = f.label :nom
-        = f.text_field :nom
-    .col-md-6
-      .form-group
-        = f.label :siret
-        = f.text_field :siret
+      .row
+        .col-md-12
+          .form-group
+            = f.label :adresse
+            = f.text_field :adresse
 
-  .row
-    .col-md-12
-      .form-group
-        = f.label :adresse
-        = f.text_field :adresse
+      .row
+        .col-md-6
+          .form-group
+            = f.label :cp
+            = f.text_field :cp
 
-  .row
-    .col-md-6
-      .form-group
-        = f.label :cp
-        = f.text_field :cp
+        .col-md-6
+          .form-group
+            = f.label :ville
+            = f.text_field :ville
+      .row
+        .col-md-12
+          .form-group
+            = f.label :responsable
+            = f.text_field :responsable
+      .row
+        .col-md-6
+          .form-group
+            = f.label :tel
+            = f.text_field :tel
 
-    .col-md-6
-      .form-group
-        = f.label :ville
-        = f.text_field :ville
-  .row
-    .col-md-12
-      .form-group
-        = f.label :responsable
-        = f.text_field :responsable
-  .row
-    .col-md-6
-      .form-group
-        = f.label :tel
-        = f.text_field :tel
+        .col-md-6
+          .form-group
+            = f.label :fax
+            = f.text_field :fax
 
-    .col-md-6
-      .form-group
-        = f.label :fax
-        = f.text_field :fax
+      .row
+        .col-md-12
+          .form-group
+            = f.label :email
+            = f.text_field :email
+      .row
+        .col-md-12
+          .form-group
+            = f.label :nomenclatures
+            -#= f.text_field :nomenclatures, value: @destination.try(:nomenclatures).try(:map, &:to_s).try(:join, ",")
+            = f.text_field :nomenclatures, value: @destination.nomenclatures.map(&:to_s).join(",")
+            -#= select_tag "destination_nomenclatures", nil, { "data-tags" => @destination.nomenclatures.join(","), name: "destination[nomenclatures]" }
 
-  .row
-    .col-md-12
-      .form-group
-        = f.label :email
-        = f.text_field :email
-  .row
-    .col-md-12
-      .form-group
-        = f.label :nomenclatures
-        -#= f.text_field :nomenclatures, value: @destination.try(:nomenclatures).try(:map, &:to_s).try(:join, ",")
-        = f.text_field :nomenclatures, value: @destination.nomenclatures.map(&:to_s).join(",")
-        -#= select_tag "destination_nomenclatures", nil, { "data-tags" => @destination.nomenclatures.join(","), name: "destination[nomenclatures]" }
-  .row
-    .actions
+    .panel-footer.text-center
+      = link_to "Retour", :back, class: "btn btn-default"
       = content_tag :button, type: :submit, class: "btn btn-primary" do
         Enregistrer les modifications&nbsp;
         = fa_icon "save lg"
-  -#.field
-    -#= f.label :recepisse
-    -#= f.text_field :recepisse
+        -#.field
+          -#= f.label :recepisse
+          -#= f.text_field :recepisse

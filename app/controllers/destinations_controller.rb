@@ -54,7 +54,16 @@ class DestinationsController < ApplicationController
   # POST /destinations
   # POST /destinations.json
   def create
-    params[:destination][:nomenclatures] = params[:destination][:nomenclatures].split(",") if params[:destination][:nomenclatures].present? && params[:destination][:nomenclatures] =~ /,/
+    if params[:destination].has_key? "nomenclatures"
+      if params[:destination][:nomenclatures] =~ /,/
+        params[:destination][:nomenclatures] = params[:destination][:nomenclatures].split(",")
+      else
+        params[:destination][:nomenclatures] = [params[:destination][:nomenclatures]]
+      end
+    else
+      params[:destination][:nomenclatures] = []
+    end
+
     @destination = Destination.new(params[:destination])
 
     respond_to do |format|

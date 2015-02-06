@@ -54,6 +54,7 @@ class Search
       ebsdd.collecteur.nom,
       "#{ebsdd.poids}".gsub(".",","),
       ebsdd.created_at.strftime("%d/%m/%Y"),
+      (ebsdd.has_bon_de_sortie? ? ebsdd.bon_de_sortie.id : nil)
     ]
   end
   def ligne_export_matiere_bds bds
@@ -65,10 +66,10 @@ class Search
       "S",
       bds.id,
       nil,
-      (bds.type == :ecodds ? "ECODDS" : "Valespace"),
-      "928 Avenue de la Houille Blanche",
+      bds.destination.nom, #(bds.type == :ecodds ? "ECODDS" : "Valespace"),
+      bds.destination.adresse, #"928 Avenue de la Houille Blanche",
       bds.produit.nom,
-      "Trialp",
+      (bds.collecteur ? bds.collecteur.nom : nil), #"Trialp",
       "#{bds.poids}".gsub(".",","),
       bds.created_at.strftime("%d/%m/%Y")
     ]

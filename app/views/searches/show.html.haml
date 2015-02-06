@@ -151,6 +151,8 @@
           %th #
           %th Déchet
           %th.text-center Type déchet
+          %th Destination
+          %th Transporteur
           %th.text-center Date création
           %th Poids
       %tbody
@@ -161,6 +163,12 @@
             %td.text-center
               %label
                 = bds.try(:type).try(:to_s)
+            %td= link_to bds.destination.nom, destination_path(bds.destination)
+            %td
+              - if bds.collecteur
+                = link_to bds.collecteur.nom, collecteur_path(bds.collecteur)
+              - else
+                \-
             %td.text-center= bds.created_at.strftime("%d/%m/%Y")
             %td
               = bds.poids

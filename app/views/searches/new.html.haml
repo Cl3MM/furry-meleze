@@ -53,28 +53,35 @@
         %label Statut
         = f.select :status, [ ["Nouveau", :nouveau], ["Attente Réception", :en_attente], ["En Stock", :attente_sortie], ["Archivés", :clos], ["Complet", :complet] ], prompt: "Sélectionnez le statut..."
 
-    .col-md-4
+  .row
+    .col-md-6
       .form-group
         %label Type
         = f.select :type, [ ["EcoDDS", :ecodds], ["Non EcoDDS", :hors_ecodds], ["Déchet Dangereux Ménager", :ddm], ["Déchet Dangereux Industriel", :ddi] ], prompt: "Sélectionnez le type..."
-    .col-md-4
+    .col-md-6
       .form-group
         %label Destinations ultérieures
         = f.select :destination_id,  Destination.all.asc(:nom, 1).map{|d| [d.nom, d.id]}, prompt: "Sélectionnez une destination ultérieure..."
-    .col-md-4
+  .row
+    .col-md-6
+      .form-group
+        %label Poids minimum
+        = f.text_field :poids_min, placeholder: "Sélectionnez un poids minimum..."
+    .col-md-6
+      .form-group
+        %label Poids maximum
+        = f.text_field :poids_max, placeholder: "Sélectionnez un poids maximum..."
+  .row
+    .col-md-6
       .form-group
         %br
         = f.check_box :bons_de_sortie_inclus
         %label Inclure les bons de sortie
-  .row
-    .col-md-4
+    .col-md-6
       .form-group
-        %label Poids minimum
-        = f.text_field :poids_min, placeholder: "Sélectionnez un poids minimum..."
-    .col-md-4
-      .form-group
-        %label Poids maximum
-        = f.text_field :poids_max, placeholder: "Sélectionnez un poids maximum..."
+        %br
+        = f.check_box :bons_de_sortie_only
+        %label Seulement les bons de sortie
 
   .well.text-center
     = f.submit "Rechercher", class: "btn btn-primary", type: "submit"

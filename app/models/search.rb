@@ -19,10 +19,11 @@ class Search
   field :destinataire_id, type: String
   field :bon_de_sortie_id, type: String
   field :bons_de_sortie_inclus, type: Boolean
+  field :bons_de_sortie_only, type: Boolean, default: false
 
   attr_accessible :bordereau_id, :producteur_id, :collecteur_id, :produit_id, :date_min,
     :date_max, :status, :type, :poids_min, :poids_max, :destinataire_id, :status, :type, :ecodds_id,
-    :bon_de_sortie_id, :bons_de_sortie_inclus
+    :bon_de_sortie_id, :bons_de_sortie_inclus, :bons_de_sortie_only
 
   validates :status, inclusion: {in: ["nouveau", "en_attente", "attente_sortie", "complet", "clos"]} unless Proc.new {|p| p.status.blank?}
   validates :type, inclusion: {in: ["ecodds", "hors_ecodds", "ddm", "ddi"] } unless Proc.new {|p| p.type.blank?}
@@ -88,21 +89,22 @@ class Search
 
   def criteres
     s = []
+    s << "Bons de sortie seulement" if bons_de_sortie_only
     s << "Numéro de bordereau : #{bordereau_id}" if bordereau_id.present?
     s << "Numéro ECODDS : #{ecodds_id}" if ecodds_id.present?
     s << "Numéro de bon de sortie : #{bon_de_sortie_id}" if bon_de_sortie_id.present?
-    s << (bons_de_sortie_inclus.present? ? "Bons de sortie Inclus" : "Bons de sortie Exclus")
-    s << "date minimum : #{date_min.strftime("%d/%m/%Y")}" if date_min.present?
-    s << "date maximum : #{date_max.strftime("%d/%m/%Y")}" if date_max.present?
-    s << "poids minimum : #{poids_min.to_i} kg" if poids_min.present?
-    s << "poids maximum : #{poids_max.to_i} kg" if poids_max.present?
-    s << "statut : #{status_pretty}" if status.present?
-    s << "type : #{type_pretty}" if type.present?
-    s << "producteur : #{Producteur.find( producteur_id).try(:nom)}" if producteur_id.present?
-    s << "collecteur : #{Collecteur.find( collecteur_id).try(:nom)}" if collecteur_id.present?
-    s << "destination : #{Destination.find( destination_id).try(:nom)}" if destination_id.present?
-    s << "destinataire : #{Destinataire.find( destinataire_id).try(:nom)}" if destinataire_id.present?
-    s << "déchet : #{Produit.find(produit_id).try(:nom)}" if produit_id.present?
+    s << (bons_de_sortie_inclus.present? ? "Bons de sortie Inclus" : "Bons de sortie Exclus") unless bons_de_sortie_only
+    s << "Date minimum : #{date_min.strftime("%d/%m/%Y")}" if date_min.present?
+    s << "Date maximum : #{date_max.strftime("%d/%m/%Y")}" if date_max.present?
+    s << "Poids minimum : #{poids_min.to_i} kg" if poids_min.present?
+    s << "Poids maximum : #{poids_max.to_i} kg" if poids_max.present?
+    s << "Statut : #{status_pretty}" if status.present?
+    s << "Type : #{type_pretty}" if type.present?
+    s << "Producteur : #{Producteur.find( producteur_id).try(:nom)}" if producteur_id.present?
+    s << "Collecteur : #{Collecteur.find( collecteur_id).try(:nom)}" if collecteur_id.present?
+    s << "Destination : #{Destination.find( destination_id).try(:nom)}" if destination_id.present?
+    s << "Destinataire : #{Destinataire.find( destinataire_id).try(:nom)}" if destinataire_id.present?
+    s << "Déchet : #{Produit.find(produit_id).try(:nom)}" if produit_id.present?
     s
   end
 
@@ -137,7 +139,7 @@ class Search
   private
 
   def find_bds
-    if bons_de_sortie_inclus.present? || bon_de_sortie_id.present?
+    if bons_de_sortie_inclus.present? || bon_de_sortie_id.present? || bons_de_sortie_only
       bds = bon_de_sortie_id.present? ? BonDeSortie.where(id: /#{bon_de_sortie_id}/) : BonDeSortie.all
       bds = bds.gte(created_at: date_min.beginning_of_day) if date_min.present?
       bds = bds.lte(created_at: date_max.end_of_day) if date_max.present?
@@ -150,6 +152,7 @@ class Search
     bds || nil
   end
   def find_ebsdds
+    return [] if bons_de_sortie_only
     ebsdds = bordereau_id.present? ? Ebsdd.where(bid: /#{bordereau_id}/) : Ebsdd.all.exists(archived: false)
     ebsdds = ebsdds.where(ecodds_id_str: /#{ecodds_id}/) if ecodds_id.present?
     ebsdds = ebsdds.gte(bordereau_date_transport: date_min.beginning_of_day) if date_min.present?

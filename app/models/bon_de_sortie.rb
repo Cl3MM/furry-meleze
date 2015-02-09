@@ -101,4 +101,27 @@ class BonDeSortie
   def self.code_dr
     1.upto(15).map { |v| {id: "D#{v}", text: "D#{v}" } } + 1.upto(13).map { |v| { id: "R#{v}", text: "R#{v}"} }
   end
+  def to_annexe ar
+    _ebsdds = if ar && ar.any?
+               ebsdds.in(bid: ar)
+             else
+               ebsdds
+             end
+    _ebsdds.sort{ |a,b| a.producteur.nom.downcase <=> b.producteur.nom.downcase }
+  end
+
+  def show_ebsdds_as_json
+    ebsdds.to_a.map do | e |
+      {
+        id: e.bid,
+        url: Rails.application.routes.url_helpers.ebsdd_path(e),
+        nom: e.denomination_cadre_3,
+        poids: e.poids_pretty,
+        poids_f: e.poids,
+        producteur: e.producteur.nom,
+        cap: e.num_cap,
+        transport: e.bordereau_date_transport.strftime("%d/%m/%y")
+      }
+    end.to_json
+  end
 end

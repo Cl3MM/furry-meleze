@@ -1,4 +1,4 @@
-jQuery ->
+$ ->
   if $("#bon-de-sortie").length
 
     bds = $("#bon-de-sortie").data("bds")

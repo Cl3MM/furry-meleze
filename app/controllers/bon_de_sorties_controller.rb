@@ -15,6 +15,19 @@ class BonDeSortiesController < ApplicationController
     @dispo = Ebsdd.where(status: :attente_sortie).count
   end
 
+  def justif
+    bd = BonDeSortie.find(params[:id])
+    ids = params[:ids].present? ? params[:ids] : []
+    respond_to do |format|
+      format.pdf do
+        pdf = EbsddPdf.new nil, :bon_de_sortie, bd, ids
+        send_data pdf.render, filename: "#{bd.id}_#{Date.today.strftime("%d-%m-%y")}.pdf",
+          type: "application/pdf"# , disposition: "inline"
+      end
+      #format.xls # { send_data @products.to_csv(col_sep: "\t") }
+    end
+  end
+
   def prout
     bd = BonDeSortie.find(params[:id])
     respond_to do |format|

@@ -1,4 +1,6 @@
-%h2.page-header
+= javascript_include_tag "bds/show"
+
+%h2.page-header#bdsShow
   Détails du bon de sortie #{@bds.id}
   .btn-group.pull-right
     %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
@@ -41,33 +43,34 @@
       = @bds.date_sortie.strftime("%d/%m/%y")
 
 - if @bds.ebsdds.any?
-  %table.table.table-striped
+  %table.table.table-striped{ data: {bind: "with: vm"} }
     %thead
-      %th Id
-      %th Denomination
-      %th Poids
-      %th Producteur
-      %th #CAP
-      %th Date de Transport
-    %tbody
-      - @bds.ebsdds.each do | ebsdd |
-        %tr
-          %td
-            = link_to ebsdd.bid, ebsdd, target: "_blank"
-          %td
-            = ebsdd.denomination_cadre_3
-          %td
-            = ebsdd.bordereau_poids
-            kg
-          %td
-            = ebsdd.producteur.nom
-          %td
-            = ebsdd.num_cap
-          %td
-            = ebsdd.bordereau_date_transport.strftime("%d/%m/%y")
+      %tr{ data: {bind: "foreach: headers"} }
+        / ko if: title() === "Justif"
+        %th
+          %span{ data: {bind: "text: title "} }
+          &nbsp;
+          %a.btn.btn-xs.btn-success{href: "#", data: { bind: "visible: $root.justifs().length > 0, attr: {href: $root.justifLnk() } " } }
+            %i.fa.fa-download
+        / /ko
+        / ko ifnot: title() === "Justif"
+        %th{ data: { bind: "click: clicked"}}
+          %span{ data: {bind: "text: title "} }
+          %i.fa{ data: { bind: "css: { 'fa-caret-down': sort() && prop(), 'fa-caret-up': !sort() && prop()  }"} }
+        / /ko
+    %tbody{ data: {bind: "foreach: data"} }
+      %tr
+        %td
+          %a{ href: "#", target: "_blank", data: {bind: "text: id, attr: { href: url } " } }
+        %td{ data: {bind: "text: nom"} }
+        %td{ data: {bind: "text: poids"} }
+        %td{ data: {bind: "text: producteur"} }
+        %td{ data: {bind: "text: cap"} }
+        %td{ data: {bind: "text: transport"} }
+        %td
+          %input{type: "checkbox", data: { bind: "checkedValue: $data, checked: $root.justifs"} }
 
 - else
   .alert.alert-danger Aucun eBSDDs associés
 
-
-
+#model{ data:{ ebsdds: @bds.show_ebsdds_as_json, id: @bds.id }}

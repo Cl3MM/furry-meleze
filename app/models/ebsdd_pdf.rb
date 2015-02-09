@@ -6,9 +6,10 @@ class EbsddPdf < Prawn::Document
   WHITE = "FFFFFF"
   SUPER_PINK = "FF11FF"
 
-  def initialize(ebsdd, status, bds = nil)
+  def initialize(ebsdd, status, bds = nil, bds_ids = [])
     @ebsdd = ebsdd
     @bds = bds
+    @bds_ids = bds_ids
     @status = status
     path = File.join(Rails.root, "vendor", "assets", "cerfa2.jpg")
     super(page_size: "A4", margin: 0, info: metadata)
@@ -72,12 +73,13 @@ class EbsddPdf < Prawn::Document
       cadre11
       #cadre12
 
-      @bds.ebsdds.each_slice(5) do | annexe |
+      @bds.to_annexe(@bds_ids).each_slice(5) do | annexe |
         annexe_en_tete
-        annexe.each_with_index do | ebsdd, i |
-          annexe_line_item ebsdd, i
+        annexe.each_with_index do | eb, i |
+          annexe_line_item eb, i
         end
       end
+
     elsif @ebsdd.status == :nouveau || @status == :first_part
       image path, at: [0, here], width: 210.mm
       erase_all

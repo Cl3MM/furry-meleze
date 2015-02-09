@@ -47,32 +47,27 @@ class EbsddsVm
       { title: 'Producteur', prop: 'producteur' }
       { title: '#CAP', prop: 'cap' }
       { title: 'Date de Transport', prop: 'transport', sort: (a,b)->
-        ma = moment(a, 'DD/MM/YYYY')
-        mb = moment(b, 'DD/MM/YYYY')
+        ma = moment(a(), 'DD/MM/YYYY')
+        mb = moment(b(), 'DD/MM/YYYY')
         if ma.isBefore mb then -1 else if ma.isAfter mb then 1 else 0
       }
       { title: 'Justif' }
     ].map (h)-> new Header(h)
     @justifs = ko.observableArray []
-    @justifs.subscribe (niou)->
-      console.log niou
 
     @activeSort = @headers[0]
-    #ko.postbox.subscribe 'ebsdd:justif', @checked
 
     @justifLnk = ko.computed =>
       ids = _.map @justifs(), (j)-> "ids[]=#{j.id()}"
-      console.log ids
-      url = "/bon_de_sorties/justif/#{@id}?#{ids.join('&')}"
-      console.log url
-      return url
+      "/bon_de_sorties/justif/#{@id}?#{ids.join('&')}"
 
     ko.postbox.subscribe 'header:click', @sort
 
   sort: (header)=>
     @activeSort = header
     if @activeSort.sortFn
-      return @data.sort ( if @activeSort.sort() then @activeSort.ascSort else @activeSort.descSort )
+      @data( @data().sort ( if @activeSort.sort() then @activeSort.ascSort else @activeSort.descSort ) )
+      return
 
     prop = @activeSort.prop()
     return unless prop
@@ -84,7 +79,9 @@ class EbsddsVm
       if a[prop] > b[prop] then -1 else if a[prop] < b[prop] then 1 else if a[prop] == b[prop] then 0 else 0
 
     sortFunc = unless @activeSort.sort() then ascSort else descSort
-    @data.sort sortFunc
+    @data @data.sortBy (e)->
+              e[prop]()
+    @data.reverse() if @activeSort.sort()
 
 unless root.EbsddsVm
   root.EbsddsVm = EbsddsVm

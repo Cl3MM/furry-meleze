@@ -1,4 +1,5 @@
 = javascript_include_tag "bds/show"
+.hidden#model{ data:{ ebsdds: @bds.show_ebsdds_as_json, id: @bds.id }}
 
 %h2.page-header#bdsShow
   Détails du bon de sortie #{@bds.id}
@@ -72,5 +73,3 @@
 
 - else
   .alert.alert-danger Aucun eBSDDs associés
-
-#model{ data:{ ebsdds: @bds.show_ebsdds_as_json, id: @bds.id }}

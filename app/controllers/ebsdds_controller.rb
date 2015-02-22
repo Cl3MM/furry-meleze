@@ -360,6 +360,16 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def clone
+    old_ebsdd = Ebsdd.find(params[:id])
+    respond_to do |format|
+      #old_ebsdd.bordereau_poids = 0
+      @ebsdd = old_ebsdd.dup
+      flash[:notice] = "eBsdds cloné avec succès !"
+      format.html { render action: 'new', notice: "eBsdds cloné avec succès !" }
+    end
+  end
+
   def split
     params[:ebsdd][:bordereau_poids].gsub!(",", ".") if params[:ebsdd][:bordereau_poids].present? && params[:ebsdd][:bordereau_poids] =~ /,/
     @ebsdd = Ebsdd.find(params[:id])

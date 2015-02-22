@@ -83,10 +83,14 @@
                 = link_to(fa_icon("print lg", text: ""), ebsdd_printpdf_path(ebsdd, status: :full), class: "btn btn-info touletip btn-xs check-poids",
                   role: "button", title: "Télécharger le Cerfa Complet pour l'eBSDD ##{ebsdd.bid}") if ebsdd.status == :en_attente
 
-                = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || ebsdd.status == :en_attente || current_utilisateur.is_admin?
-
                 = fa_link_to ebsdd_download_path(ebsdd), "", "cloud-download lg", class: "btn btn-success touletip btn-xs",
                   role: "button", title: "Exporter au format ECODDS" if (ebsdd.is_complete? || ebsdd.is_clos?) && ebsdd.is_ecodds
+
+                = link_to(fa_icon("copy lg", text: ""), clone_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
+                  role: "button", title: "Cloner cet ebsdd")
+
+                = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || ebsdd.status == :en_attente || current_utilisateur.is_admin?
+
       %tfoot.hidden.deleteme
         %tr
           %td{colspan: 3}

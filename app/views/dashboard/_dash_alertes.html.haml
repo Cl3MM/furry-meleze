@@ -12,10 +12,10 @@
         %td
           - if al[:poids] > al[:seuil]
             %p.text-danger
-              %i.fa.fa-warning
-              ATTENTION
-              %i.fa.fa-warning
               = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
+              -#%i.fa.fa-warning
+              -#ATTENTION
+              -#%i.fa.fa-warning
           - else
             = raw(link_to truncate( al[:nom]), edit_produit_path(al[:id]) )
         %td.text-center= raw al[:type]
@@ -26,3 +26,6 @@
         %td
           %label.label{class: "#{al[:poids] < al[:seuil] ? "label-success" : "label-danger" }"}
             = "#{(al[:poids] - al[:seuil]).abs.to_s.gsub('.', ',') } kg"
+- if max_alertes > 10
+  .panel-body.text-right
+    = link_to "Voir tout le stock", statistiques_path()

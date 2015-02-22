@@ -873,7 +873,7 @@ class Ebsdd
     mr.entries.reduce([]) do |a, e|
       #binding.pry
       produit = Produit.find e["_id"]
-      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"], type: produit.type }
+      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"], type: produit.type, pretty_poids: "#{e["value"].to_s.gsub('.', ',')} kg" }
       a
     end.sort_by do | h |
       h[:nom]

@@ -28,7 +28,7 @@ jQuery ->
       xkey: 'y',
       ykeys: ['a', 'b'],
       labels: ['Poids en stock', 'Seuil maximal']
-      barColors: ["#eee", "#FF0000"]
+      barColors: ["#FF0000","#666"]
       hideHover: 'auto'
 
   # camions

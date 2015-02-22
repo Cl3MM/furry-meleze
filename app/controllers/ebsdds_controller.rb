@@ -365,6 +365,7 @@ class EbsddsController < ApplicationController
     respond_to do |format|
       #old_ebsdd.bordereau_poids = 0
       @ebsdd = old_ebsdd.dup
+      @ebsdd.status = :nouveau
       flash[:notice] = "eBsdds cloné avec succès !"
       format.html { render action: 'new', notice: "eBsdds cloné avec succès !" }
     end

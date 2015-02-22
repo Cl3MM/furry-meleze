@@ -417,9 +417,9 @@ class EbsddsController < ApplicationController
     when "# ebsdd"
       return :bid
     when "Producteur"
-      return :producteur_id
+      return :nom_producteur
     when "Type déchet"
-      return :produit_id
+      return :nom_produit
     when "Date création"
       return :bordereau_date_creation
     when "Poids"
@@ -436,9 +436,9 @@ class EbsddsController < ApplicationController
       return "# ecodds"
     when :bid
       return "# ebsdd"
-    when :producteur_id
+    when :nom_producteur
       return "Producteur"
-    when :produit_id
+    when :nom_produit
       return "Type déchet"
     when :bordereau_date_creation
       "Date création"

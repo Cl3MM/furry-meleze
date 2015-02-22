@@ -35,15 +35,11 @@
             %td.text-center
               = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
             %td
-              = link_to truncate(ebsdd.producteur.nom.titleize, length: 50), producteur_path(ebsdd.producteur), class:"touletip", title: ebsdd.producteur.nom.titleize
+              = link_to truncate(ebsdd.nom_producteur.titleize, length: 50), producteur_path(ebsdd.producteur_id), class:"touletip", title: ebsdd.nom_producteur.titleize
             -#%td= ebsdd.destinataire_nom.titleize
             %td.text-center
-              - if ebsdd.produit.nil? || ebsdd.produit.nom.nil?
-                \-
-              - else
-                .touletip{title: "#{ ebsdd.libelle.titleize }" }
-                  = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
-            -#%td= ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")
+              .touletip{title: "#{ ebsdd.nom_produit.titleize }" }
+                = truncate(ebsdd.nom_produit.titleize, length: 25)
             %td
               - if ebsdd.bordereau_date_transport.nil?
                 = ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")

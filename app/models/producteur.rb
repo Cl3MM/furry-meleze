@@ -1,6 +1,17 @@
 class Producteur < Company
 
-  has_many :ebsdds, inverse_of: :producteur
+  has_many :ebsdds, inverse_of: :producteur #, after_add: :add_producteur, after_remove: :remove_producteur
+
+  def remove_producteur ebsdd
+    Rails.logger.debug "###" * 100
+    #Rails.logger.debug ebsdd.to_json
+  end
+
+  def add_producteur ebsdd
+    Rails.logger.debug "***" * 100
+    #Rails.logger.debug ebsdd.to_json
+  end
+
   def monthly_stats_by_type datemin = Date.today.beginning_of_month.beginning_of_day, datemax = Date.today.end_of_month.end_of_day
     datemin, datemax = datemax, datemin if datemin > datemax
     datemin = datemin.beginning_of_day

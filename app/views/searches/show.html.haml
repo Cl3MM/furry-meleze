@@ -58,21 +58,16 @@
             = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
           %td= raw ebsdd.ecodds_label
           %td
-            = link_to truncate(ebsdd.producteur.nom.titleize, length: 50), producteur_path(ebsdd.producteur), class:"touletip", title: ebsdd.producteur.nom.titleize
+            = link_to truncate(ebsdd.nom_producteur.titleize, length: 50), producteur_path(ebsdd.producteur_id), class:"touletip", title: ebsdd.nom_producteur.titleize
           -#%td= ebsdd.destinataire_nom.titleize
           %td.text-center
-            - if ebsdd.produit.nil? || ebsdd.produit.nom.nil?
-              \-
-            - else
-              .touletip{title: "#{ ebsdd.libelle.titleize }" }
-                = truncate(ebsdd.denomination_cadre_3.titleize, length: 25)
+            .touletip{title: "#{ ebsdd.nom_produit.try :titleize }" }
+              = truncate(ebsdd.nom_produit.try(:titleize), length: 25)
           %td= ebsdd.created_at.strftime("%d/%m/%Y")
           %td= ebsdd.bordereau_date_transport.strftime("%d/%m/%Y")
           %td
             = ebsdd.poids_pretty
           %td.text-center= raw ebsdd.status_label
-
-
           %td.text-center
             .btn-toolbar{role: :toolbar}
               .text-center.btn-group

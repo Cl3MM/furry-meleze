@@ -32,6 +32,8 @@ class Ebsdd
   include Mongoid::Timestamps
 
   include Pesable
+  include Mongoable
+
   default_scope exists(archived: false).where(:status.ne => :deleted)
 
   def self.per_page

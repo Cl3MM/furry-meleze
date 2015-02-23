@@ -143,7 +143,6 @@ class EbsddsController < ApplicationController
         pdf_list << pdf_path
       end
       cmd = "pdftk #{pdf_list.join(" ")} cat output #{File.join(path, "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf")}"
-      Rails.logger.debug cmd
       %x(#{cmd})
       send_file File.join(path, "Collecte_du_#{Date.today.strftime("%d-%m-%y")}.pdf"), type: "application/pdf"
     else

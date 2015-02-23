@@ -35,7 +35,10 @@
             %td.text-center
               = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
             %td
-              = link_to truncate(ebsdd.nom_producteur.titleize, length: 50), producteur_path(ebsdd.producteur_id), class:"touletip", title: ebsdd.nom_producteur.titleize
+              - if ebsdd.has_producteur?
+                = link_to truncate(ebsdd.nom_producteur.titleize, length: 50), producteur_path(ebsdd.producteur_id), class:"touletip", title: ebsdd.nom_producteur.titleize
+              - else
+                = "-"
             -#%td= ebsdd.destinataire_nom.titleize
             %td.text-center
               .touletip{title: "#{ ebsdd.nom_produit.titleize }" }

@@ -41,8 +41,11 @@
                 = "-"
             -#%td= ebsdd.destinataire_nom.titleize
             %td.text-center
-              .touletip{title: "#{ ebsdd.nom_produit.titleize }" }
-                = truncate(ebsdd.nom_produit.titleize, length: 25)
+              - unless ebsdd.nom_produit.nil?
+                .touletip{title: "#{ ebsdd.nom_produit.titleize }" }
+                  = truncate(ebsdd.nom_produit.titleize, length: 25)
+              - else
+                = "-"
             %td
               - if ebsdd.bordereau_date_transport.nil?
                 = ebsdd.bordereau_date_creation.strftime("%d/%m/%Y")

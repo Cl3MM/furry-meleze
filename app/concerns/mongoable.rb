@@ -27,6 +27,9 @@ module Mongoable
   def set_associations
     set_nom_producteur
     set_nom_produit
+    set_nom_destinataire
+    set_nom_destination
+    set_nom_collecteur
   end
 
   def set_nom_producteur

@@ -323,10 +323,10 @@ class EbsddPdf < Prawn::Document
   def cadre6
     #if(@ebsdd.new_record?)
     ## Estimée
-    #checkbox 168.5, 472
+    checkbox 168.5, 472
     #else
     ## Réelle
-    checkbox 111, 471.5
+    #checkbox 111, 471.5
     #end
 
 
@@ -369,6 +369,12 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.produit.nom.titleize, [175, 536], width: 300, height: 10
   end
   def cadre1
+    if @ebsdd.is_ecodds
+      checkbox 211.65, 684.5
+    else
+      checkbox 51.3, 725.5
+    end
+
     # siret
     draw_text @ebsdd.producteur.siret, at: [88, 632]
     # nom
@@ -410,7 +416,7 @@ class EbsddPdf < Prawn::Document
     text_box text, at: at, height: options[:height], width: options[:width], overflow: options[:overflow], valign: options[:valign], align: options[:align], color: options[:color]
   end
   def erase_all
-    [[85, 642, 140], [340, 672, 140], [170, 558.5, 100], [88, 376, 100], [320,160, 50]].each do | e |
+    [[85, 641, 140], [340, 672, 140], [170, 558.5, 100], [88, 376, 100], [320,160, 50]].each do | e |
       erase e[0], e[1], width: e[2]
     end
     ## cadre 1 : Siret
@@ -443,7 +449,7 @@ class EbsddPdf < Prawn::Document
 
   def checkboxes
     # Check box Cadre 1
-    checkbox 51.3, 725.5
+    #checkbox 51.3, 725.5
     # Check box Cadre 2
     checkbox 303.1, 692.2
 

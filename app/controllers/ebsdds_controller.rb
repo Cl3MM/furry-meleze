@@ -2,7 +2,7 @@
 
 class EbsddsController < ApplicationController
   before_filter :authenticate_utilisateur!
-  before_filter :set_ebsdd, only: [:print_pdf, :annexe_export, :download, :template, :show, :edit, :update, :destroy]
+  before_filter :set_ebsdd, only: [:print_pdf, :annexe_export, :download, :template, :show, :edit, :update, :destroy, :restore]
   before_filter :check_incomplete, only: [:import, :upload]
   helper_method :sort_column, :sort_direction, :find_sorted_column
 
@@ -387,6 +387,15 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def restore
+    binding.pry
+    @ebsdd = Ebsdd.where(status: "deleted").find params[:id]
+    @ebsdd.update_attribute(:status, :en_attente)
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.json { head :no_content }
+    end
+  end
   # DELETE /ebsdds/1
   # DELETE /ebsdds/1.json
   def destroy

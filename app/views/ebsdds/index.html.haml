@@ -79,7 +79,7 @@
     - else
       = link_to "Complets", ebsdd_status_path(status: :complets)
 
-  -if current_utilisateur.is_admin?
+  -if true #current_utilisateur.is_admin?
     %li{ class: "#{@status == :deleted ? "active" : ""}" }
       - if @status == :deleted
         Supprimés

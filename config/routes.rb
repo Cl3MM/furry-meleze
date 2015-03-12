@@ -53,6 +53,7 @@ Meleze::Application.routes.draw do
   get  'ebsdds/:id/statut_precedent', to: 'ebsdds#statut_precedent', as: :statut_precedent
   delete 'ebsdds/mark_as_deleted', to: 'ebsdds#mark_as_deleted'
 
+  get  'ebsdds/restore/:id', to: 'ebsdds#restore', as: :restore_ebsdd
   get  'ebsdds/:id/clone', to: 'ebsdds#clone', as: :clone_ebsdd
   post 'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post 'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir

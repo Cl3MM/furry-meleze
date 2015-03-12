@@ -67,10 +67,7 @@ class Produit # < ActiveRecord::Base
   end
 
   def self.to_destinations
-    Produit.asc(:index, 1).reduce([]) do | a, p |
-      a << {id: p.references.first, text: p.references.first } if p.references.any? && !(a.map{|c| c[:text]}.include?(p.references.first) || p.references.first.blank?)
-      a
-    end
+    Produit.all.map(&:references).flatten.uniq.reduce([]){ |ar, r| ar << {id: r, text: r}; ar }
   end
   def denomination_ecodds
     "#{"%02d" % index}-#{nom}"

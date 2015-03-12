@@ -63,6 +63,8 @@ $ ->
       width: 780
       data: $("#codedr").data("codedr")
 
+    $("#codedr").val("R13").trigger('change')
+
     $("#destinataire").select2("enable", false)
 
     #url += "&is_ecodds=1" if $("#ecodds").prop("checked") == 1

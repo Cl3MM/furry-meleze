@@ -4,7 +4,7 @@ jQuery ->
   $("#destinataire").select2("enable", true)
   $("#destinataire").select2('val', '<%= @destinataire %>')
   $("#codedr").select2("enable", true)
-  $("#codedr").select2('val', '<%= @codedr %>')
+  $("#codedr").select2('val', 'R13') #'<%= @codedr %>')
   ebsdds = '<%= j render partial: "bon_de_sorties/choisir_ebsdds", locals: { ebsdds: @ebsdds } %>'
   if !!ebsdds
     $("#ebsdds_list tbody").replaceWith(ebsdds)

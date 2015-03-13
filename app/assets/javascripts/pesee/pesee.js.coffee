@@ -32,7 +32,7 @@ class Pesee
     brut = "#{@brut().toFixed(3)}".replace('.',',')
     "#{brut} kg"
   forceDeleteMe: =>
-    return unless $("#data").data("authorization")
+    #return unless $("#data").data("authorization")
     @loading(true)
     ko.postbox.publish "adminDeletePesee", @dsd()
   deleteMe: =>

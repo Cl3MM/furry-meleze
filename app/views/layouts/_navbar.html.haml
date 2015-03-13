@@ -45,6 +45,10 @@
             = fa_link_to tares_path, "Gérer les Tares", "cubes lg"
           %li
             = fa_link_to statistiques_path, "Statistiques", "bar-chart-o lg"
+          - if current_utilisateur.is_admin?
+            %li.divider
+            %li
+              = fa_link_to ebsdds_selection_path, "Ecodds", "leaf lg"
           %li.divider
           - if utilisateur_signed_in?
             %li.dropdown-header{ role: :presentation }

@@ -67,17 +67,17 @@
     - else
       = link_to "Archivés", ebsdd_status_path(status: :clos)
 
-  %li{ class: "#{@status == :incomplets ? "active" : ""}" }
-    - if @status == :incomplets
-      Incomplets
-    - else
-      = link_to "Incomplets", ebsdd_status_path(status: :incomplets)
+  -#%li{ class: "#{@status == :incomplets ? "active" : ""}" }
+    -#- if @status == :incomplets
+      -#Incomplets
+    -#- else
+      -#= link_to "Incomplets", ebsdd_status_path(status: :incomplets)
 
-  %li{ class: "#{@status == :complets ? "active" : ""}" }
-    - if @status == :complets
-      Complets
-    - else
-      = link_to "Complets", ebsdd_status_path(status: :complets)
+  -#%li{ class: "#{@status == :complets ? "active" : ""}" }
+    -#- if @status == :complets
+      -#Complets
+    -#- else
+      -#= link_to "Complets", ebsdd_status_path(status: :complets)
 
   -if true #current_utilisateur.is_admin?
     %li{ class: "#{@status == :deleted ? "active" : ""}" }

@@ -326,13 +326,13 @@ class EbsddsController < ApplicationController
   end
 
   def delete_pesee
-    if current_utilisateur.is_admin?
+    #if current_utilisateur.is_admin?
       @ebsdd = Ebsdd.find(params[:id])
       deleted = @ebsdd.pesees.delete_all(dsd: params[:pid])
       render json: { deleted: deleted, id: params[:pid] }
-    else
-      render json: {error: "Seuls les administrateurs sont habilités à supprimer des pesées déjà enregistrées", id: params[:pid]}, status: :unprocessable_entity
-    end
+    #else
+      #render json: {error: "Seuls les administrateurs sont habilités à supprimer des pesées déjà enregistrées", id: params[:pid]}, status: :unprocessable_entity
+    #end
   end
   # PATCH/PUT /ebsdds/1
   # PATCH/PUT /ebsdds/1.json

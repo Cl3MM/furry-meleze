@@ -1,95 +1,108 @@
-%h1.underline
-  = fa_icon "tags"
-  Liste des eBSDDs
-  %span.small
-    = "(#{@ebsdds.total_entries})"
+-#= javascript_include_tag "filtres_ebsdds.js" if [:en_attente, :nouveau].include? @status
+= javascript_include_tag "ebsdds_index_controller.js" if [:en_attente, :nouveau, :attente_sortie].include? @status
+%span#model.hidden{data: {bids: "#{@ebsdds.map(&:bid).to_json}", status: "#{@status}", authorization: "#{current_utilisateur.is_admin?}" } }
+#ebsdds-index
+  %h1.underline
+    = fa_icon "tags"
+    Liste des eBSDDs
+    %span.small
+      = "(#{@ebsdds.total_entries})"
 
-  .btn-group.pull-right
-    %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
-      = fa_icon "cogs lg"
-      &nbsp;
-      Actions
-      %span.caret
-    %ul.dropdown-menu{role: "menu"}
-      %li
-        = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
-      %li
-        = fa_link_to new_bon_de_sortie_path, "Créer un Bon de Sortie", "sign-out lg"
+    .btn-group.pull-right
+      %button.btn.btn-info.dropdown-toggle{ type: "button", "data-toggle" => :dropdown}
+        = fa_icon "cogs lg"
+        &nbsp;
+        Actions
+        %span.caret
+      %ul.dropdown-menu{role: "menu"}
+        %li
+          = fa_link_to new_ebsdd_path, "Créer un nouveau eBSDD", "tag lg"
+        %li
+          = fa_link_to new_bon_de_sortie_path, "Créer un Bon de Sortie", "sign-out lg"
+        - if @status == :nouveau
+          %li.divider
+          %li
+            = fa_link_to "#", "Imprimer les BSD pour la collecte", "truck lg", id: "nouveaux_pdfs"
+        - if @status == :en_attente
+          %li.divider
+          %li
+            = fa_link_to "#", "Mettre plusieurs eBsdd en Stock", "cubes lg", id: "nouveaux_pdfs"
+          -#%li
+            -#= fa_link_to "#", "Basculer en retour collecte", "check-square-o lg", id: "to_retour_collecte"
+        %li.divider
+        %li
+          = fa_link_to new_search_path, "Recherche avancée", "search lg"#, {"data-target" => "#search", "data-toggle" => "modal"}
+        %li.divider
+        %li
+          = fa_link_to ebsdds_import_path, "Importer une liste de eBSDDs", "cloud-upload lg"
+        %li.divider
+        %li
+          = fa_link_to ebsdds_selection_path, "Créer un fichier multi eBSDDs pour EcoDDS", "cloud-upload lg"
+
+  %ol.breadcrumb
+    -if current_utilisateur.is_admin?
+      %li{ class: "#{@status == :tous ? "active" : ""}" }
+        - if @status == :tous
+          Tous
+        - else
+          = link_to "Tous", ebsdds_path
+
+    %li{ class: "#{@status == :nouveau ? "active" : ""}" }
       - if @status == :nouveau
-        %li.divider
-        %li
-          = fa_link_to "#", "Imprimer les BSD pour la collecte", "truck lg", id: "nouveaux_pdfs"
-      - if @status == :en_attente
-        %li.divider
-        %li
-          = fa_link_to "#", "Mettre plusieurs eBsdd en Stock", "cubes lg", id: "nouveaux_pdfs"
-        -#%li
-          -#= fa_link_to "#", "Basculer en retour collecte", "check-square-o lg", id: "to_retour_collecte"
-      %li.divider
-      %li
-        = fa_link_to new_search_path, "Recherche avancée", "search lg"#, {"data-target" => "#search", "data-toggle" => "modal"}
-      %li.divider
-      %li
-        = fa_link_to ebsdds_import_path, "Importer une liste de eBSDDs", "cloud-upload lg"
-      %li.divider
-      %li
-        = fa_link_to ebsdds_selection_path, "Créer un fichier multi eBSDDs pour EcoDDS", "cloud-upload lg"
-
-%ol.breadcrumb
-  -if current_utilisateur.is_admin?
-    %li{ class: "#{@status == :tous ? "active" : ""}" }
-      - if @status == :tous
-        Tous
+        Nouveaux
       - else
-        = link_to "Tous", ebsdds_path
+        = link_to "Nouveaux", ebsdd_status_path(status: :nouveau)
 
-  %li{ class: "#{@status == :nouveau ? "active" : ""}" }
-    - if @status == :nouveau
-      Nouveaux
-    - else
-      = link_to "Nouveaux", ebsdd_status_path(status: :nouveau)
+    %li{ class: "#{@status == :en_attente ? "active" : ""}" }
+      - if @status == :en_attente
+        Attente Réception
+      - else
+        = link_to "Attente Réception", ebsdd_status_path(status: :en_attente)
 
-  %li{ class: "#{@status == :en_attente ? "active" : ""}" }
-    - if @status == :en_attente
-      Attente Réception
-    - else
-      = link_to "Attente Réception", ebsdd_status_path(status: :en_attente)
+    %li{ class: "#{@status == :attente_sortie ? "active" : ""}" }
+      - if @status == :attente_sortie
+        En Stock
+      - else
+        = link_to "En Stock", ebsdd_status_path(status: :attente_sortie)
 
-  %li{ class: "#{@status == :attente_sortie ? "active" : ""}" }
-    - if @status == :attente_sortie
-      En Stock
-    - else
-      = link_to "En Stock", ebsdd_status_path(status: :attente_sortie)
+    %li{ class: "#{@status == :clos ? "active" : ""}" }
+      - if @status == :clos
+        Archivés
+      - else
+        = link_to "Archivés", ebsdd_status_path(status: :clos)
 
-  %li{ class: "#{@status == :clos ? "active" : ""}" }
-    - if @status == :clos
-      Archivés
-    - else
-      = link_to "Archivés", ebsdd_status_path(status: :clos)
 
-  -#%li{ class: "#{@status == :incomplets ? "active" : ""}" }
-    -#- if @status == :incomplets
-      -#Incomplets
-    -#- else
-      -#= link_to "Incomplets", ebsdd_status_path(status: :incomplets)
-
-  -#%li{ class: "#{@status == :complets ? "active" : ""}" }
-    -#- if @status == :complets
-      -#Complets
-    -#- else
-      -#= link_to "Complets", ebsdd_status_path(status: :complets)
-
-  -if true #current_utilisateur.is_admin?
     %li{ class: "#{@status == :deleted ? "active" : ""}" }
       - if @status == :deleted
         Supprimés
       - else
         = link_to "Supprimés", ebsdd_status_path(status: :deleted)
+    -#%li{ class: "#{@status == :incomplets ? "active" : ""}" }
+      -#- if @status == :incomplets
+        -#Incomplets
+      -#- else
+        -#= link_to "Incomplets", ebsdd_status_path(status: :incomplets)
 
+    -#%li{ class: "#{@status == :complets ? "active" : ""}" }
+      -#- if @status == :complets
+        -#Complets
+      -#- else
+        -#= link_to "Complets", ebsdd_status_path(status: :complets)
+    - if [:en_attente, :nouveau, :attente_sortie].include? @status
+      .pull-right.form-inline{data: {bind: "with: vm.fCtrl"} }
+        %button.btn.btn-sm.btn-default{type: "button", data:{bind: "visible: query().length > 0, click: resetMe()"}}
+          %i.fa.fa-times
+        .form-group
+          %input.input-sm.form-control{data:{bind: "textInput: query"}}
+        .form-group
+          %select.input-sm.form-control{data: {bind: "options: par, value: critere"}}
 
-= render partial: "ebsdds/ebsdds"
-#search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
--#= render partial: "search"
-- params["status"] = "clos" if params.keys.include?("status") && params["status"] == "closs"
-.center-block.tect-center
-  = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")
+  #unfiltered
+    = render partial: "ebsdds/ebsdds"
+  #filtered.hidden
+    = render partial: "ebsdds/filtered"
+  #search.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "searchLabel", role: "dialog", tabindex: "-1"}
+  -#= render partial: "search"
+  - params["status"] = "clos" if params.keys.include?("status") && params["status"] == "closs"
+  .center-block.tect-center#pagination
+    = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

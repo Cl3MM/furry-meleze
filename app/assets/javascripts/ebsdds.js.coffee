@@ -495,13 +495,12 @@ jQuery ->
         $(this).prop('checked', !checked)
 
   # bouton nouveau status (passe le status de Nouveau à En Attente)
-  $(".nouveau_statut").on 'click', (e) ->
+  $("body").on 'click', '.nouveau_statut', (e) ->
     e.preventDefault()
     #selector = if $("#master_nouveau_pdf_checkbox").length then 'nth-child(2)' else 'first-child'
     #id = $(this).closest('tr').find("td:#{selector}").text()
     #id = id.replace /( )/g, ""
     id = $(this).closest('tr').prop('id')
-    console.log id
     url = "/ebsdd/#{id}/change_nouveau_statut.json"
     $.post(url).done(fadeNvEbsdd).fail( ( (d,s)-> console.log d ) )
 
@@ -526,7 +525,7 @@ jQuery ->
     $("#ebsdd_bordereau_date_reception").val $(this).val()
 
   # bouton en attente status (passe le status de En Attente à Pret à sortir)
-  $(".en_attente_statut").on 'click', (e) ->
+  $("body").on 'click', ".en_attente_statut", (e) ->
     e.preventDefault()
     elem = $(this).first().closest('tr').find(".poids")
     data = elem.data('cdt')

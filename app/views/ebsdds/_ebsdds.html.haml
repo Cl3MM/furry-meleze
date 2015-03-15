@@ -1,14 +1,10 @@
 -if @ebsdds.any?
-  =# render partial: "ebsdds_with_status", object: @ebsdds, as: :ebsdds if @status == :en_attente
-  %span#model.hidden{data: {bids: "#{@ebsdds.map(&:bid).to_json}", status: "#{@status}" } }
-    = javascript_include_tag "status_controller.js" if [:en_attente, :nouveau].include? @status
-
-  .panel.panel-default{ data: {bind: "with: vm"} }
+  .panel.panel-default
     %table.table.table-striped.table-hover#ebsdds{"data-status" => "#{@status}"}
       %thead
         %tr
           %th.hidden.deleteme
-            %input{value: "false", type: :checkbox, data: {bind: "checked: check"}}
+            %input{value: "false", type: :checkbox, data: {bind: "checked: vm.statusCtrl.check"}}
           %th= sortable "# ebsdd"
           %th= sortable "# ecodds"
           %th= sortable "Producteur"
@@ -23,14 +19,13 @@
             Actions
             - if [:en_attente, :nouveau].include? @status
               | &nbsp;
-              %a.btn.btn-xs.btn-danger{ data: {bind: "click: selectForDeleteAll"} }
+              %a.btn.btn-xs.btn-danger{ data: {bind: "click: vm.statusCtrl.selectForDeleteAll"} }
                 %i.fa.fa-times
-
       %tbody
         -@ebsdds.each do | ebsdd |
           %tr{id: "#{ebsdd.bid}" }
             %td.hidden.deleteme
-              %input{ value: ebsdd.bid, type: :checkbox, data: {bind: "checked: ebsdedes"} }
+              %input{ value: ebsdd.bid, type: :checkbox, data: {bind: "checked: vm.statusCtrl.ebsdedes"} }
             %td= link_to ebsdd.bordereau_id.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
             %td.text-center
               = ebsdd.ecodds_id.nil? ? "-" : ebsdd.ecodds_id
@@ -95,15 +90,14 @@
 
                   = link_to(fa_icon("copy lg", text: ""), clone_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
                     role: "button", title: "Cloner cet ebsdd")
-
-                  = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if ebsdd.is_nouveau? || ebsdd.status == :en_attente || current_utilisateur.is_admin?
+                  = fa_link_to ebsdd, "", "times lg", class: "btn btn-danger touletip btn-xs", role: "button", title: "Supprimer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?", method: :delete, data: { confirm: "êtes vous sur de vouloir supprimer l'élément #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?" } if [:nouveau, :en_attente].include?(ebsdd.status) && !current_utilisateur.is_admin? || current_utilisateur.is_admin?
                 - else
                   = fa_link_to restore_ebsdd_path(ebsdd), "", "refresh", class: "btn btn-info touletip btn-xs", role: "button", title: "Restaurer #{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid} ?"
 
       %tfoot.hidden.deleteme
         %tr
           %td{colspan: 3}
-            %a.btn.btn-xs.btn-danger{ data: {bind: "click: deleteAll"} }
+            %a.btn.btn-xs.btn-danger{ data: {bind: "click: vm.statusCtrl.deleteAll"} }
               %i.fa.fa-times
               Supprimer la sélection
 -else

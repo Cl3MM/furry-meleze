@@ -320,6 +320,17 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def filter
+    if [:en_attente, :nouveau, :attente_sortie].include? params[:status].to_sym
+      @ebsdds = Ebsdd.where(status: params[:status])
+      @ebsdds = @ebsdds.where(nom_producteur: /#{params[:query]}/i) if params[:prop] == "producteur"
+      @ebsdds = @ebsdds.where(bid: /#{params[:query]}/i) if params[:prop] == "ebsdds"
+      @ebsdds = @ebsdds.where(ecodds_id_str: /#{params[:query]}/i) if params[:prop] == "ecodds"
+      render json: { data: @ebsdds.to_a }
+    else
+      render json: { data: [] }
+    end
+  end
   def pesee
     @ebsdd = Ebsdd.find(params[:id])
     @tares = Tare.all

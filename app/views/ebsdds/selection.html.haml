@@ -48,7 +48,7 @@
     %tbody
       = form_tag ebsdds_export_path, id: "to_export", role: :form do
         -@ebsdds.each do | ebsdd |
-          %tr
+          %tr{id: "#{ebsdd.bid}" }
             %td= check_box_tag "ebsdds[]", ebsdd.ecodds_id, false, class: "multiebsdd"
             %td= link_to ebsdd.bid, ebsdd_path(ebsdd)
             %td= ebsdd.ecodds_id.nil? ? "" : ebsdd.ecodds_id

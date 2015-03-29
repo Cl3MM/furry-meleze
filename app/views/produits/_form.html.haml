@@ -96,11 +96,10 @@
 
   %hr
   .row
-    .col-md-12
-      .actions
-        = link_to 'Retour', produits_path, class: "btn btn-default"
-        = content_tag :button, type: :submit, class: "btn btn-primary" do
-          Enregistrer les modifications&nbsp;
-          = fa_icon "save lg"
-        = link_to 'Voir le déchet', @produit, class: "btn btn-default"
+    .col-md-6.col-md-offset-4
+      = link_to 'Retour', produits_path, class: "btn btn-default"
+      = content_tag :button, type: :submit, class: "btn btn-primary" do
+        Enregistrer les modifications&nbsp;
+        = fa_icon "save lg"
+      = link_to 'Voir le déchet', @produit, class: "btn btn-default"
 

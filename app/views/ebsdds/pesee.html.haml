@@ -29,32 +29,39 @@
 
       .col-md-8.text-right{data: {bind: "visible: vm.tareReady"}}
         / ko with:vm.balanceCtrl
-        .btn-group{ role: "group", aria_label: "Réglages Balance" }
+        .form-inline
+          .btn.btn-sm.btn-default{ role: "group", aria_label: "Réglages Balance", data: {bind: "click: toggleManual"} }
+            %i.fa.fa-plus{data: {bind: "visible: !showManual()"}}
+            %i.fa.fa-times{data: {bind: "visible: showManual()"}}
+          .form-group{data: { bind: "visible: showManual()" }}
+            %input.form-control.input-sm{data: { bind: "textInput: fakePoids" }}
 
-          .btn-group{ role: "group" }
-            %button.btn.btn-info.btn-sm.dropdown-toggle{type: "button", data: {toggle: "dropdown"}, "aria-expanded"=>"false"}
-              Réglages Balance
-              %span.caret
-            %ul.text-left.dropdown-menu{ role: "menu" }
-              %li
-                %a{href: "#", data: {bind: "click: raz, attr: {disabled: savingPesee()}"}}
-                  %i.fa.fa-arrows-h.fa-lg
-                  &nbsp;Mise à Zero
-              %li
-                %a{href: "#", data: {bind: "click: doTare, attr: {disabled: savingPesee()}"}}
-                  %i.fa.fa-plus-square.fa-lg
-                  &nbsp;Tarer la balance
-              %li
-                %a{href: "#", data: {bind: "click: delTare, attr: {disabled: savingPesee()}"}}
-                  %i.fa.fa-minus-square.fa-lg
-                  &nbsp;Supprimer la Tare
+          .btn-group{ role: "group", aria_label: "Réglages Balance" }
 
-          %button.btn.btn-primary.btn-sm{type: "button", data: {bind: "click: pese, attr: {disabled: savingPesee()}"}}
-            %i.fa.fa-refresh.fa-lg
-            &nbsp;Récupérer le poids
-          %button.btn.btn-success.btn-sm{type: "button", data: {bind: "click: save, attr: {disabled: savingPesee()}"}}
-            %i.fa.fa-download.fa-lg
-            &nbsp;Créer la pesée
+            .btn-group{ role: "group" }
+              %button.btn.btn-info.btn-sm.dropdown-toggle{type: "button", data: {toggle: "dropdown"}, "aria-expanded"=>"false"}
+                Réglages Balance
+                %span.caret
+              %ul.text-left.dropdown-menu{ role: "menu" }
+                %li
+                  %a{href: "#", data: {bind: "click: raz, attr: {disabled: savingPesee()}"}}
+                    %i.fa.fa-arrows-h.fa-lg
+                    &nbsp;Mise à Zero
+                %li
+                  %a{href: "#", data: {bind: "click: doTare, attr: {disabled: savingPesee()}"}}
+                    %i.fa.fa-plus-square.fa-lg
+                    &nbsp;Tarer la balance
+                %li
+                  %a{href: "#", data: {bind: "click: delTare, attr: {disabled: savingPesee()}"}}
+                    %i.fa.fa-minus-square.fa-lg
+                    &nbsp;Supprimer la Tare
+
+            %button.btn.btn-primary.btn-sm{type: "button", data: {bind: "click: pese, attr: {disabled: savingPesee()}"}}
+              %i.fa.fa-refresh.fa-lg
+              &nbsp;Récupérer le poids
+            %button.btn.btn-success.btn-sm{type: "button", data: {bind: "click: save, attr: {disabled: savingPesee()}"}}
+              %i.fa.fa-download.fa-lg
+              &nbsp;Créer la pesée
 
         / /ko
   .row

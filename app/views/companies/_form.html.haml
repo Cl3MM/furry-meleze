@@ -68,7 +68,7 @@
       = render :partial => "collecteurs/custom_form", object: f, as: :f
 
   .row
-    .actions
+    .col-md-6.col-md-offset-4
       = link_to 'Retour', @company.class, class: "btn btn-default"
       = content_tag :button, type: :submit, class: "btn btn-primary" do
         Enregistrer les modifications&nbsp;

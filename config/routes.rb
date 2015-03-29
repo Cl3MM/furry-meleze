@@ -60,6 +60,9 @@ Meleze::Application.routes.draw do
   post 'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post 'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir
   # Bons de sortie
+  get  'bon_de_sorties/:id/edit', to: 'bon_de_sorties#edit', as: :edit_bon_de_sortie
+  get  'bon_de_sorties/:id/edit', to: 'bon_de_sorties#edit', as: :bon_de_sorty
+  put 'bon_de_sorties/:id/edit', to: 'bon_de_sorties#update'
   get  'bon_de_sorties/new', to: 'bon_de_sorties#new', as: :new_bon_de_sortie
   post 'bon_de_sorties', to: 'bon_de_sorties#create'
   get 'bon_de_sorties/:id', to: 'bon_de_sorties#show', as: :bon_de_sortie

@@ -19,6 +19,7 @@ class BalanceController < ApplicationController
     render json: pesees, status: :ok
   end
   def dsd
+    err = []
     begin
       return render json: Balance::Balance.new.cmd("I").run.poids.to_json
     rescue Errno::EHOSTUNREACH, Errno::ETIMEDOUT => bang

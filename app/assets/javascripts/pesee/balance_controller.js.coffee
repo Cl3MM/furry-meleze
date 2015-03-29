@@ -3,6 +3,8 @@ root = exports ? this
 class BalanceController
   constructor: () ->
     @loading = ko.observable false
+    @showManual = ko.observable false
+    @fakePoids = ko.observable()
     @savingPesee = ko.observable(false).syncWith "savingPesee"
     @poids = ko.observable()
     @ready = ko.pureComputed( =>
@@ -21,7 +23,9 @@ class BalanceController
       return "" if @poids() == undefined
       @poids().tareEnKilo()
     ,@)
+    @manualTare = ko.observable 0
     ko.postbox.subscribe "tare", (data)=>
+      @manualTare data
       @poids(undefined)
     return
 
@@ -32,6 +36,7 @@ class BalanceController
   razOk: (data)=>
     @loading false
     toastr.success "Balance réinitialisée avec succès"
+
   err: (data)=>
     @loading false
     msg = "Une erreur est survenue, veuillez réessayer"
@@ -40,7 +45,8 @@ class BalanceController
     toastr.error msg
     console.group "ERREUR"
     console.log data
-    console.end
+    console.groupEnd()
+
   pese: =>
     @loading true
     #@poids undefined
@@ -58,6 +64,7 @@ class BalanceController
 
   doTare: =>
     $.get("/balance/cmd/t").done(@doTareOk).fail(@err)
+
   doTareOk: ->
     toastr.success "Balance tarée avec succès"
 
@@ -67,9 +74,29 @@ class BalanceController
 Poids brut : #{@poids().brutEnKilo()} <br/>"
 #Poids tare : #{@poids().tareEnKilo()} <br/>"
 
+  toggleManual: =>
+    @showManual !@showManual()
+
   save: =>
     @loading true
     @poids undefined
+    if @fakePoids()?
+      poids =
+        net:
+          val: parseFloat(@fakePoids()) + @manualTare().poids()
+        brut:
+          val : parseFloat(@fakePoids()) + @manualTare().poids()
+        tare:
+          val : @manualTare().poids()
+        dsd:
+          val: 1 + moment().format("0MMDDHHmm")
+        date:
+          val: moment().format("DDMMYY")
+        heure:
+          val: moment().format("HHmmss")
+      @fakePoids null
+      @saveOk poids
+      return
     $.get("/balance/dsd").done(@saveOk).fail(@err)
 
   saveOk: (data)=>

@@ -33,6 +33,7 @@ class PeseesController
     ,@)
   to_s: (data)->
     "#{data.toFixed(3)}".replace('.',',') + " kg"
+
   delPesse: (dsd)=>
     @pesees.remove (p)->
       if p.dsd() == dsd and p.added
@@ -79,13 +80,20 @@ class PeseesController
     ko.postbox.publish "savingPesee", true
     data =
       pesees: ko.mapping.toJS @onlyNew()
-    $.post("/balance/save/#{@ebsddId}", data).done(@saveOk).fail(@øaveErr)
+    $.post("/balance/save/#{@ebsddId}", data).done(@saveOk).fail(@saveErr)
+
   saveOk: (data)=>
     ko.postbox.publish "savingPesee", false
     toastr.success "Pesée enregistrée avec succès"
     @pesees.each (p)->
       p.toAdd(false) if p.toAdd()
     @pesees.valueHasMutated()
+
+  saveErr: (err)=>
+    console.group "Erreur"
+    console.log err
+    console.groupEnd()
+
 unless root.PeseesController
   root.PeseesController = PeseesController
 

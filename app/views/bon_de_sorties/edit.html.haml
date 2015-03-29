@@ -1,0 +1,17 @@
+= custom_form(@bds) do |f|
+  %h1.underline
+    = fa_icon "tags"
+
+  .row
+    .col-md-12
+      .form-group
+        = f.label :transporteur, "Transporteur", class: "disabled"
+        %br
+        .input-group
+          = f.select :transporteur, Collecteur.all.asc(:nom).map{ |p| [p.nom, p.id] }, prompt: "Sélectionnez un transporteur..."
+          %span.input-group-btn
+            %button.btn.btn-primary{role: :submit} Sélectionner
+  .row
+    .col-md-6.col-md-offset-4
+      = link_to 'Retour', bon_de_sortie_path, class: "btn btn-default"
+      = link_to 'Voir le Bon de sortie', bon_de_sortie_path(@bds), class: "btn btn-default"

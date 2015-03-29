@@ -28,6 +28,24 @@ class BonDeSortiesController < ApplicationController
     end
   end
 
+  # GET /produits/1/edit
+  def edit
+    @bds = BonDeSortie.find(params[:id])
+  end
+
+  # PUT /produits/1.json
+  def update
+    @bds = BonDeSortie.find params[:id]
+    respond_to do |format|
+      if params[:bon_de_sortie][:transporteur].present? and @bds.update_attribute(:transporteur, params[:bon_de_sortie][:transporteur])
+        format.html { redirect_to bon_de_sortie_path(@bds), notice: "#{@bds.id} a bien été mis à jour." }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @bds.errors, status: :unprocessable_entity }
+      end
+    end
+  end
   def prout
     bd = BonDeSortie.find(params[:id])
     respond_to do |format|
@@ -150,7 +168,7 @@ class BonDeSortiesController < ApplicationController
   end
 
   def sort_direction
-    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end
   private
 

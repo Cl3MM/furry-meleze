@@ -546,7 +546,7 @@ class Ebsdd
   end
   def self.to_multi params
     if params.has_key?(:ebsdds) && params[:ebsdds].class == Array && params[:ebsdds].any?
-      ebsdds = Ebsdd.where(status: :clos).in(ecodds_id: params[:ebsdds])
+      ebsdds = Ebsdd.in(ecodds_id: params[:ebsdds])
       ebsdds.map do | ebsdd |
         ebsdd.inc_export
         ebsdd.to_ebsdd

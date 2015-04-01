@@ -83,9 +83,9 @@ Poids brut : #{@poids().brutEnKilo()} <br/>"
     if @fakePoids()?
       poids =
         net:
-          val: parseFloat(@fakePoids()) + @manualTare().poids()
+          val: parseFloat(@fakePoids()) #- @manualTare().poids()
         brut:
-          val : parseFloat(@fakePoids()) + @manualTare().poids()
+          val : parseFloat(@fakePoids()) #+ @manualTare().poids()
         tare:
           val : @manualTare().poids()
         dsd:

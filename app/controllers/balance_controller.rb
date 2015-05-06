@@ -15,10 +15,11 @@ class BalanceController < ApplicationController
         end
       end
     end
+    binding.pry
     if ebsdd.pesees.any?
       ebsdd.update_attribute(:bordereau_poids, ebsdd.pesee_totale)
     else
-      ebsdd.update_attribute(:bordereau_poids, 0)
+      ebsdd.update_attribute(:bordereau_poids, nil)
     end
     render json: pesees, status: :ok
   end

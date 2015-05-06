@@ -303,6 +303,24 @@ class EbsddsController < ApplicationController
     @ebsdd = Ebsdd.new(params[:ebsdd])
     #@ebsdd.bordereau_date_reception = @ebsdd.bordereau_date_transport
     respond_to do |format|
+      #err, first_run = nil, true
+      #while err.try(:class) == Moped::Errors::OperationFailure || first_run
+        #begin
+          #first_run = false
+          #@ebsdd.save
+        #rescue Moped::Errors::OperationFailure => e
+          #binding.pry
+          #if e.details["code"] == 11000
+            #id = @ebsdd.id.to_i
+            #@ebsdd.id = id + 1
+          #end
+          #err = e
+        #rescue Exception => e
+          #err = e
+          #binding.pry
+        #end
+      #end
+      #binding.pry
       if @ebsdd.save
         format.html { redirect_to @ebsdd, notice: "L'EBSDD a été crée avec succès !" }
         format.json { render action: 'show', status: :created, location: @ebsdd }

@@ -100,10 +100,12 @@ class Ebsdd
     fin = Date.today.end_of_day
     tmp = ""
     loop do
-      tmp = "#{now}#{"%04d" % (Ebsdd.between(created_at: start..fin).count + counter)}"
+      tmp = "#{now}#{"%04d" % (Ebsdd.unscoped.between(created_at: start..fin).count + counter)}"
+      #tmp = "201505060041" if tmp == "201505060040"
       counter += 1
-      break unless Ebsdd.where(id: tmp).exists?
+      break unless Ebsdd.unscoped.find(bid: /#{tmp}/)#.exists?
     end
+    Rails.logger.debug "tmp: #{tmp}"
     tmp
   end
 

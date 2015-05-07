@@ -64,7 +64,7 @@
     .form-group
       %label.control-label.col-sm-3 Destination Finale
       .col-md-9
-        = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...", disabled: true, "data-destinations" => Produit.to_destinations.to_json
+        = hidden_field_tag "destinataire", nil, class: "form-control col-md-9", "data-placeholder" => "Sélectionnez le destinataire...", disabled: true, "data-destinations" => Destination.toDestinationFinaleSelect.to_json # Produit.to_destinations.to_json
         -#.input-group.input-super-group
           -#%span.input-group-addon Ou
           -#= text_field_tag 'destinationAutre', nil, class: "input-super-autre form-control col-sm-2", placeholder: "Sélectionnez un autre destination"

@@ -19,6 +19,9 @@ class Destination
   field :email, type: String, default: nil
   field :responsable, type: String
 
+  def self.toDestinationFinaleSelect
+    all.map(&:nom).sort.flatten.uniq.sort.map {|i| {id: i, text: i} }
+  end
 
   def self.to_select
     Destination.all.map do | d |

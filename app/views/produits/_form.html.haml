@@ -34,9 +34,9 @@
   .row
     .col-md-8
       .form-group
-        = f.label :references, "Destinations Ultérieures"
+        = f.label :references, "Destination finale par défaut"
         %br
-        = f.text_field :references, value: @produit.references.map(&:to_s).join(",")
+        = f.select :references, Destination.to_references
 
     .col-md-4
       .form-group

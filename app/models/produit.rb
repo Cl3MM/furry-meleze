@@ -67,8 +67,8 @@ class Produit # < ActiveRecord::Base
   end
 
   def self.to_destinations
+    #Produit.all.map(&:references).flatten.uniq.reduce([]){ |ar, r| ar << {id: r, text: r}; ar }
     Produit.all.map(&:references).flatten.uniq.sort.map {|i| {id: i, text: i} }
-    Produit.all.map(&:references).flatten.uniq.reduce([]){ |ar, r| ar << {id: r, text: r}; ar }
   end
   def denomination_ecodds
     "#{"%02d" % index}-#{nom}"

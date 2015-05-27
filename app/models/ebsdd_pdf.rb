@@ -48,9 +48,11 @@ class EbsddPdf < Prawn::Document
         num_cap: num_cap,
         produit_id: @bds.produit.id,
         bordereau_date_transport: date_sortie,
-        code_operation: @bds.codedr_cadre12,
-        traitement_prevu: CodeDr[@bds.codedr_cadre12]
+        code_operation: @bds.produit.code_dr_reception,
+        traitement_prevu: CodeDr[@bds.codedr_cadre12],
+        valorisation_prevue: @bds.produit.code_dr_expedition
       )
+
       @ebsdd.producteur = producteur
       @ebsdd.destinataire = @bds.destination
       @ebsdd.collecteur = collecteur
@@ -247,7 +249,7 @@ class EbsddPdf < Prawn::Document
   end
   def cadre12
     erase 85, 63, width: 160
-    my_text_box @ebsdd.traitement_prevu, [155, 73], width: 350, height: 12
+    my_text_box @ebsdd.try(:traitement_prevu), [155, 73], width: 350, height: 12
     my_text_box @ebsdd.destination.siret.gsub(/-/, ""), [90, 61], width: 200, height: 10
     my_text_box @ebsdd.destination.nom, [75, 50.5], width: 200, height: 10
     my_text_box "#{@ebsdd.destination.adresse}, #{@ebsdd.destination.cp} #{@ebsdd.destination.ville}", [80, 40], width: 200, height: 10
@@ -263,8 +265,8 @@ class EbsddPdf < Prawn::Document
       #my_text_box @bds.produit.code_dr_expedition, [342, 228], width: 150, height: 20, valign: :top
       #my_text_box CodeDr[@bds.produit.code_dr_expedition], [296, 198], width: 230, height: 22, valign: :top
     #else
-      my_text_box @ebsdd.produit.code_dr_reception, [342, 228], width: 150, height: 20, valign: :top
-      my_text_box CodeDr[@ebsdd.produit.code_dr_reception], [296, 198], width: 230, height: 22, valign: :top
+      my_text_box @ebsdd.code_operation, [342, 228], width: 150, height: 20, valign: :top
+      my_text_box CodeDr[@ebsdd.code_operation], [296, 198], width: 230, height: 22, valign: :top
     end
 
   end
@@ -416,11 +418,7 @@ class EbsddPdf < Prawn::Document
     # responsable
     draw_text @ebsdd.destinataire.responsable, at: [380, 601]
     draw_text @ebsdd.num_cap, at: [410, 581]
-    if @status == :bon_de_sortie
-      draw_text @bds.produit.code_dr_expedition, at: [510, 570.5]
-    else
-      draw_text @ebsdd.produit.code_dr_reception, at: [510, 570.5]
-    end
+    draw_text @ebsdd.valorisation_prevue, at: [510, 570.5]
   end
   def my_text_box text, at, options = {}
     options.merge!({ width: 200, height: 12, overflow: :shrink_to_fit, valign: :center, align: :left, color: BLACK }) { |key, v1, v2| v1 }

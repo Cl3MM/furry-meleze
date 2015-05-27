@@ -216,6 +216,7 @@ jQuery ->
     # Set default value for hidden field to avoid errors
     if $("#ebsdd_produit_id").length and $("input#ebsdd_dechet_nomenclature").length
       $("input#ebsdd_dechet_nomenclature").val( $("#ebsdd_produit_id").val() )
+      $("#ebsdd_valorisation_prevue").val($("#ebsdd_code_operation").val())
 
     # S'il y a une erreur dans la désignation, le msg est affiché 2 fois.
     # Du coup on cache un des deux messages
@@ -223,7 +224,7 @@ jQuery ->
       $("input#ebsdd_dechet_nomenclature").next().hide()
 
     # Code D/R Cadre 11 = Code D/R Cadre 2 (Valespace, R13)
-    $("#ebsdd_code_operation").val( $("#ebsdd_valorisation_prevue").val())
+    # $("#ebsdd_code_operation").val( $("#ebsdd_valorisation_prevue").val())
 
     destination_configuration =
       200114: ["R12", "SARPI"]

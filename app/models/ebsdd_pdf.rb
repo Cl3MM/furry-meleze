@@ -257,12 +257,20 @@ class EbsddPdf < Prawn::Document
     my_text_box @ebsdd.destination.email, [325, 41], width: 200, height: 10
   end
   def cadre11
-    my_text_box @ebsdd.code_operation, [342, 228], width: 150, height: 20, valign: :top
-    my_text_box CodeDr[@ebsdd.code_operation], [296, 198], width: 230, height: 22, valign: :top
+    #my_text_box @ebsdd.code_operation, [342, 228], width: 150, height: 20, valign: :top
+
+    if @status != :bon_de_sortie
+      #my_text_box @bds.produit.code_dr_expedition, [342, 228], width: 150, height: 20, valign: :top
+      #my_text_box CodeDr[@bds.produit.code_dr_expedition], [296, 198], width: 230, height: 22, valign: :top
+    #else
+      my_text_box @ebsdd.produit.code_dr_reception, [342, 228], width: 150, height: 20, valign: :top
+      my_text_box CodeDr[@ebsdd.produit.code_dr_reception], [296, 198], width: 230, height: 22, valign: :top
+    end
+
   end
   def cadre10
-    erase 85, 227, width: 160
-    my_text_box @ebsdd.destinataire.try(:siret).try(:gsub, /-/, ""), [90, 227], width: 200, height: 10
+    erase 85, 229, width: 160
+    my_text_box @ebsdd.destinataire.try(:siret).try(:gsub, /-/, ""), [90, 228], width: 200, height: 11
     my_text_box @ebsdd.destinataire.nom, [90, 217], width: 200, height: 10
     my_text_box "#{@ebsdd.destinataire.adresse}\n#{@ebsdd.destinataire.cp} #{@ebsdd.destinataire.ville}", [90, 207], width: 200, height: 20
     my_text_box @ebsdd.destinataire.responsable, [125, 191.5], width: 150, height: 20
@@ -408,7 +416,11 @@ class EbsddPdf < Prawn::Document
     # responsable
     draw_text @ebsdd.destinataire.responsable, at: [380, 601]
     draw_text @ebsdd.num_cap, at: [410, 581]
-    draw_text "R13", at: [510, 570.5]
+    if @status == :bon_de_sortie
+      draw_text @bds.produit.code_dr_expedition, at: [510, 570.5]
+    else
+      draw_text @ebsdd.produit.code_dr_reception, at: [510, 570.5]
+    end
   end
   def my_text_box text, at, options = {}
     options.merge!({ width: 200, height: 12, overflow: :shrink_to_fit, valign: :center, align: :left, color: BLACK }) { |key, v1, v2| v1 }

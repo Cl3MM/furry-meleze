@@ -266,7 +266,10 @@ jQuery ->
           $("#ebsdd_dechet_consistance_0").prop("checked", true) if l.c6tnc == 0
           $("#ebsdd_dechet_consistance_1").prop("checked", true) if l.c6tnc == 1
           $("#ebsdd_dechet_consistance_2").prop("checked", true) if l.c6tnc == 2
+          # Cadre 11
           $("#ebsdd_code_operation").val(l.dr11)
+          # Cadre 2
+          $("#ebsdd_valorisation_prevue").val(l.dr11)
           $("#ebsdd_destination_id option").each (e) ->
             if $(this).text() == l.dest
               $("#ebsdd_destination_id").val($(this).val()).trigger('change')
@@ -276,7 +279,8 @@ jQuery ->
 
       # Remplis le champ contenant en fonction du code déchet
 
-      #$("#ebsdd_dechet_conditionnement").val(contenants[l.cr]).trigger('change')
+      # Cadre 5
+      # $("#ebsdd_dechet_conditionnement").val(contenants[l.cr]).trigger('change')
 
       # Ajax pour trouver la destination associée à la sélection
       #$("#ebsdd_producteur_attributes_id").val(denomination)

@@ -103,7 +103,7 @@ class Ebsdd
       tmp = "#{now}#{"%04d" % (Ebsdd.unscoped.between(created_at: start..fin).count + counter)}"
       #tmp = "201505060041" if tmp == "201505060040"
       counter += 1
-      break unless Ebsdd.unscoped.find(bid: /#{tmp}/)#.exists?
+      break unless Ebsdd.unscoped.find_by(bid: /#{tmp}/)#.exists?
     end
     Rails.logger.debug "tmp: #{tmp}"
     tmp

@@ -19,7 +19,8 @@ class BonDeSortie
     loop do
       tmp = "#{now}BDS#{"%04d" % (BonDeSortie.between(created_at: start..fin).count + counter)}"
       counter += 1
-      break unless Ebsdd.where(id: tmp).exists?
+      break unless BonDeSortie.unscoped.find_by(id: /#{tmp}/)#.exists?
+      #break unless Ebsdd.where(id: tmp).exists?
     end
     tmp
   end

@@ -50,7 +50,7 @@ class EbsddPdf < Prawn::Document
         bordereau_date_transport: date_sortie,
         code_operation: @bds.produit.code_dr_reception,
         traitement_prevu: CodeDr[@bds.codedr_cadre12],
-        valorisation_prevue: @bds.produit.code_dr_expedition
+        valorisation_prevue: @bds.produit.code_dr_expedition,
       )
 
       @ebsdd.producteur = producteur
@@ -349,7 +349,11 @@ class EbsddPdf < Prawn::Document
   end
   def cadre5
     # Cadre 5 : Conditionnement
-    checkbox 322, 494
+    if @ebsdd.produit.nom =~ /filtre(.*)huile/i
+      checkbox 270, 494
+    else
+      checkbox 322, 494
+    end
     my_text_box @ebsdd.dechet_nombre_colis.to_s, [485, 484], width: 30, height: 10
   end
   def cadre4

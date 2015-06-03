@@ -434,7 +434,7 @@ class EbsddsController < ApplicationController
   # DELETE /ebsdds/1
   # DELETE /ebsdds/1.json
   def destroy
-    if @ebsdd.pesees.any? || @ebsdd.poids > 0
+    if @ebsdds.status == :en_attente || @ebsdd.pesees.any? || @ebsdd.poids > 0
       @ebsdd.update_attribute(:status, :deleted)
       @ebsdd.update_attribute(:deleted_at, Time.now)
     else

@@ -208,14 +208,15 @@ class EbsddsController < ApplicationController
   # GET /ebsdds.json
   def index
     @ebsdds = Ebsdd.search(params)
+    @per_page = params[:par_page] || Ebsdd.per_page || 25
     if sort_column == :poids
       Pry.config.input = STDIN
       Pry.config.output = STDOUT
       @ebsdds = @ebsdds.to_a.sort_by(&:poids)
       @ebsdds = @ebsdds.reverse if sort_direction == "desc"
-      @ebsdds = @ebsdds.paginate(page: params[:page], per_page: 25)
+      @ebsdds = @ebsdds.paginate(page: params[:page], per_page: @per_page)
     else
-      @ebsdds = @ebsdds.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: 25)
+      @ebsdds = @ebsdds.order_by([sort_column, sort_direction]).paginate(page: params[:page], per_page: @per_page)
     end
 
     @status = (params.has_key?(:status) ? params[:status].to_sym : :tous)

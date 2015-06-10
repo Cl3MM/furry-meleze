@@ -33,3 +33,20 @@ toastr.options = {
     ko.applyBindings(window.vm);
   })
 //}).call(this)
+
+$().ready(function() {
+  $("#per_page").change(function(e) {
+    var url = window.location.search,
+        pp  = 'par_page='+this.value
+    if(!url) {
+       url = '?' + pp
+    } else {
+        if(~url.indexOf("par_page") ) {
+           url = url.replace(/par_page=\d+/, pp)
+        } else {
+            url = url + '&' + pp
+        }
+    }
+    window.location=url;
+  });
+})

@@ -208,7 +208,7 @@ class EbsddsController < ApplicationController
   # GET /ebsdds.json
   def index
     @ebsdds = Ebsdd.search(params)
-    @per_page = params[:par_page] || Ebsdd.per_page || 25
+    @per_page = params[:par_page] || 25
     if sort_column == :poids
       Pry.config.input = STDIN
       Pry.config.output = STDOUT

@@ -105,10 +105,10 @@
   -#= render partial: "search"
   - params["status"] = "clos" if params.keys.include?("status") && params["status"] == "closs"
   .center-block.tect-center#pagination
-    .pagination.pagination.pull-right{style: "width: 250px;"}
+    .pagination.pagination.pull-right{style: "width: 270px;"}
       .row
-        .col-md-6.form-control-static.text-right{style: "padding-top: 4px;"}
+        .col-md-7.form-control-static.text-right{style: "padding-top: 4px;"}
           Ebsdds par page :
-        .col-md-6
-          = select_tag :par_page, options_for_select([15,25,50,75,100,200,350,500], params[:par_page].to_i), class: "input-sm form-control", id: :per_page
+        .col-md-5
+          = select_tag :par_page, options_for_select([15,25,50,75,100,200,350,500], @per_page), class: "input-sm form-control", id: :per_page
     = will_paginate @ebsdds, renderer: BootstrapPagination::Rails, previous_label: t("précédent"), next_label: t("suivant")

@@ -9,10 +9,10 @@
           %span.pull-right
             .text-center.btn-group
               = link_to(fa_icon("circle-o lg", text: ""), statut_precedent_path(ebsdd), class: "btn btn-primary touletip btn-xs #{ebsdd.status == :nouveau ? "disabled" : ""}",
-                role: "button", title: "Passer au statut précédent") if [:nouveau,:en_attente, :attente_sortie, :clos].include? ebsdd.status
+                role: "button", title: "Passer au statut précédent") if [:nouveau,:en_attente, :attente_sortie].include? ebsdd.status
 
-              = link_to(fa_icon("circle-o lg", text: ""), statut_suivant_path(ebsdd), class: "btn btn-info touletip btn-xs #{ebsdd.status == :clos ? "disabled" : ""}",
-                role: "button", title: "Passer au statut suivant") if [:nouveau, :en_attente, :attente_sortie, :clos].include? ebsdd.status
+              = link_to(fa_icon("circle-o lg", text: ""), statut_suivant_path(ebsdd), class: "btn btn-info touletip btn-xs #{[:clos, :attente_sortie].include?(ebsdd.status) ? "disabled" : ""}",
+                role: "button", title: "Passer au statut suivant") if [:nouveau, :en_attente, :attente_sortie].include? ebsdd.status
           .clearfix
       .panel-body
         %dl.dl-horizontal

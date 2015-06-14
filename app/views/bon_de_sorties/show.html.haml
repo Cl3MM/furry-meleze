@@ -23,7 +23,7 @@
   %span= @bds.codedr_cadre12
   %span &nbsp;|&nbsp;
   %label Destination Finale :
-  %span= link_to @bds.destination.nom, destination_path(@bds.destination)
+  %span= link_to @bds.nom_destination, destination_path(@bds.destination_id)
   %span &nbsp;|&nbsp;
   %label CAP :
   %span= @bds.cap.nil? ? "-" : @bds.cap
@@ -31,12 +31,12 @@
   %label Transporteur :
   %span
     - if @bds.collecteur
-      = link_to @bds.collecteur.nom, collecteur_path(@bds.collecteur)
+      = link_to @bds.nom_collecteur, collecteur_path(@bds.transporteur)
     - else
       \-
   %span &nbsp;|&nbsp;
   %label Dechet :
-  %span= link_to @bds.produit.nom, produit_path(@bds.produit)
+  %span= link_to @bds.nom_produit, produit_path(@bds.produit_id)
   %span &nbsp;|&nbsp;
   %label Date de sortie :
   %span

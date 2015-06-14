@@ -33,6 +33,35 @@ class BonDeSortie
   field :transporteur, type: String
   field :cap, type: String
 
+  # fields to avoid joins
+  field :nom_produit, type: String
+  field :nom_collecteur, type: String
+  field :nom_destination, type: String
+  after_create :set_associations
+  after_update :set_associations
+
+  def set_associations
+    set_nom_produit
+    set_nom_destination
+    set_nom_collecteur
+  end
+
+  def self.update_mongoable
+    BonDeSortie.each do |e|
+      e.set :nom_collecteur, e.collecteur ? e.collecteur.nom : nil
+      e.set :nom_destination, e.destination? ? e.destination.nom : nil
+      e.set :nom_produit, e.has_produit? ? e.produit.nom : nil
+    end
+  end
+  def set_nom_produit
+    set :nom_produit, has_produit? ? produit.nom : nil
+  end
+  def set_nom_destination
+    set :nom_destination, has_destination? ? destination.nom : nil
+  end
+  def set_nom_collecteur
+    set :nom_collecteur, collecteur ? collecteur.nom : nil
+  end
   attr_accessible :poids, :codedr_cadre12, :codedr_cadre2, :type, :date_sortie, :transporteur, :cap
 
   def collecteur

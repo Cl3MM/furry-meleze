@@ -90,10 +90,11 @@ class BonDeSortiesController < ApplicationController
       if @errors.any?
         render 'new' and return
       end
-      binding.pry
+      now = DateTime.now
       params[:ids].each do |bid|
         e = Ebsdd.find_by(bid: bid)
         e.set(:status, :clos)
+        e.set(:closed_on, now)
         @bds.ebsdds << e
         #e.save!
       end

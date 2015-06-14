@@ -7,7 +7,7 @@ class StatistiquesController < ApplicationController
     @camions     = Ebsdd.camions
     @dest        = Destination.to_select
     @quantites   = Ebsdd.quantites
-    @quantites_sorties = Ebsdd.quantites_sorties 2.months.ago
+    @quantites_sorties = Ebsdd.quantites_sorties 1.week.ago.beginning_of_week, 1.week.ago.end_of_week
   end
   def camions
     format_str = "%d-%m-%Y"

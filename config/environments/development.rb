@@ -1,6 +1,22 @@
 Meleze::Application.configure do
   #config.assets.compile = true
   #config.assets.precompile += ['application.js']
+  #config.assets.precompile << Proc.new { |path|
+    #if path =~ /\.(css|js)\z/
+      #full_path = Rails.application.assets.resolve(path).to_path
+      #app_assets_path = [ Rails.root.join('app', 'assets').to_path, Rails.root.join('vendor', 'assets').to_path ]
+      #if app_assets_path.any? { |asp| full_path.starts_with? asp } #full_path.starts_with? app_assets_path
+        #puts "including asset: " + full_path
+        #true
+      #else
+        #puts "excluding asset: " + full_path
+        #false
+      #end
+    #else
+      #false
+    #end
+  #}
+
   # Settings specified here will take precedence over those in config/application.rb
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }

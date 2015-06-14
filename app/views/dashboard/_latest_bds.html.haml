@@ -1,0 +1,44 @@
+-if bons.any?
+  %table.table.table-striped.table-hover
+    %thead
+      %tr
+        %th #
+        %th Destination
+        %th Transporteur
+        %th Date de sortie
+        %th Poids
+        %th Déchet
+        %th.actions Actions
+
+    %tbody
+      - bons.each do | bon |
+        %tr
+          %td
+            = link_to bon.id, bon_de_sortie_path(bon)
+          %td
+            = link_to bon.nom_destination, destination_path(bon.destination_id)
+          %td
+            - if bon.transporteur
+              = link_to bon.nom_collecteur, collecteur_path(bon.transporteur)
+            - else
+              = "-"
+          %td
+            - unless bon.date_sortie
+              = bon.created_at.strftime("%d/%m/%y")
+            - else
+              = bon.date_sortie.strftime("%d/%m/%y")
+          %td
+            = "#{bon.poids} kg"
+          %td
+            = bon.nom_produit
+          %td.actions
+            .center-block.text-center
+              = link_to(fa_icon("cloud-download lg", text: ""), bon_de_sortie_pdf_path(bon), class: "btn btn-info touletip btn-xs", role: "button", title: "Télécharger le Cerfa du bon de sortie ##{bon.id} au format PDF")
+  - if bons.count > 10
+    .panel-body
+      = link_to "Voir tous les bon de sorties", bon_de_sorties_path, class:"pull-right"
+- else
+  .center-block
+    %p.text-center
+      = fa_icon "times-circle pull-left ccc lg"
+      Aucun bon de sortie nouvellement crée. Veuillez créer un nouveau bon de sortie

@@ -18,7 +18,7 @@
             - else
               = link_to ebsdd.bid.to_s.scan(/(\d{4})(\d{2})(\d{2})(\d{4})/).join(" "), ebsdd_path(ebsdd)
           %td
-            = link_to truncate(ebsdd.producteur.nom.titleize, length: 20), producteur_path(ebsdd.producteur_id), class: "touletip", title: "Producteur du déchet : #{ebsdd.nom_producteur.titleize}"
+            = link_to truncate(ebsdd.nom_producteur.titleize, length: 20), producteur_path(ebsdd.producteur_id), class: "touletip", title: "Producteur du déchet : #{ebsdd.nom_producteur.titleize}"
           %td= truncate ebsdd.try(:nom_destinataire).try(:titleize), length: 18
           %td= truncate ebsdd.try(:nom_produit).try(:titleize), length: 15
           %td

@@ -18,7 +18,7 @@ module Statisticable
       }.squish
 
       #mr = Ebsdd.where(:status.in => [:attente_sortie, :clos]).map_reduce(map, reduce).out(inline: true)
-      mr = Ebsdd.where(:status.in => [:attente_sortie]).map_reduce(map, reduce).out(inline: true)
+      mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
       produits = {}
       mr.entries.reduce([]) do |a, e|
         if produits.keys.include? e["_id"]
@@ -98,33 +98,10 @@ module Statisticable
       }
     end
 
-    def self.quantites_to_csv date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
-      date_min, date_max = date_max, date_min if date_min > date_max
-      date_min = date_min.beginning_of_day
-      date_max = date_max.end_of_day
-
-      #map = %Q{
-      #function() {
-      #emit( this.produit_id, this.bordereau_poids );
-      #};
-      #}.squish
-
-      #reduce = %Q{
-      #function(id, poids) {
-      #return Array.sum(poids);
-      #};
-      #}.squish
-      # Conditions :
-      # - dont la date de reception est comprise entre les dates passées en paramètre
-      #mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
-      #data = mr.entries.reduce([]) do |a, e|
-      #produit = Produit.find e["_id"]
-      #a << { nom: produit.nom, poids: e["value"], codedr: produit.code_rubrique, ecodds: produit.is_ecodds ? "1" : "0", ddm: produit.is_ddm ? "1" : "0", ddi: produit.is_ddi ? "1" : "0" }
-      #a
-      #end.sort_by do | h |
-      #h[:nom]
-      #end
-
+    def self.quantites_to_csv min = Date.today.beginning_of_month.beginning_of_day, max = Date.today.end_of_month.end_of_day
+      min, max = max, min if min > max
+      min = min.beginning_of_day
+      max = max.end_of_day
       map = %Q{
       function() {
         emit( this.nom_produit, this.bordereau_poids );
@@ -137,8 +114,8 @@ module Statisticable
       };
       }.squish
 
-      ecodds  = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).and(is_ecodds: true).map_reduce(map, reduce).out(inline: true).entries
-      necodds = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).and(is_ecodds: false).map_reduce(map, reduce).out(inline: true).entries
+      ecodds  = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: min..max).and(is_ecodds: true).map_reduce(map, reduce).out(inline: true).entries
+      necodds = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: min..max).and(is_ecodds: false).map_reduce(map, reduce).out(inline: true).entries
 
       content = necodds.reduce([]) do | ar, e |
         eco = ecodds.find{ |o| o["_id"] == e["_id"]  }.try(:[], "value") || 0
@@ -226,16 +203,15 @@ module Statisticable
     end
 
     def self.quantites_sorties_csv min = Date.today.beginning_of_week.beginning_of_day, max = Date.today.end_of_week.end_of_day
-      eco, hors_eco = quantites_sorties min, max
-      content = format_map_reduce_results eco, hors_eco
+      content = quantites_sorties min, max
       generate_csv_file( { data: content, headers: ["Nom du déchet","Non EcoDDS (kg)", "EcoDDS (kg)", "Code DR"] })
     end
 
     def self.generate_csv_file data
       CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do | csv |
-        headers = data.first.keys.map { |k| k.to_s.humanize }
-        csv << data.headers || headers
-        data.data.each do | item |
+        headers = data[:data].first.keys.map { |k| k.to_s.humanize }
+        csv << data[:headers] || headers
+        data[:data].each do | item |
           csv << [item[:nom], item[:hors_ecodds], item[:ecodds]]
         end
       end
@@ -262,8 +238,8 @@ module Statisticable
       };
       }.squish
 
-      ecodds  = Ebsdd.where(status: :clos).between(bordereau_date_transport: min..max).and(is_ecodds: true).map_reduce(map, reduce).out(inline: true).entries
-      necodds = Ebsdd.where(status: :clos).between(bordereau_date_transport: min..max).and(is_ecodds: false).map_reduce(map, reduce).out(inline: true).entries
+      ecodds  = Ebsdd.where(status: :clos).between(closed_on: min..max).and(is_ecodds: true).map_reduce(map, reduce).out(inline: true).entries
+      necodds = Ebsdd.where(status: :clos).between(closed_on: min..max).and(is_ecodds: false).map_reduce(map, reduce).out(inline: true).entries
       [ecodds, necodds]
     end
 

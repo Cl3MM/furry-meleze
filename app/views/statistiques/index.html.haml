@@ -1,3 +1,5 @@
+= javascript_include_tag "stats_controller"
+= stylesheet_link_tag "pikaday"
 %h1.underline
   = fa_icon "dashboard "
   Statistiques
@@ -88,12 +90,13 @@
           #collapseOne.panel-collapse.collapse
             .panel-body
               = render partial: 'dashboard/alertes', object: @alertes
+      =# Quantites transportées du X au X
       .panel.panel-default
         .panel-heading
           %h4.panel-title.statistiques
             %a{"data-toggle" => "collapse", :href => "#collapseFour"}
               %i.fa.fa-recycle
-              Quantites de dechets du
+              Quantité de dechets entrés du
               %span#qte-du
               au
               %span#qte-au
@@ -114,8 +117,60 @@
         #collapseFour.panel-collapse.collapse
           .panel-body
             #qtes{"data-qtes" => "#{@quantites.to_json}" }
-            %table.table.table-striped#qtes-table
-              %thead
-                %th Nom
-                %th Poids (tonnes)
-              %tbody
+          %table.table.table-striped#qtes-table
+            %thead
+              %th Nom
+              %th Poids (kg)
+            %tbody
+      =# Quantités de déchet sorties du X au X
+      .panel.panel-default{ data: {bind: "with: vm.sortiesCtrl"} }
+        .panel-heading
+          %h4.panel-title.statistiques
+            %a{"data-toggle" => "collapse", :href => "#sorties-panel"}
+              %i.fa.fa-recycle
+              Quantité de dechets sortis du
+              %span{ data: {bind: "text: du.format('DD/MM/YYYY')"} }
+              au
+              %span{ data: {bind: "text: au.format('DD/MM/YYYY')"} }
+
+            %form.form-inline.pull-right.statistiques{role: "form"}
+              Du
+              .form-group
+                %label.sr-only
+                %input.form-control.input-sm{ data: {bind: "pikaday: du, pikModel: vm.sortiesCtrl, pikProp: 'du'"} }
+              au
+              .form-group
+                %label.sr-only
+                %input.form-control.input-sm{ data: {bind: "pikaday: au, pikModel: vm.sortiesCtrl, pikProp: 'au'"} }
+              %button.btn.btn-primary.input-sm.touletip{title: "Rechercher !", data: {bind: "click: find"} }
+                %i.fa.fa-search
+              %a#qte-2-excel.btn.btn-success.btn-sm.fa.fa-file-excel-o.touletip{title: "Téléchargez les données pour la période sélectionnée...",
+                data: {bind: "attr:{href: '/statistiques/quantites_sorties/'+du.format('DD-MM-YYYY') + '/' + au.format('DD-MM-YYYY') + '.csv'}"} }
+            %span.clearfix
+        #sorties-panel.panel-collapse.collapse
+          #sorties{ data: {stats: @quantites_sorties.to_json} }
+          / ko if: stats[0]
+          %table.table.table-striped
+            %thead
+              %th Nom
+              %th Non EcoDDS (kg)
+              %th EcoDDS (kg)
+              %th Code DR
+            %tbody{ data: {bind: "foreach: stats"} }
+              %tr
+                %td{ data: {bind: "text:nom"} }
+                %td{ data: {bind: "text:hors_ecodds"} }
+                %td{ data: {bind: "text:ecodds"} }
+                %td{ data: {bind: "text:code_dr"} }
+          / /ko
+          / ko ifnot: stats[0]
+          .panel-body
+            .alert.alert-info.alert-dismissable.mg-t-0
+              Aucun bon de sortie créé durant cette période (
+              du
+              %span{ data: {bind: "text:du.format('DD-MM-YYYY')"} }
+              au
+              %span{ data: {bind: "text:au.format('DD-MM-YYYY')"} }
+              )
+          / /ko
+

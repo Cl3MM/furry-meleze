@@ -21,6 +21,7 @@ Meleze::Application.routes.draw do
   post "statistiques/camions", to: "statistiques#camions"
   post "statistiques/destinations", to: "statistiques#destinations"
   post "statistiques/quantites", to: "statistiques#quantites"
+  get  "statistiques/quantites_sorties/:du/:au", to: "statistiques#quantites_sorties"
   get  "statistiques/quantites_to_csv", to: "statistiques#quantites_to_csv", default: {format: :csv}
   get  "statistiques/camions_to_csv", to: "statistiques#camions_to_csv", default: {format: :csv}
   get  "statistiques/destinations_to_csv", to: "statistiques#destinations_to_csv", default: {format: :csv}

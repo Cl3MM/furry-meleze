@@ -32,12 +32,13 @@ class Ebsdd
   include Mongoid::Timestamps
 
   include Pesable
+  include Statisticable
   include Mongoable
 
   default_scope exists(archived: false).where(:status.ne => :deleted)
 
   def self.per_page
-    15
+    25
   end
 
   before_create :normalize, :complete_new, :set_infos_from_collecteur, :set_is_ecodds
@@ -117,6 +118,7 @@ class Ebsdd
   field :bordereau_poids, type: Float
   field :bordereau_poids_ult, type: Float
   field :deleted_at, type: DateTime
+  field :closed_on, type: DateTime
 
   field :attente_sortie_created_at, type: DateTime
   field :en_attente_created_at, type: DateTime
@@ -859,134 +861,7 @@ class Ebsdd
       "#{y}#{p}#{s}"
     end
   end
-  def self.seuils
-    map = %Q{
-      function() {
-        emit( this.produit_id, this.bordereau_poids );
-      };
-    }
 
-    reduce = %Q{
-      function(id, poids) {
-        return Array.sum(poids);
-      };
-    }
-    mr = Ebsdd.where(status: :attente_sortie).map_reduce(map, reduce).out(inline: true)
-    mr.entries.reduce([]) do |a, e|
-      #binding.pry
-      produit = Produit.find e["_id"]
-      a << { id: produit.id, nom: produit.nom, seuil: produit.seuil_alerte, poids: e["value"], type: produit.type, pretty_poids: "#{e["value"].to_s.gsub('.', ',')} kg" }
-      a
-    end.sort_by do | h |
-      h[:nom]
-    end
-  end
-  def self.camions date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
-    date_min, date_max = date_max, date_min if date_min > date_max
-    date_min = date_min.beginning_of_day
-    date_max = date_max.end_of_day
-    map = %Q{
-      function() {
-        emit( this.immatriculation, this.bordereau_poids );
-      };
-    }
-
-    reduce = %Q{
-      function(id, poids) {
-        return Array.sum(poids);
-      };
-    }
-    mr = Ebsdd.in(status: [:attente_sortie, :clos, :complet]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
-
-    data = mr.entries.reduce([]) do |a, e|
-      immat = Immatriculation.find e["_id"]
-      val = immat.nil? ? "Immaticulation inconnue" : immat.valeur
-      a << { nom: val, poids: e["value"] }
-      a
-    end.sort_by do | h |
-      h[:poids]
-    end
-
-    {
-      du: date_min.strftime("%d/%m/%Y"),
-      au: date_max.strftime("%d/%m/%Y"),
-      data: data
-    }
-  end
-  def self.quantites date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
-    date_min, date_max = date_max, date_min if date_min > date_max
-    date_min = date_min.beginning_of_day
-    date_max = date_max.end_of_day
-
-    map = %Q{
-      function() {
-        emit( this.produit_id, this.bordereau_poids );
-      };
-    }.squish
-
-    reduce = %Q{
-      function(id, poids) {
-        return Array.sum(poids);
-      };
-    }.squish
-    # Conditions :
-    # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
-    data = mr.entries.reduce([]) do |a, e|
-      produit = Produit.find e["_id"]
-      a << { id: produit.id, nom: produit.nom, poids: e["value"] }
-      a
-    end.sort_by do | h |
-      h[:nom]
-    end
-    {
-      du: date_min.strftime("%d/%m/%Y"),
-      au: date_max.strftime("%d/%m/%Y"),
-      data: data
-    }
-  end
-  def self.quantites_to_csv date_min = Date.today.beginning_of_month.beginning_of_day, date_max = Date.today.end_of_month.end_of_day
-    date_min, date_max = date_max, date_min if date_min > date_max
-    date_min = date_min.beginning_of_day
-    date_max = date_max.end_of_day
-
-    map = %Q{
-      function() {
-        emit( this.produit_id, this.bordereau_poids );
-      };
-    }
-
-    reduce = %Q{
-      function(id, poids) {
-        return Array.sum(poids);
-      };
-    }
-    # Conditions :
-    # - dont la date de reception est comprise entre les dates passées en paramètre
-    mr = Ebsdd.in(status: [:attente_sortie, :clos]).between(bordereau_date_transport: date_min..date_max).map_reduce(map, reduce).out(inline: true)
-    data = mr.entries.reduce([]) do |a, e|
-      produit = Produit.find e["_id"]
-      a << { nom: produit.nom, poids: e["value"], codedr: produit.code_rubrique, ecodds: produit.is_ecodds ? "1" : "0", ddm: produit.is_ddm ? "1" : "0", ddi: produit.is_ddi ? "1" : "0" }
-      a
-    end.sort_by do | h |
-      h[:nom]
-    end
-
-    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      csv << ["Nom du déchet","Code DR", "Poids (tonnes)", "EcoDDS", "DDM", "DDI"]
-      data.each do | qte |
-        csv << [qte[:nom], qte[:codedr], qte[:poids], qte[:ecodds], qte[:ddm], qte[:ddi]]
-      end
-    end
-  end
-  def self.camions_to_csv date_min, date_max
-    CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
-      csv << ["Nom du déchet", "Poids (tonnes)"]
-      camions(date_min, date_max)[:data].each do | qte |
-        csv << [qte[:nom], qte[:poids]]
-      end
-    end
-  end
 
 end
   #p.ebsdds.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month)
@@ -1061,4 +936,3 @@ end
     #}
   #}
 #}
-

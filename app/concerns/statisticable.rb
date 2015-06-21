@@ -131,7 +131,8 @@ module Statisticable
         h[:nom]
       end
 
-      CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
+      opts = { col_sep: ";", encoding: "ISO8859-15" }
+      CSV.generate( opts ) do | csv |
         #csv << ["Nom du déchet", "code dr", Poids (kg)", "EcoDDS", "DDM", "DDI"]
         #data.each do | qte |
         #csv << [qte[:nom], qte[:codedr], qte[:poids], qte[:ecodds], qte[:ddm], qte[:ddi]]
@@ -140,7 +141,7 @@ module Statisticable
         content.each do | item |
           csv << [item[:nom], item[:hors_ecodds], item[:ecodds], item[:code_dr]]
         end
-      end
+      end.encode("iso-8859-15")
     end
 
     def self.quantites_en_stock min = Date.today.beginning_of_week.beginning_of_day, max = Date.today.end_of_week.end_of_day
@@ -208,7 +209,9 @@ module Statisticable
     end
 
     def self.generate_csv_file data
-      CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do | csv |
+      opts = { col_sep: ";", encoding: "ISO8859-15" }
+      opts = { col_sep: ";"}
+      CSV.generate( opts ) do | csv |
         headers = data[:data].first.keys.map { |k| k.to_s.humanize }
         csv << data[:headers] || headers
         data[:data].each do | item |
@@ -244,7 +247,9 @@ module Statisticable
     end
 
     def self.camions_to_csv date_min, date_max
-      CSV.generate( { col_sep: ";", encoding: "ISO8859-15" }) do |csv|
+      opts = { col_sep: ";", encoding: "ISO8859-15" }
+      opts = { col_sep: ";"}
+      CSV.generate( opts ) do | csv |
         csv << ["Nom du déchet", "Poids (kg)"]
         camions(date_min, date_max)[:data].each do | qte |
           csv << [qte[:nom], qte[:poids]]

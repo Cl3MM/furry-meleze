@@ -1,0 +1,27 @@
+#cloneModal.modal.fade{ data: {bind: "with:vm.cloneCtrl"} }
+  .modal-dialog.modal-fat
+    .modal-content
+      .modal-header
+        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h4.modal-title Duplication en série
+      .modal-body
+        #dechets.hidden.data{ data: {dechets: Produit.to_modal.to_json} }
+        %p Choisissez les produits à créer
+        .row
+          / ko foreach: produits
+          .col-md-4
+            %input{ type: :checkbox, data: {bind: "checkedValue: $data, checked: $parent.selected"} }
+            %span{ data: {bind: "text:nom"} }
+          / ko if: $index() % 3 === 2
+          .clearfix
+          / /ko
+          / /ko
+      .modal-footer
+        %button.btn.btn-default{ data: {bind: "click:toggle"} } Annuler
+        %button.btn.btn-primary{ data: {bind: "click:massClone, attr:{disabled: selected.length == 0}" }, type: "button"}
+          %i.fa.fa-spin.fa-circle-o-notch{ data: {bind: "visible:loading"} }
+          Dupliquer !
+    / /.modal-content
+  / /.modal-dialog
+/ /.modal

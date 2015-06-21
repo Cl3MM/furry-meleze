@@ -22,6 +22,8 @@
               %a.btn.btn-xs.btn-danger{ data: {bind: "click: vm.statusCtrl.selectForDeleteAll"} }
                 %i.fa.fa-times
       %tbody
+        - if @status == :nouveau
+          = render partial: "ebsdds/cloned"
         -@ebsdds.each do | ebsdd |
           %tr{id: "#{ebsdd.bid}" }
             %td.hidden.deleteme
@@ -67,6 +69,10 @@
                   = link_to(fa_icon("circle-o lg", text: ""), "#", class: "en_attente_statut btn btn-success touletip btn-xs",
                     role: "button", title: "Le déchêt est prêt à sortir") if ebsdd.status == :en_attente
 
+                  - if @status == :nouveau
+                    %button.btn.btn-xs.btn-primary{ data: {bind: "click:vm.cloneCtrl.toggle.bind(vm.cloneCtrl,#{ebsdd.id})"} }
+                      %i.fa.fa-coffee.fa-lg
+
                   -#= link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})")
                   = link_to(fa_icon("edit lg", text: ""), edit_ebsdd_path(ebsdd), class: "btn btn-warning touletip btn-xs",
                     role: "button", title: "Modifier cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})") unless ebsdd.is_incomplete? || ebsdd.status == :attente_sortie
@@ -100,6 +106,8 @@
             %a.btn.btn-xs.btn-danger{ data: {bind: "click: vm.statusCtrl.deleteAll"} }
               %i.fa.fa-times
               Supprimer la sélection
+  - if [:nouveau].include? @status
+    = render partial: "ebsdds/clone_modal"#, object: f, as: :f, locals: {producteur: @ebsdd.producteur}
 -else
   .center-block
     %p.text-center

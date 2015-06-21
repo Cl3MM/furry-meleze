@@ -50,6 +50,9 @@ class Produit # < ActiveRecord::Base
       "<span class=\"label label-info\">Non EcoDDS</span>"
     end
   end
+  def self.to_modal
+    Produit.asc(:nom, 1).map { |p| {id: p.id, nom: p.is_ecodds ? "#{p.nom} ECODDS" : p.nom} }
+  end
   def self.to_select
     Produit.asc(:index, 1).reduce([]) do | ary, p |
       ary << [p.nom, p.index ]

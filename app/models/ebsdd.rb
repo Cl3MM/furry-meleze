@@ -124,6 +124,7 @@ class Ebsdd
   field :en_attente_created_at, type: DateTime
 
   field :is_ecodds, type: Boolean, default: false
+  field :is_clone, type: Boolean, default: false
 
   field :ligne_flux_siret, type: String
   field :ligne_flux_nom, type: String

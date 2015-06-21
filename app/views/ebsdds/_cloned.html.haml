@@ -1,0 +1,65 @@
+/ ko foreach: vm.cloneCtrl.cloned
+%tr{data:{bind: "attr: {id: bid}"}}
+  %td.hidden.deleteme
+    %input{ type: :checkbox, data: {bind: "checked: vm.statusCtrl.ebsdedes, value: bid"} }
+  %td
+    %a{href: "", data: { bind: "text: vm.cloneCtrl.formatEbsddId(bid), attr: {href: '/ebsdds/' + bid }" }}
+  %td{data: { bind: "text: ecodds_id" } }
+  %td
+    %a{href: "", data: { bind: "text: nom_producteur, attr: {href: '/producteurs/' + producteur_id }" }}
+  %td.text-center{data: { bind: "text: nom_produit" }}
+  %td{data: { bind: "text: vm.fCtrl.formatDate(bordereau_date_transport)" }}
+  %td.text-center
+    %span.poids{data: { bind: "text: vm.fCtrl.formatPoids(bordereau_poids), attr: {'data-cdt': dechet_conditionnement && dechet_conditionnement.length > 0 }" }}
+  - if [:en_attente, :tous].include? @status
+    %td.text-center
+      %a.btn.btn-primary.touletip.btn-xs{data: {bind: "visible: status == 'en_attente', attr: {href: '/ebsdds/' + bid + '/pesee' }"}, title: "Effectuer une pesée"}
+        %i.fa.fa-dropbox.lg
+  %td.text-center
+    .btn-group
+      / ko if: status == 'nouveau'
+      %a.nouveau_statut.btn.btn-success.touletip.btn-xs{"data-original-title" => "Mettre le déchet en attente", :href => "#", :role => "button", :title => ""}
+        %i.fa.fa-circle-o.fa-lg
+      %button.btn.btn-xs.btn-primary{ data: {bind: "click:function() { vm.cloneCtrl.toggle(bid) }"} }
+        %i.fa.fa-coffee.fa-lg
+      %a.btn.btn-warning.touletip.btn-xs{data: {bind: "attr:{title: 'Modifier cet eBSDD (#'+bid+')', href: '/ebsdds/' + bid +'/edit' }" }, role: "button"}
+        %i.fa.fa-edit.fa-lg
+      %a.check-poids.btn.btn-success.touletip.btn-xs{data: {bind: "attr:{title: 'Télécharger le Cerfa avant la collecte pour l eBSDD #'+bid, href: '/ebsdds/printpdf/' + bid + '?status=first_part' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.btn.btn-warning.touletip.btn-xs{data: {bind: "attr:{ title: 'Cloner cet ebsdd', href: '/ebsdds/' + bid +'/clone' }" }, role: "button"}
+        %i.fa.fa-copy.fa-lg
+      %a.btn.btn-danger.touletip.btn-xs{data: {method: "delete", bind: "attr:{title: 'Supprimer #'+bid+' ?',
+            'data-confirm': 'êtes vous sur de vouloir supprimer l élément #'+bid +' ?', href: '/ebsdds/' + bid }" }, role: "button", rel: "nofollow"}
+        %i.fa.fa-times.fa-lg
+      / /ko
+      / ko if: status == 'en_attente'
+      %a.en_attente_statut.btn.btn-success.touletip.btn-xs{"data-original-title" => "Le déchêt est prêt à sortir", :href => "#", :role => "button", :title => ""}
+        %i.fa.fa-circle-o.fa-lg
+      %a.btn.btn-warning.touletip.btn-xs{data: {bind: "attr:{title: 'Modifier cet eBSDD (#'+bid+')', href: '/ebsdds/' + bid +'/edit' }" }, role: "button"}
+        %i.fa.fa-edit.fa-lg
+      %a.check-poids.btn.btn-success.touletip.btn-xs{data: {bind: "attr:{title: 'Télécharger la deuxième partie du Cerfa pour l eBSDD #'+bid, href: '/ebsdds/printpdf/' + bid + '?status=second_part' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.check-poids.btn.btn-primary.touletip.btn-xs{data: {bind: "attr:{disabled: !bordereau_poids,
+            title: 'Télécharger le ticket de pesée pour l eBSDD #'+bid, href: '/ebsdds/' + bid +'/pesee/export' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.btn.btn-info.touletip.btn-xs.check-poids{data: {bind: "attr:{ title: 'Télécharger le Cerfa Complet pour l eBSDD #'+bid, href: '/ebsdds/printpdf/' + bid +'?status=full' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.btn.btn-warning.touletip.btn-xs{data: {bind: "attr:{ title: 'Cloner cet ebsdd', href: '/ebsdds/' + bid +'/clone' }" }, role: "button"}
+        %i.fa.fa-copy.fa-lg
+      %a.btn.btn-danger.touletip.btn-xs{data: {method: "delete", bind: "attr:{title: 'Supprimer #'+bid+' ?',
+            'data-confirm': 'êtes vous sur de vouloir supprimer l élément #'+bid +' ?', href: '/ebsdds/' + bid }" }, role: "button", rel: "nofollow"}
+        %i.fa.fa-times.fa-lg
+      / /ko
+      / ko if: status == 'attente_sortie'
+      %a.check-poids.btn.btn-success.touletip.btn-xs{data: {bind: "attr:{title: 'Télécharger la deuxième partie du Cerfa pour l eBSDD #'+bid, href: '/ebsdds/printpdf/' + bid + '?status=second_part' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.check-poids.btn.btn-primary.touletip.btn-xs{data: {bind: "attr:{disabled: !bordereau_poids,
+            title: 'Télécharger le ticket de pesée pour l eBSDD #'+bid, href: '/ebsdds/' + bid +'/pesee/export' }" }, role: "button"}
+        %i.fa.fa-print.fa-lg
+      %a.btn.btn-warning.touletip.btn-xs{data: {bind: "attr:{ title: 'Cloner cet ebsdd', href: '/ebsdds/' + bid +'/clone' }" }, role: "button"}
+        %i.fa.fa-copy.fa-lg
+      %a.btn.btn-danger.touletip.btn-xs{data: {method: "delete", bind: "attr:{title: 'Supprimer #'+bid+' ?',
+            'data-confirm': 'êtes vous sur de vouloir supprimer l élément #'+bid +' ?', href: '/ebsdds/' + bid }" }, role: "button", rel: "nofollow"}
+        %i.fa.fa-times.fa-lg
+      / /ko
+/ /ko

@@ -395,12 +395,26 @@ class EbsddsController < ApplicationController
     end
   end
 
+  def mass_clone
+    old_ebsdd = Ebsdd.find(params[:id])
+    return render json: { error: "Aucun produit trouvé"} unless(params[:ids].present?)
+    new_ebsdds = []
+    params[:ids].each do | id |
+      ebsdd = old_ebsdd.dup
+      ebsdd.produit_id = id
+      ebsdd.is_clone = true
+      ebsdd.save!
+      new_ebsdds << ebsdd
+    end
+    render json: new_ebsdds
+  end
   def clone
     old_ebsdd = Ebsdd.find(params[:id])
     respond_to do |format|
       #old_ebsdd.bordereau_poids = 0
       @ebsdd = old_ebsdd.dup
       @ebsdd.status = :nouveau
+      @ebsdd.is_clone = true
       flash[:notice] = "eBsdds cloné avec succès !"
       format.html { render action: 'new', notice: "eBsdds cloné avec succès !" }
     end

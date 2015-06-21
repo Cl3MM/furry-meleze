@@ -58,6 +58,7 @@ Meleze::Application.routes.draw do
   get  'ebsdds/filter/:status/:prop/:query', to: "ebsdds#filter"
   get  'ebsdds/restore/:id', to: 'ebsdds#restore', as: :restore_ebsdd
   get  'ebsdds/:id/clone', to: 'ebsdds#clone', as: :clone_ebsdd
+  post 'ebsdds/:id/clone/en/masse', to: 'ebsdds#mass_clone', as: :clone_en_masse
   post 'ebsdds/types_dechet_a_sortir', to: 'ebsdds#types_dechet_a_sortir', as: :ebsdds_type_dechet_a_sortir
   post 'ebsdds/a_sortir', to: 'ebsdds#a_sortir', as: :ebsdds_a_sortir
   # Bons de sortie

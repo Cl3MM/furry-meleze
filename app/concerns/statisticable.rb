@@ -217,7 +217,7 @@ module Statisticable
         data[:data].each do | item |
           csv << [item[:nom], item[:hors_ecodds], item[:ecodds]]
         end
-      end
+      end.encode("iso-8859-15")
     end
 
     def self.quantites_sorties min = Date.today.beginning_of_week.beginning_of_day, max = Date.today.end_of_week.end_of_day
@@ -254,7 +254,7 @@ module Statisticable
         camions(date_min, date_max)[:data].each do | qte |
           csv << [qte[:nom], qte[:poids]]
         end
-      end
+      end.encode("iso-8859-15")
     end
     def self.add_closed_on
       bons = {}

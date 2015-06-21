@@ -33,7 +33,7 @@ class StatistiquesController < ApplicationController
     if params[:format] == 'csv'
       csv = Ebsdd.generate_csv_file( { data: data, headers: ["Nom du déchet","Non EcoDDS (kg)", "EcoDDS (kg)", "Code DR"] })
       return send_data csv,
-             filename: "Volume_par_camions_du_#{du.strftime("%d-%m-%Y")}_au#{au.strftime("%d-%m-%Y")}.csv",
+              filename: "Quantites_de_dechets_sorti#{du.strftime("%d-%m-%Y")}_au#{au.strftime("%d-%m-%Y")}.csv",
              disposition: "attachment"
     end
     render json: data

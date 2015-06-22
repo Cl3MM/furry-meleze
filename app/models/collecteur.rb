@@ -15,4 +15,9 @@ class Collecteur < Company
       { id: col.id, text: col.nom }
     end.to_json
   end
+  def self.to_select
+    all.asc(:nom,1).map do | p |
+      [p.nom, p.id]
+    end
+  end
 end

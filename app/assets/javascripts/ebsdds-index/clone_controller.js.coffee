@@ -2,6 +2,7 @@ root = exports ? this
 
 class CloneController
   constructor: ->
+    return unless $(".massclone").length > 0
     @produits  = $("#dechets").data 'dechets'
     @cloned = []
     @isShowing = false

@@ -105,7 +105,6 @@ class Producteur < Company
       Producteur.all.order_by(nom: :asc)
     end
   end
-
   def self.to_select
     all.asc(:nom,1).map do | p |
       [p.nom, p.id]

@@ -70,7 +70,7 @@
                     role: "button", title: "Le déchêt est prêt à sortir") if ebsdd.status == :en_attente
 
                   - if @status == :nouveau
-                    %button.btn.btn-xs.btn-primary{ data: {bind: "click:vm.cloneCtrl.toggle.bind(vm.cloneCtrl,#{ebsdd.id})"} }
+                    %button.massclone.btn.btn-xs.btn-primary{ data: {bind: "click:vm.cloneCtrl.toggle.bind(vm.cloneCtrl,#{ebsdd.id})"} }
                       %i.fa.fa-coffee.fa-lg
 
                   -#= link_to(fa_icon("eye lg", text: ""), ebsdd_path(ebsdd), class: "btn btn-primary touletip btn-xs", role: "button", title: "Voir les détails de cet eBSDD (##{ebsdd.bid == "#" ? ebsdd.bordereau_id : ebsdd.bid})")
